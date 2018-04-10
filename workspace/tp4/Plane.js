@@ -38,7 +38,7 @@ class Plane extends CGFobject{
 		this.normals = [];
 		
 		// Uncomment below to init texCoords
-		//this.texCoords = [];
+		this.texCoords = [];
 
 		var yCoord = 0.5;
 
@@ -55,7 +55,9 @@ class Plane extends CGFobject{
 				this.normals.push(0,0,1);
 
 				// texCoords should be computed here; uncomment and fill the blanks
-				// this.texCoords.push(..., ...);
+				var stex = (0.5 + xCoord);
+				var ttex = 1 - (0.5 + yCoord);
+				this.texCoords.push(stex, ttex);
 
 				xCoord += this.patchLength;
 			}

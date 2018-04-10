@@ -1,10 +1,10 @@
 class MyUnitCubeQuad extends CGFobject
 {
-    constructor(scene) 
+    constructor(scene, minS = 0, maxS = 1, minT = 0, maxT = 1) 
 	{
 		super(scene);
 		this.initBuffers();
-        this.quad = new MyQuad(this.scene);
+        this.quad = new MyQuad(scene, minS, maxS, minT, maxT);
         this.quad.initBuffers();
 	};
 
