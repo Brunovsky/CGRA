@@ -2,9 +2,6 @@
  * MyPrism
  * @param gl {WebGLRenderingContext}
  * @constructor
- *
- * altered to have base
- *
  */
 
 class MyCylinder extends CGFobject
@@ -25,7 +22,7 @@ class MyCylinder extends CGFobject
         this.normals = [];
         
         var teta = 2*(Math.PI)/this.slices;
-        var d = 1;
+        var d = 1/this.stacks;
         
         for(var z = 0; z <= this.stacks; z++){
             
@@ -33,20 +30,21 @@ class MyCylinder extends CGFobject
                 this.vertices.push(Math.cos(teta*i), Math.sin(teta*i), z*d); 
                 this.normals.push(Math.cos(teta*i), Math.sin(teta*i), 0);
                 }
-				
+            
                 if(z != this.stacks)
                     for(var i = 0; i < this.slices; i++){
-						
                         if(i != this.slices - 1){
                             this.indices.push(i + z * this.slices, i + 1 + z * this.slices, i + (z + 1) * this.slices);
-                            this.indices.push(i + 1 + z * this.slices, i + 1 + (z + 1) * this.slices, i + (z + 1) * this.slices);
-							}
-							
+                            this.indices.push(i + 1 + z * this.slices, i + 1 + (z + 1) * this.slices, i + (z + 1) * this.slices);   }
                         else{
                             this.indices.push(i + z * this.slices, i + 1 + z * this.slices - this.slices, i + (z + 1) * this.slices);
-                            this.indices.push(i + 1 + z * this.slices - this.slices, i + 1 + z * this.slices , i + (z + 1) * this.slices);   
-							}
+                            this.indices.push(i + 1 + z * this.slices - this.slices, i + 1 + z * this.slices , i + (z + 1) * this.slices);   }
                             
+                            
+                            
+                            
+                            /*this.indices.push(i + z * this.slices, i + 1 + (z-1) * this.slices, i + 1 + z * this.slices);
+                            this.indices.push(i + z * this.slices,  i + 1 + z * this.slices, i + 3 + z * this.slices);   }*/
                     }
             }  
         
