@@ -29,7 +29,7 @@ class MyCircle extends CGFobject
 		this.texCoords.push(0.5, 0.5);
 		this.normals.push(0, 0, 1);
 		
-		for(var i = 0; i < this.slices; i++){
+		for(var i = 0; i <= this.slices; i++){
                 var x = Math.cos(teta*i);
                 var y = Math.sin(teta*i);
 				var stex = x/2 + 0.5;

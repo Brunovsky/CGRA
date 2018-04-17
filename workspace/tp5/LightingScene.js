@@ -246,7 +246,8 @@ class LightingScene extends CGFscene
 
 		// Clock
 		this.pushMatrix();
-			this.translate(7.25, 7.25, 0.2);
+			this.translate(7.25, 7.25, 0);
+			this.scale(0.65, 0.65, 1);
 			//this.clock.scale(,,);
 			//this.clockAppearance.apply();
 			this.clock.display();

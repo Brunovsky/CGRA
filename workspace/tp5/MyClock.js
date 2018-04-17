@@ -15,12 +15,12 @@ class MyClock extends CGFobject
 		this.cylinder = new MyCylinder(this.scene, 12, 1);
 		this.circle = new MyCircle(this.scene, 12);
 
-        this.clockAppearance = new CGFappearance(scene);
-		this.clockAppearance.setAmbient(AVG_COMP, AVG_COMP, AVG_COMP, 1);
-		this.clockAppearance.setDiffuse(AVG_COMP, AVG_COMP, AVG_COMP, 1);
-		this.clockAppearance.setSpecular(HUGE_COMP, HUGE_COMP, HUGE_COMP, 1);
-		this.clockAppearance.setShininess(120);
-        this.clockAppearance.loadTexture("../resources/images/clock.png");
+        scene.clockAppearance = new CGFappearance(scene);
+		scene.clockAppearance.setAmbient(AVG_COMP, AVG_COMP, AVG_COMP, 1);
+		scene.clockAppearance.setDiffuse(AVG_COMP, AVG_COMP, AVG_COMP, 1);
+		scene.clockAppearance.setSpecular(HUGE_COMP, HUGE_COMP, HUGE_COMP, 1);
+		scene.clockAppearance.setShininess(120);
+        scene.clockAppearance.loadTexture("../resources/images/clock.png");
         //this.clockAppearance.setTextureWrap('REPEAT', 'REPEAT');
     }
     
@@ -30,10 +30,19 @@ class MyClock extends CGFobject
 	
 	display(){
 		this.scene.pushMatrix();
-			this.clockAppearance.apply();
+			this.scene.translate(0, 0, 0.2);
+			this.scene.clockAppearance.apply();
 			this.circle.display();
 		this.scene.popMatrix();
 
-		this.cylinder.display();
+		this.scene.pushMatrix();
+			this.scene.scale(1, 1, 0.2);
+			this.cylinder.display();
+		this.scene.popMatrix();
+
+		this.scene.pushMatrix();
+			this.scene
+			this.clockHours.display();
+		this.scene.popMatrix();
 	}
 };

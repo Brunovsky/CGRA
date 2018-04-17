@@ -4,6 +4,8 @@
  * @constructor
  */
 
+var CYLINDER_HEIGHT = 1;
+
 class MyCylinder extends CGFobject
 {
 	constructor(scene, slices, stacks)
@@ -22,7 +24,7 @@ class MyCylinder extends CGFobject
         this.normals = [];
         
         var teta = 2*(Math.PI)/this.slices;
-        var d = 1/this.stacks;
+        var d = CYLINDER_HEIGHT/this.stacks;
         
         for(var z = 0; z <= this.stacks; z++){
             
