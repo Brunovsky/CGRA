@@ -15,9 +15,6 @@ class MyClock extends CGFobject
 		this.cylinder = new MyCylinder(this.scene, 12, 1);
 		this.circle = new MyCircle(this.scene, 12);
 		this.clockHandHours = new MyClockHand(this.scene);
-		this.clockHandMinutes = new MyClockHand(this.scene);
-		this.clockHandSeconds = new MyClockHand(this.scene);
-		
 
         scene.clockAppearance = new CGFappearance(scene);
 		scene.clockAppearance.setAmbient(AVG_COMP, AVG_COMP, AVG_COMP, 1);
@@ -44,7 +41,6 @@ class MyClock extends CGFobject
 		this.scene.popMatrix();
 
 		this.scene.pushMatrix();
-			this.scene.materialDefault.apply();
 			this.clockHandHours.display();
 			//this.scene();
 			//this.clockHours.display();
