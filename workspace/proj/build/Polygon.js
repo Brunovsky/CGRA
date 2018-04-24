@@ -17,14 +17,14 @@ class Polygon extends CGFobject
 		this.vertices = [];
     	this.indices = [];
     	this.normals = [];
-    	//this.texCoords = [];
+    	this.texCoords = [];
 		
 		var theta = 2 * (Math.PI) / this.sides;
 		
 		this.vertices.push(0, 0, 0);
 		this.normals.push(0, 0, 1);
-		//this.texCoords.push((this.minS + this.maxS) / 2,
-		//	(this.minT + this.maxT) / 2);
+		this.texCoords.push((this.minS + this.maxS) / 2,
+			(this.minT + this.maxT) / 2);
 		
 		for (var i = 0; i <= this.sides; ++i) {
                 var x1 = Math.cos(theta * (i + 0.5));
@@ -39,7 +39,7 @@ class Polygon extends CGFobject
 
                 this.vertices.push(x, y, 0);
 				this.normals.push(0, 0, 1);
-		//		this.texCoords.push(stex, ttex);
+				this.texCoords.push(stex, ttex);
 		}
 		
 		for (var i = 1; i <= this.sides; ++i) {
