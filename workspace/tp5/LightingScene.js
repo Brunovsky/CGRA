@@ -34,6 +34,8 @@ class LightingScene extends CGFscene
 		this.gl.enable(this.gl.CULL_FACE);
 		this.gl.depthFunc(this.gl.LEQUAL);
 
+		this.setUpdatePeriod(100);
+
 		this.axis = new CGFaxis(this);
 
 		// Scene elements
@@ -155,6 +157,10 @@ class LightingScene extends CGFscene
 			this.lights[i].update();
 	}
 
+	update(currTime)
+	{
+		this.clock.update(currTime);
+	}
 
 	display() 
 	{

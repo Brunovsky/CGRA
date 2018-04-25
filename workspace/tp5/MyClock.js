@@ -33,11 +33,23 @@ class MyClock extends CGFobject
         scene.clockAppearance.loadTexture("../resources/images/clock.png");
     }
     
-    convertRGB(a){
-        return a/255.0;
-    };
+    update(currTime)
+    {
+    	// Assume currTime == Date.now()
+    	var secondsSinceEpoch = currTime / 1000;
+    	var seconds = secondsSinceEpoch % 60;
+    	var minutesSinceEpoch = secondsSinceEpoch / 60;
+    	var minutes = minutesSinceEpoch % 60;
+    	var hoursSinceEpoch = minutesSinceEpoch / 60;
+    	var hours = hoursSinceEpoch % 24;
+
+    	this.clockHandSeconds.setAngle(360 * (seconds / 60));
+    	this.clockHandMinutes.setAngle(360 * (minutes / 60));
+    	this.clockHandHours.setAngle(360 * (hours / 24));
+    }
 	
-	display(){
+	display()
+	{
 		this.scene.pushMatrix();
 			this.scene.translate(0, 0, 0.2);
 			this.scene.clockAppearance.apply();

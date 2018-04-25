@@ -21,7 +21,7 @@ class MyClockHand extends CGFobject
 		this.length = length_m;
     }
 
-	 setAngle(degree)
+	setAngle(degree)
     {
     	this.alpha = Math.PI*degree/180;
     }
@@ -37,26 +37,3 @@ class MyClockHand extends CGFobject
 		this.scene.popMatrix();
 	}
 };
-
-/*class MyClockHand extends CGFobject
-{
-	constructor(scene, alphaI = 0)
-    {
-        super(scene);
-
-        this.quad = new MyQuad(scene);
-        setAngle(alphaI);
-    }
-
-    setAngle(degree)
-    {
-    	this.alpha = Math.PI*degree/180;
-    }
-
-	display(){
-		this.scene.pushMatrix();
-			this.scene.rotate(alpha, 0, 0, 1);
-			this.quad.display();
-		this.scene.popMatrix();
-	}
-};*/

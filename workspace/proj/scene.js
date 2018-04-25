@@ -52,7 +52,6 @@ class LightingScene extends CGFscene
 		this.cutcone = new CutCone(this, 2, 1, 1);
 		this.closedcutcone = new ClosedCutCone(this, 1, 0.5, 2);
 		this.doublecutcone = new DoubleCutCone(this, 1.5, 1, 1);
-
 		this.cutpyramid = new CutPyramid(this, 3, 1, 1/3, 2);
 		this.closedcutpyramid = new ClosedCutPyramid(this, 6, 1.5, 2, 4);
 		this.doublecutpyramid = new DoubleCutPyramid(this, 4, 1, 0.5, 1.5);
@@ -129,6 +128,10 @@ class LightingScene extends CGFscene
 		this.translate(3, 0, 0);
 		this.circle.display();
 		this.translate(3, 0, 0);
+		this.hexagon.display();
+		this.translate(3, 0, 0);
+		this.trapezium.display();
+		this.translate(3, 0, 0);
 
 		this.popMatrix();
 		this.pushMatrix();
@@ -193,8 +196,8 @@ class LightingScene extends CGFscene
 		this.translate(3, 0, 0);
 
 		this.popMatrix();
-		this.translate(0, 5, 0);
 		this.pushMatrix();
+		this.translate(0, -10, 0);
 
 		// ---- END Scene drawing section
 	};

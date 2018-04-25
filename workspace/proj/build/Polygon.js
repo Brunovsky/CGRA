@@ -19,27 +19,29 @@ class Polygon extends CGFobject
     	this.normals = [];
     	this.texCoords = [];
 		
+		var cos = Math.cos, sin = Math.sin, PI = Math.PI;
 		var theta = 2 * (Math.PI) / this.sides;
 		
+		// Center vertex
 		this.vertices.push(0, 0, 0);
 		this.normals.push(0, 0, 1);
-		this.texCoords.push((this.minS + this.maxS) / 2,
-			(this.minT + this.maxT) / 2);
+		this.texCoords.push((this.minS + this.maxS) / 2);
+		this.texCoords.push((this.minT + this.maxT) / 2);
 		
 		for (var i = 0; i <= this.sides; ++i) {
-                var x1 = Math.cos(theta * (i + 0.5));
-                var y1 = Math.sin(theta * (i + 0.5));
-                var X = this.radius * x1;
-                var Y = this.radius * y1;
+            var x1 = cos(theta * (i + 0.5));
+            var y1 = sin(theta * (i + 0.5));
+            var X = this.radius * x1;
+            var Y = this.radius * y1;
 
-				var stex1 = X / 2 + 0.5;
-				var ttex1 = -Y / 2 + 0.5;
-				var stex = stex1 * this.maxS + (1 - stex1) * this.minS;
-				var ttex = ttex1 * this.maxT + (1 - ttex1) * this.minT;
+			var stex1 = X / 2 + 0.5;
+			var ttex1 = -Y / 2 + 0.5;
+			var stex = stex1 * this.maxS + (1 - stex1) * this.minS;
+			var ttex = ttex1 * this.maxT + (1 - ttex1) * this.minT;
 
-                this.vertices.push(X, Y, 0);
-				this.normals.push(0, 0, 1);
-				this.texCoords.push(stex, ttex);
+            this.vertices.push(X, Y, 0);
+			this.normals.push(0, 0, 1);
+			this.texCoords.push(stex, ttex);
 		}
 		
 		for (var i = 1; i <= this.sides; ++i) {
@@ -143,16 +145,18 @@ class Trapezium extends CGFobject
 
 	initBuffers()
 	{
+		//   v2  v3
+		// v0      v1
 		this.vertices = [
-			-this.base / 2, 0,
-			this.base / 2, 0,
-			-this.top / 2, this.height,
-			this.top / 2, this.height
+			-this.base / 2, -this.height / 2, 0,
+			this.base / 2, -this.height / 2, 0,
+			-this.top / 2, this.height / 2, 0,
+			this.top / 2, this.height / 2, 0
 		];
 
 		this.indices = [
-			0, 1, 2,
-			3, 2, 1,
+			0, 1, 3,
+			0, 3, 2,
 		];
 
 		this.normals = [

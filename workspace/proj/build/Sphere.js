@@ -74,7 +74,7 @@ class ClosedHalfSphere extends CGFobject
 	{
 		this.scene.pushMatrix();
 			this.half.display();
-			this.scene.rotate(Math.PI, 1, 1, 0);
+			this.scene.rotate(Math.PI, 1, 0, 0);
 			this.base.display();
 		this.scene.popMatrix();
 	};
@@ -95,7 +95,7 @@ class Sphere extends CGFobject
 	{
 		this.scene.pushMatrix();
 			this.half.display();
-			this.scene.rotate(Math.PI, 1, 1, 0);
+			this.scene.rotate(Math.PI, 1, 0, 0);
 			this.half.display();
 		this.scene.popMatrix();
 	};
