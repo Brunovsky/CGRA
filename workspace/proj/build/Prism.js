@@ -1,9 +1,9 @@
 class Prism extends CGFobject
 {
-    constructor(scene, slices, radius = 1, height = 1, stacks = 1)
+    constructor(scene, sides, radius = 1, height = 1, stacks = 1)
     {
         super(scene);
-        this.slices = slices;
+        this.sides = sides;
         this.stacks = stacks;
         this.radius = radius;
         this.height = height;
@@ -16,31 +16,32 @@ class Prism extends CGFobject
         this.indices = [];
         this.normals = [];
         
-        var teta = 2 * (Math.PI) / this.slices;
-        var d = this.height / this.stacks;
+        var cos = Math.cos, sin = Math.sin, PI = Math.PI;
+        var theta = 2 * PI / this.sides;
+        var stackHeight = this.height / this.stacks;
 
         for (var s = 0; s <= this.stacks; ++s) { // stack
-            for (var i = 0; i < this.slices; ++i) { // side
-                // ... v1   M   v2 ...  -- stack s
+            for (var i = 0; i < this.sides; ++i) { // side
+                // ... ][v1   M   v2][ ...  -- stack s
 
-                var x1, y1, X, Y, mX, mY, Z = s * d;
+                var x1, y1, X, Y, Z = s * stackHeight;
 
                 // v1
-                x1 = Math.cos(teta * (i - 0.5));
-                y1 = Math.sin(teta * (i - 0.5));
+                x1 = cos(theta * (i - 0.5));
+                y1 = sin(theta * (i - 0.5));
                 X = this.radius * x1;
                 Y = this.radius * y1;
                 this.vertices.push(X, Y, Z); // v1
 
                 // M
-                x1 = Math.cos(teta * i);
-                y1 = Math.sin(teta * i);
+                x1 = cos(theta * i);
+                y1 = sin(theta * i);
                 this.normals.push(x1, y1, 0); // v1's normals
                 this.normals.push(x1, y1, 0); // v2's normals
 
                 // v2
-                x1 = Math.cos(teta * (i + 0.5));
-                y1 = Math.sin(teta * (i + 0.5));
+                x1 = cos(theta * (i + 0.5));
+                y1 = sin(theta * (i + 0.5));
                 X = this.radius * x1;
                 Y = this.radius * y1;
                 this.vertices.push(X, Y, Z); // v2
@@ -48,11 +49,11 @@ class Prism extends CGFobject
         }
 
         for (var s = 0; s < this.stacks; ++s) { // stack
-            for (var i = 0; i < this.slices; ++i) { // side
-                var above = 2 * this.slices;
+            for (var i = 0; i < this.sides; ++i) { // side
+                var above = 2 * this.sides;
                 var stack = s * above;
 
-                var current = 2 * i + stack;
+                var current = (2 * i) + stack;
 
                 // ... v4  v3 ...  -- stack s+1
                 // 
@@ -76,11 +77,11 @@ class Prism extends CGFobject
 
 class ClosedPrism extends CGFobject
 {
-    constructor(scene, slices, radius = 1, height = 1, stacks = 1)
+    constructor(scene, sides, radius = 1, height = 1, stacks = 1)
     {
         super(scene);
-        this.prism = new Prism(scene, slices, radius, height, stacks);
-        this.base = new Polygon(scene, slices, radius);
+        this.prism = new Prism(scene, sides, radius, height, stacks);
+        this.base = new Polygon(scene, sides, radius);
         this.height = height;
         this.initBuffers();
     };
@@ -93,10 +94,8 @@ class ClosedPrism extends CGFobject
                 this.scene.rotate(Math.PI, 1, 0, 0);
                 this.base.display();
             this.scene.popMatrix();
-            this.scene.pushMatrix();
                 this.scene.translate(0, 0, this.height);
                 this.base.display();
-            this.scene.popMatrix();
         this.scene.popMatrix();
     };
 };

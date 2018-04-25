@@ -1,8 +1,3 @@
-var SMALL_COMP = 0.2;
-var AVG_COMP = 0.45;
-var LARGE_COMP = 0.75;
-var HUGE_COMP = 0.95;
-
 class LightingScene extends CGFscene 
 {
 	constructor()
@@ -15,12 +10,11 @@ class LightingScene extends CGFscene
 		super.init(application);
 
 		this.initCameras();
-
 		this.initLights();
 
 		this.enableTextures(true);
 
-		this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
+		this.gl.clearColor(BG_COLOR[0], BG_COLOR[1], BG_COLOR[2], BG_COLOR[3]);
 		this.gl.clearDepth(100.0);
 		this.gl.enable(this.gl.DEPTH_TEST);
 		this.gl.enable(this.gl.CULL_FACE);
@@ -48,6 +42,21 @@ class LightingScene extends CGFscene
 		this.prism = new Prism(this, 5, 1, 3);
 		this.closedprism = new ClosedPrism(this, 7, 1, 2);
 
+		this.cone = new Cone(this, 1, 2);
+		this.closedcone = new ClosedCone(this, 1.5, 3);
+		this.doublecone = new DoubleCone(this, 1, 3);
+		this.pyramid = new Pyramid(this, 5, 1, 2);
+		this.closedpyramid = new ClosedPyramid(this, 7, 1.5, 3);
+		this.doublepyramid = new DoublePyramid(this, 4, 1, 3);
+
+		this.cutcone = new CutCone(this, 2, 1, 1);
+		this.closedcutcone = new ClosedCutCone(this, 1, 0.5, 2);
+		this.doublecutcone = new DoubleCutCone(this, 1.5, 1, 1);
+
+		this.cutpyramid = new CutPyramid(this, 3, 1, 1/3, 2);
+		this.closedcutpyramid = new ClosedCutPyramid(this, 6, 1.5, 2, 4);
+		this.doublecutpyramid = new DoubleCutPyramid(this, 4, 1, 0.5, 1.5);
+
 		// Materials
 		this.materialDefault = new CGFappearance(this);
 	};
@@ -59,9 +68,9 @@ class LightingScene extends CGFscene
 
 	initLights() 
 	{
-		this.setGlobalAmbientLight(0.2, 0.2, 0.2, 1.0);
+		this.setGlobalAmbientLight(AMBIENT[0], AMBIENT[1], AMBIENT[2], AMBIENT[3]);
         this.lights[0].setPosition(15, 2, 5, 1);
-        this.lights[0].setDiffuse(1.0,1.0,1.0,1.0);
+        this.lights[0].setDiffuse(1.0, 1.0, 1.0, 1.0);
         this.lights[0].enable();
         this.lights[0].update();
 	};
@@ -122,8 +131,8 @@ class LightingScene extends CGFscene
 		this.translate(3, 0, 0);
 
 		this.popMatrix();
-		this.translate(0, 5, 0);
 		this.pushMatrix();
+		this.translate(0, 5, 0); // +5
 
 		this.cube.display();
 		this.translate(3, 0, 0);
@@ -137,8 +146,8 @@ class LightingScene extends CGFscene
 		this.translate(3, 0, 0);
 
 		this.popMatrix();
-		this.translate(0, 5, 0);
 		this.pushMatrix();
+		this.translate(0, 10, 0); // +10
 
 		this.cylinder.display();
 		this.translate(3, 0, 0);
@@ -147,6 +156,40 @@ class LightingScene extends CGFscene
 		this.prism.display();
 		this.translate(3, 0, 0);
 		this.closedprism.display();
+		this.translate(3, 0, 0);
+
+		this.popMatrix();
+		this.pushMatrix();
+		this.translate(0, 15, 0); // +15
+
+		this.cone.display();
+		this.translate(3, 0, 0);
+		this.closedcone.display();
+		this.translate(3, 0, 0);
+		this.doublecone.display();
+		this.translate(3, 0, 0);
+		this.pyramid.display();
+		this.translate(3, 0, 0);
+		this.closedpyramid.display();
+		this.translate(3, 0, 0);
+		this.doublepyramid.display();
+		this.translate(3, 0, 0);
+
+		this.popMatrix();
+		this.pushMatrix();
+		this.translate(0, -5, 0); // -5
+
+		this.cutcone.display();
+		this.translate(3, 0, 0);
+		this.closedcutcone.display();
+		this.translate(3, 0, 0);
+		this.doublecutcone.display();
+		this.translate(3, 0, 0);
+		this.cutpyramid.display();
+		this.translate(3, 0, 0);
+		this.closedcutpyramid.display();
+		this.translate(3, 0, 0);
+		this.doublecutpyramid.display();
 		this.translate(3, 0, 0);
 
 		this.popMatrix();

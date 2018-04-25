@@ -34,7 +34,7 @@ class HalfSphere extends CGFobject
         }
 
         for (var s = 0; s < this.stacks; ++s) { // stack
-            for (var i = 0; i < this.slices; ++i) { // side
+            for (var i = 0; i < this.slices; ++i) { // virtual slice
                 var above = this.slices + 1;
                 var stack = s * above;
 

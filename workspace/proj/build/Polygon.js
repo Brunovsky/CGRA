@@ -29,15 +29,15 @@ class Polygon extends CGFobject
 		for (var i = 0; i <= this.sides; ++i) {
                 var x1 = Math.cos(theta * (i + 0.5));
                 var y1 = Math.sin(theta * (i + 0.5));
-                var x = this.radius * x1;
-                var y = this.radius * y1;
+                var X = this.radius * x1;
+                var Y = this.radius * y1;
 
-				var stex1 = x / 2 + 0.5;
-				var ttex1 = -y / 2 + 0.5;
-				var stex = stex1 * this.minS + (1 - stex1) * this.maxS;
-				var ttex = ttex1 * this.minT + (1-  ttex1) * this.maxT;
+				var stex1 = X / 2 + 0.5;
+				var ttex1 = -Y / 2 + 0.5;
+				var stex = stex1 * this.maxS + (1 - stex1) * this.minS;
+				var ttex = ttex1 * this.maxT + (1 - ttex1) * this.minT;
 
-                this.vertices.push(x, y, 0);
+                this.vertices.push(X, Y, 0);
 				this.normals.push(0, 0, 1);
 				this.texCoords.push(stex, ttex);
 		}

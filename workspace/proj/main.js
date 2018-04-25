@@ -4,12 +4,17 @@ serialInclude=function(a){var b=console,c=serialInclude.l;if(a.length>0)c.splice
 
 serialInclude([
 	'../lib/CGF.js',
-	'LightingScene.js',
+	'globals.js',
+	'scene.js',
 	'build/Polygon.js',
 	'build/Prism.js',
 	'build/Cylinder.js',
 	'build/Cube.js',
 	'build/Sphere.js',
+	'build/Cone.js',
+	'build/Pyramid.js',
+	'build/CutCone.js',
+	'build/CutPyramid.js',
 
 	main=function() {
 		var app = new CGFapplication(document.body);
