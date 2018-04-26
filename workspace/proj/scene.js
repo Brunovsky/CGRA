@@ -20,7 +20,7 @@ class LightingScene extends CGFscene
 		this.gl.enable(this.gl.CULL_FACE);
 		this.gl.depthFunc(this.gl.LEQUAL);
 
-		this.axis = new CGFaxis(this);
+		this.axis = new CGFaxis(this, 10);
 
 		// Scene elements
 		this.octagon = new Polygon(this, 8);
@@ -56,6 +56,9 @@ class LightingScene extends CGFscene
 		this.closedcutpyramid = new ClosedCutPyramid(this, 6, 1.5, 2, 4);
 		this.doublecutpyramid = new DoubleCutPyramid(this, 4, 1, 0.5, 1.5);
 
+		this.sqXYsurface = new zSurface(this, (X,Y) => X*X + Y*Y);
+		this.cubesurface = new zSurface(this, (X,Y) => 1 + X*X + Y);
+
 		// Materials
 		this.materialDefault = new CGFappearance(this);
 	};
@@ -68,10 +71,26 @@ class LightingScene extends CGFscene
 	initLights() 
 	{
 		this.setGlobalAmbientLight(AMBIENT[0], AMBIENT[1], AMBIENT[2], AMBIENT[3]);
-        this.lights[0].setPosition(15, 2, 5, 1);
-        this.lights[0].setDiffuse(1.0, 1.0, 1.0, 1.0);
-        this.lights[0].enable();
-        this.lights[0].update();
+
+		var i = 0;
+
+		this.lights[i].setPosition(6, 0, 15, 1);
+		this.lights[i].setDiffuse(1.0, 1.0, 0.25, 1.0);
+        this.lights[i].setVisible(true);
+        this.lights[i].enable();
+		i++;
+
+        this.lights[i].setPosition(3, 5, -10, 1);
+        this.lights[i].setDiffuse(1.0, 0.25, 1.0, 1.0);
+        this.lights[i].setVisible(true);
+        this.lights[i].enable();
+        i++;
+
+        this.lights[i].setPosition(0, 10, 8, 1);
+        this.lights[i].setDiffuse(0.25, 1.0, 1.0, 1.0);
+        this.lights[i].setVisible(true);
+        this.lights[i].enable();
+        i++;
 	};
 
 	updateLights() 
@@ -197,7 +216,12 @@ class LightingScene extends CGFscene
 
 		this.popMatrix();
 		this.pushMatrix();
-		this.translate(0, -10, 0);
+		this.translate(0, -10, 0); // -10
+
+		this.sqXYsurface.display();
+		this.translate(3, 0, 0);
+		this.cubesurface.display();
+		this.translate(3, 0, 0);
 
 		// ---- END Scene drawing section
 	};

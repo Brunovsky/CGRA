@@ -46,6 +46,7 @@ class Polygon extends CGFobject
 		
 		for (var i = 1; i <= this.sides; ++i) {
 			this.indices.push(0, i, i + 1);
+			this.indices.push(0, i + 1, i);
 		}
 
 		this.primitiveType = this.scene.gl.TRIANGLES;
@@ -157,6 +158,8 @@ class Trapezium extends CGFobject
 		this.indices = [
 			0, 1, 3,
 			0, 3, 2,
+			0, 3, 1,
+			0, 2, 3
 		];
 
 		this.normals = [

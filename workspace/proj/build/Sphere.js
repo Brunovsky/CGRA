@@ -48,8 +48,11 @@ class HalfSphere extends CGFobject
                 var v3 = current + 1 + above;
                 var v4 = current + above;
 
-                this.indices.push(v1, v2, v4);
-                this.indices.push(v2, v3, v4);
+                this.indices.push(v1, v2, v3);
+                this.indices.push(v1, v3, v4);
+
+                this.indices.push(v1, v3, v2);
+                this.indices.push(v1, v4, v3);
             }
         }
 
