@@ -23,13 +23,14 @@ class LightingScene extends CGFscene
 		this.axis = new CGFaxis(this, 10);
 
 		// Scene elements
-		this.octagon = new Polygon(this, 8);
+		this.octagon = new Regular(this, 8);
 		this.square = new Square(this, 2);
 		this.triangle = new Triangle(this, 2);
 		this.rectangle = new Rectangle(this, 1, 3);
 		this.circle = new Circle(this, 1);
-		this.hexagon = new Polygon(this, 6);
+		this.hexagon = new Regular(this, 6);
 		this.trapezium = new Trapezium(this, 3, 2, 1);
+		this.quadrangle = new Quadrangle(this, [[-2, -1], [1, 0], [1.5, 2], [-3, 2]]);
 
 		this.cube = new Cube(this, 2);
 		this.block = new Block(this, 1, 2, 4);
@@ -56,9 +57,14 @@ class LightingScene extends CGFscene
 		this.closedcutpyramid = new ClosedCutPyramid(this, 6, 1.5, 2, 4);
 		this.doublecutpyramid = new DoubleCutPyramid(this, 4, 1, 0.5, 1.5);
 
-		this.sqXYsurface = new zSurface(this, (X,Y) => X*X + Y*Y);
+		this.sqXYsurface = new zSurface(this, (X,Y) => X*X + Y*Y, [-1, 1, -1.5, 2]);
 		this.cubesurface = new zSurface(this, (X,Y) => 1 + X*X + Y);
-		this.car = new zSurface(this, carFunction, [0, 32, 0, 9], 128);
+		this.firstUV = new uvSurface(this, (U,V) => {return {X: U*U + V, Y: V + 1, Z: Math.sqrt(V)}});
+
+
+		this.car = new zSurface(this, carFunction, carProportions, carSlices);
+
+
 
 		// Materials
 		this.materialDefault = new CGFappearance(this);
@@ -73,7 +79,7 @@ class LightingScene extends CGFscene
 	{
 		this.setGlobalAmbientLight(AMBIENT[0], AMBIENT[1], AMBIENT[2], AMBIENT[3]);
 
-		var i = 0;
+		let i = 0;
 
 		this.lights[i].setPosition(6, 0, 15, 1);
 		this.lights[i].setDiffuse(1.0, 1.0, 0.25, 1.0);
@@ -151,6 +157,8 @@ class LightingScene extends CGFscene
 		this.hexagon.display();
 		this.translate(3, 0, 0);
 		this.trapezium.display();
+		this.translate(5, 0, 0);
+		this.quadrangle.display();
 		this.translate(3, 0, 0);
 
 		this.popMatrix();
@@ -222,6 +230,9 @@ class LightingScene extends CGFscene
 		this.sqXYsurface.display();
 		this.translate(3, 0, 0);
 		this.cubesurface.display();
+		this.translate(3, 0, 0);
+		this.firstUV.display();
+		this.translate(3, 0, 0);
 		this.translate(3, 0, 0);
 
 		this.popMatrix();

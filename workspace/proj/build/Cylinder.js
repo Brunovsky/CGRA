@@ -11,43 +11,48 @@ class Cylinder extends CGFobject
     };
 
 
-    initBuffers() 
+    initBuffers()
     {
+        const cos = Math.cos, sin = Math.sin, PI = Math.PI;
+        const slices = this.slices, stacks = this.stacks,
+            radius = this.radius, height = this.height;
+
+        const thetaInc = 2 * PI / slices;
+        const stackHeight = height / stacks;
+
         this.vertices = [];
         this.indices = [];
         this.normals = [];
-        
-        var cos = Math.cos, sin = Math.sin, PI = Math.PI;
-        var theta = 2 * PI / this.slices;
-        var d = this.height / this.stacks;
 
-        for (var s = 0; s <= this.stacks; ++s) { // stack
-            for (var i = 0; i <= this.slices; ++i) { // virtual side
-                var x1 = cos(theta * i);
-                var y1 = sin(theta * i);
-                var X = this.radius * x1;
-                var Y = this.radius * y1;
-                var Z = s * d;
+        for (let s = 0; s <= stacks; ++s) { // stack
+            for (let i = 0; i <= slices; ++i) { // virtual side
+                let theta = thetaInc * (i + 0.5);
+                let xUnit = cos(theta);
+                let yUnit = sin(theta);
+                let X = radius * xUnit;
+                let Y = radius * yUnit;
+                let Z = s * stackHeight;
 
                 this.vertices.push(X, Y, Z);
-                this.normals.push(x1, y1, 0);
+                this.normals.push(xUnit, yUnit, 0);
             }
         }
 
-        for (var s = 0; s < this.stacks; ++s) { // stack
-            for (var i = 0; i < this.slices; ++i) { // virtual side
-                var above = this.slices + 1;
-                var stack = s * above;
+        for (let s = 0; s < stacks; ++s) { // stack
+            for (let i = 0; i < slices; ++i) { // virtual side
+                let above = slices + 1;
+                let next = 1;
 
-                var current = i + stack;
+                let stack = s * above;
+                let current = next * i + stack;
 
                 // ... v4  v3 ...
                 // 
                 // ... v1  v2 ...
-                var v1 = current;
-                var v2 = current + 1;
-                var v3 = current + 1 + above;
-                var v4 = current + above;
+                let v1 = current;
+                let v2 = current + 1;
+                let v3 = current + 1 + above;
+                let v4 = current + above;
 
                 this.indices.push(v1, v2, v3);
                 this.indices.push(v1, v3, v4);

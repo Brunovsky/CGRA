@@ -12,57 +12,66 @@ class Pyramid extends CGFobject
 
     initBuffers() 
     {
+        const cos = Math.cos, sin = Math.sin, PI = Math.PI;
+        const sides = this.sides, radius = this.radius,
+            height = this.height, stacks = this.stacks;
+
+        const thetaInc = 2 * PI / sides;
+        const stackHeight = height / stacks;
+        const rhRatio = radius * cos(PI / sides) / height;
+
         this.vertices = [];
         this.indices = [];
         this.normals = [];
-        
-        var cos = Math.cos, sin = Math.sin, PI = Math.PI;
-        var theta = 2 * PI / this.sides;
-        var stackHeight = this.height / this.stacks;
-        var rhratio = this.radius * cos(PI / this.sides) / this.height;
 
-        for (var s = 0; s <= this.stacks; ++s) { // stack
-            for (var i = 0; i < this.sides; ++i) { // side
+        for (let s = 0; s <= stacks; ++s) { // stack
+            for (let i = 0; i < sides; ++i) { // side
             	// ... ][v1   M   v2][ ...  -- stack s
             	
-            	var x1, y1, X, Y, Z = s * stackHeight;
+            	let theta, xUnit, yUnit, X, Y, Z;
 
             	// v1
-                x1 = cos(theta * (i - 0.5));
-                y1 = sin(theta * (i - 0.5));
-                X = this.radius * x1 * (1 - s / this.stacks);
-                Y = this.radius * y1 * (1 - s / this.stacks);
+                theta = thetaInc * (i - 0.5); 
+                xUnit = cos(theta);
+                yUnit = sin(theta);
+                X = radius * xUnit * (1 - s / stacks);
+                Y = radius * yUnit * (1 - s / stacks);
+                Z = s * stackHeight;
                 this.vertices.push(X, Y, Z); // v1
 
                 // M
-                x1 = cos(theta * i);
-                y1 = sin(theta * i);
-                this.normals.push(x1 / rhratio, y1 / rhratio, rhratio); // v1's normals
-                this.normals.push(x1 / rhratio, y1 / rhratio, rhratio); // v2's normals
+                theta = thetaInc * i;
+                xUnit = cos(theta);
+                yUnit = sin(theta);
+                this.normals.push(xUnit / rhRatio, yUnit / rhRatio, rhRatio); // v1's normals
+                this.normals.push(xUnit / rhRatio, yUnit / rhRatio, rhRatio); // v2's normals
 
             	// v2
-                x1 = cos(theta * (i + 0.5));
-                y1 = sin(theta * (i + 0.5));
-                X = this.radius * x1 * (1 - s / this.stacks);
-                Y = this.radius * y1 * (1 - s / this.stacks);
+                theta = thetaInc * (i + 0.5);
+                xUnit = cos(theta);
+                yUnit = sin(theta);
+                X = radius * xUnit * (1 - s / stacks);
+                Y = radius * yUnit * (1 - s / stacks);
+                Z = s * stackHeight;
                 this.vertices.push(X, Y, Z); // v2
             }
         }
 
-        for (var s = 0; s < this.stacks; ++s) { // stack
-            for (var i = 0; i < this.sides; ++i) { // side
-                var above = 2 * this.sides;
-                var stack = s * above;
+        for (let s = 0; s < stacks; ++s) { // stack
+            for (let i = 0; i < sides; ++i) { // side
+                let above = 2 * sides;
+                let next = 2;
 
-                var current = (2 * i) + stack;
+                let stack = s * above;
+                let current = next * i + stack;
 
                 // ... v4  v3 ... -- stack s+1
                 // 
                 // ... v1  v2 ... -- stack s
-                var v1 = current;
-                var v2 = current + 1;
-                var v3 = current + 1 + above;
-                var v4 = current + above;
+                let v1 = current;
+                let v2 = current + 1;
+                let v3 = current + 1 + above;
+                let v4 = current + above;
 
                 this.indices.push(v1, v2, v3);
                 this.indices.push(v1, v3, v4);
@@ -85,7 +94,7 @@ class ClosedPyramid extends CGFobject
 	{
 		super(scene);
 		this.pyramid = new Pyramid(scene, sides, radius, height, stacks);
-		this.base = new Polygon(scene, sides, radius);
+		this.base = new Regular(scene, sides, radius);
 		this.initBuffers();
 	};
 

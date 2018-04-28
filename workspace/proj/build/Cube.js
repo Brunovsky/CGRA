@@ -10,9 +10,8 @@ class Cube extends CGFobject
 
     display()
     {
-        var move = this.side / 2;
-
         // Quad is facing +Z by default
+        const move = this.side / 2;
 
         this.scene.pushMatrix(); // +X
             this.scene.rotate(Math.PI / 2, 0, 1, 0);

@@ -13,42 +13,47 @@ class Cone extends CGFobject
 
     initBuffers() 
     {
+        const cos = Math.cos, sin = Math.sin, PI = Math.PI;
+        const radius = this.radius, height = this.height,
+            slices = this.slices, stacks = this.stacks;
+
+        const thetaInc = 2 * PI / slices;
+        const stackHeight = height / stacks;
+        const rhRatio = radius / height;
+
         this.vertices = [];
         this.indices = [];
         this.normals = [];
-        
-        var cos = Math.cos, sin = Math.sin, PI = Math.PI;
-        var theta = 2 * PI / this.slices;
-        var stackHeight = this.height / this.stacks;
-        var rhratio = this.radius / this.height;
 
-        for (var s = 0; s <= this.stacks; ++s) { // stack
-            for (var i = 0; i <= this.slices; ++i) { // virtual side
-                var x1 = cos(theta * i);
-                var y1 = sin(theta * i);
-                var X = this.radius * x1 * (1 - s / this.stacks);
-                var Y = this.radius * y1 * (1 - s / this.stacks);
-                var Z = s * stackHeight;
+        for (let s = 0; s <= stacks; ++s) { // stack
+            for (let i = 0; i <= slices; ++i) { // virtual side
+                let theta = thetaInc * (i + 0.5);
+                let xUnit = cos(theta);
+                let yUnit = sin(theta);
+                let X = radius * xUnit * (1 - s / stacks);
+                let Y = radius * yUnit * (1 - s / stacks);
+                let Z = s * stackHeight;
 
                 this.vertices.push(X, Y, Z);
-                this.normals.push(x1 / rhratio, y1 / rhratio, rhratio);
+                this.normals.push(xUnit / rhRatio, yUnit / rhRatio, rhRatio);
             }
         }
 
-        for (var s = 0; s < this.stacks; ++s) { // stack
-            for (var i = 0; i < this.slices; ++i) { // virtual side
-                var above = this.slices + 1;
-                var stack = s * above;
+        for (let s = 0; s < stacks; ++s) { // stack
+            for (let i = 0; i < slices; ++i) { // virtual side
+                let above = slices + 1;
+                let next = 1;
 
-                var current = i + stack;
+                let stack = s * above;
+                let current = next * i + stack;
 
                 // ... v4  v3 ...
                 // 
                 // ... v1  v2 ...
-                var v1 = current;
-                var v2 = current + 1;
-                var v3 = current + 1 + above;
-                var v4 = current + above;
+                let v1 = current;
+                let v2 = current + 1;
+                let v3 = current + 1 + above;
+                let v4 = current + above;
 
                 this.indices.push(v1, v2, v3);
                 this.indices.push(v1, v3, v4);

@@ -1,50 +1,62 @@
-class Polygon extends CGFobject
+// coords: CHECK
+// let: CHECK
+// theta, phi: CHECK
+// cos,sin,PI, this.: CHECK
+// 
+class Regular extends CGFobject
 {
 	constructor(scene, sides, radius = 1, coords = [0, 1, 0, 1])
     {
         super(scene);
 		this.sides = sides;
 		this.radius = radius;
-		this.minS = coords[0];
-		this.maxS = coords[1];
-		this.minT = coords[2];
-		this.maxT = coords[3];
+		this.coords = {
+			minS: coords[0],
+			maxS: coords[1],
+			minT: coords[2],
+			maxT: coords[3]
+		};
         this.initBuffers();
     };
 
 	initBuffers()
 	{
+		const cos = Math.cos, sin = Math.sin, PI = Math.PI;
+		const sides = this.sides, radius = this.radius,
+			coords = this.coords;
+
+		const thetaInc = 2 * (Math.PI) / sides;
+
 		this.vertices = [];
     	this.indices = [];
     	this.normals = [];
     	this.texCoords = [];
 		
-		var cos = Math.cos, sin = Math.sin, PI = Math.PI;
-		var theta = 2 * (Math.PI) / this.sides;
-		
 		// Center vertex
 		this.vertices.push(0, 0, 0);
 		this.normals.push(0, 0, 1);
-		this.texCoords.push((this.minS + this.maxS) / 2);
-		this.texCoords.push((this.minT + this.maxT) / 2);
+		this.texCoords.push((coords.minS + coords.maxS) / 2);
+		this.texCoords.push((coords.minT + coords.maxT) / 2);
 		
-		for (var i = 0; i <= this.sides; ++i) {
-            var x1 = cos(theta * (i + 0.5));
-            var y1 = sin(theta * (i + 0.5));
-            var X = this.radius * x1;
-            var Y = this.radius * y1;
+		for (let i = 0; i <= sides; ++i) {
+			let theta = thetaInc * (i + 0.5);
+            let xUnit = cos(theta);
+            let yUnit = sin(theta);
+            let X = radius * xUnit;
+            let Y = radius * yUnit;
 
-			var stex1 = X / 2 + 0.5;
-			var ttex1 = -Y / 2 + 0.5;
-			var stex = stex1 * this.maxS + (1 - stex1) * this.minS;
-			var ttex = ttex1 * this.maxT + (1 - ttex1) * this.minT;
+			let stexUnit = 0.5 * (X + 1);
+			let ttexUnit = 0.5 * (Y - 1);
+			let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
+			let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
 
             this.vertices.push(X, Y, 0);
 			this.normals.push(0, 0, 1);
 			this.texCoords.push(stex, ttex);
 		}
 		
-		for (var i = 1; i <= this.sides; ++i) {
+		for (let i = 1; i <= sides; ++i) {
+			// indices:
 			this.indices.push(0, i, i + 1);
 			this.indices.push(0, i + 1, i);
 		}
@@ -61,7 +73,7 @@ class Square extends CGFobject
 	constructor(scene, side = 1, coords = [0, 1, 0, 1]) 
 	{
 		super(scene);
-		this.square = new Polygon(scene, 4, side / Math.sqrt(2), coords);
+		this.square = new Regular(scene, 4, side / Math.sqrt(2), coords);
 		this.initBuffers();
 	};
 
@@ -78,7 +90,7 @@ class Circle extends CGFobject
 	constructor(scene, radius = 1, slices = 32, coords = [0, 1, 0, 1])
     {
         super(scene);
-		this.circle = new Polygon(scene, slices, radius, coords);
+		this.circle = new Regular(scene, slices, radius, coords);
         this.initBuffers();
     };
 
@@ -95,7 +107,7 @@ class Triangle extends CGFobject
 	constructor(scene, side = 1, coords = [0, 1, 0, 1])
 	{
 		super(scene);
-		this.triangle = new Polygon(scene, 3, side / Math.sqrt(3), coords);
+		this.triangle = new Regular(scene, 3, side / Math.sqrt(3), coords);
 		this.initBuffers();
 	};
 
@@ -128,6 +140,11 @@ class Rectangle extends CGFobject
 };
 
 
+		const cos = Math.cos, sin = Math.sin, PI = Math.PI;
+		const sides = this.sides, radius = this.radius,
+			coords = this.coords;
+
+		const thetaInc = 2 * (Math.PI) / sides;
 
 class Trapezium extends CGFobject
 {
@@ -137,29 +154,34 @@ class Trapezium extends CGFobject
 		this.base = base;
 		this.height = height;
 		this.top = top;
-		this.minS = coords[0];
-		this.maxS = coords[1];
-		this.minT = coords[2];
-		this.maxT = coords[3];
+		this.coords = {
+			minS: coords[0],
+			maxS: coords[1],
+			minT: coords[2],
+			maxT: coords[3]
+		};
 		this.initBuffers();
 	};
 
 	initBuffers()
 	{
-		//   v2  v3
+		const base = this.base, height = this.height,
+			top = this.top, coords = this.coords;
+		
+		//   v3  v2
 		// v0      v1
 		this.vertices = [
-			-this.base / 2, -this.height / 2, 0,
-			this.base / 2, -this.height / 2, 0,
-			-this.top / 2, this.height / 2, 0,
-			this.top / 2, this.height / 2, 0
+			-base / 2, -height / 2, 0,
+			 base / 2, -height / 2, 0,
+			  top / 2,  height / 2, 0,
+			 -top / 2,  height / 2, 0
 		];
 
 		this.indices = [
-			0, 1, 3,
-			0, 3, 2,
-			0, 3, 1,
-			0, 2, 3
+			0, 1, 2,
+			0, 2, 3,
+			0, 2, 1,
+			0, 3, 2
 		];
 
 		this.normals = [
@@ -170,10 +192,64 @@ class Trapezium extends CGFobject
 		];
 
 		this.texCoords = [
-			this.minS, this.minT,
-			this.maxS, this.minT,
-			this.minS, this.maxT,
-			this.maxS, this.maxT
+			coords.minS, coords.minT,
+			coords.maxS, coords.minT,
+			coords.minS, coords.maxT,
+			coords.maxS, coords.maxT
+		];
+
+		this.primitiveType = this.scene.gl.TRIANGLES;
+		this.initGLBuffers();
+	};
+};
+
+
+
+class Quadrangle extends CGFobject
+{
+	constructor(scene, xy = [[-1, -1], [-1, 1], [1, 1], [1, -1]], coords = [0, 1, 0, 1])
+	{
+		super(scene);
+		this.xy = xy;
+		this.coords = {
+			minS: coords[0],
+			maxS: coords[1],
+			minT: coords[2],
+			maxT: coords[3]
+		};
+		this.initBuffers();
+	};
+
+	initBuffers()
+	{
+		const xy = this.xy, coords = this.coords;
+
+		this.vertices = [
+			xy[0][0], xy[0][1], 0,
+			xy[1][0], xy[1][1], 0,
+			xy[2][0], xy[2][1], 0,
+			xy[3][0], xy[3][1], 0,
+		];
+
+		this.indices = [
+			0, 1, 2,
+			0, 2, 3,
+			0, 2, 1,
+			0, 3, 2
+		];
+
+		this.normals = [
+			0, 0, 1,
+			0, 0, 1,
+			0, 0, 1,
+			0, 0, 1
+		];
+
+		this.texCoords = [
+			coords.minS, coords.minT,
+			coords.maxS, coords.minT,
+			coords.minS, coords.maxT,
+			coords.maxS, coords.maxT
 		];
 
 		this.primitiveType = this.scene.gl.TRIANGLES;
