@@ -1,8 +1,3 @@
-// coords: CHECK
-// let: CHECK
-// theta, phi: CHECK
-// cos,sin,PI, this.: CHECK
-// 
 class Regular extends CGFobject
 {
 	constructor(scene, sides, radius = 1, coords = [0, 1, 0, 1])
@@ -56,7 +51,72 @@ class Regular extends CGFobject
 		}
 		
 		for (let i = 1; i <= sides; ++i) {
-			// indices:
+			this.indices.push(0, i, i + 1);
+			this.indices.push(0, i + 1, i);
+		}
+
+		this.primitiveType = this.scene.gl.TRIANGLES;
+		this.initGLBuffers();
+	};
+};
+
+
+
+class Polygon extends CGFobject
+{
+	constructor(scene, V, coords = [0, 1, 0, 1])
+	{
+		super(scene);
+		this.V = V;
+		this.coords = coords;
+		this.initBuffers();	
+	};
+
+	initBuffers()
+	{
+		const V = this.V, coords = this.coords;
+
+		// We'll proceed differently from usual:
+		// We'll compute mins and maxs as we fill in vertices and normals,
+		// and only after fill in texCoords with the found mins and maxs.
+		let b = {
+			minX: Infinity,
+			maxX: -Infinity,
+			minY: Infinity,
+			maxY: -Infinity
+		};
+
+		this.vertices = [];
+    	this.indices = [];
+    	this.normals = [];
+    	this.texCoords = [];
+		
+		for (let i = 0; i < V.length; ++i) {
+            let X = V[i][0];
+            let Y = V[i][1];
+
+            this.vertices.push(X, Y, 0);
+			this.normals.push(0, 0, 1);
+
+			if (X < b.minX) b.minX = X;
+			if (X > b.maxX) b.maxX = X;
+			if (Y < b.minY) b.minY = Y;
+			if (Y > b.maxY) b.maxY = Y;
+		}
+
+		for (let i = 0; i < V.length; ++i) {
+			let X = this.vertices[3 * i];
+			let Y = this.vertices[3 * i + 1];
+
+			let stexUnit = (X - b.minX) / (b.maxX - b.minX);
+			let ttexUnit = (Y - b.minY) / (b.maxY - b.minY);
+			let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
+			let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
+
+			this.texCoords.push(stex, ttex);
+		}
+		
+		for (let i = 1; i < V.length - 1; ++i) {
 			this.indices.push(0, i, i + 1);
 			this.indices.push(0, i + 1, i);
 		}
@@ -140,11 +200,6 @@ class Rectangle extends CGFobject
 };
 
 
-		const cos = Math.cos, sin = Math.sin, PI = Math.PI;
-		const sides = this.sides, radius = this.radius,
-			coords = this.coords;
-
-		const thetaInc = 2 * (Math.PI) / sides;
 
 class Trapezium extends CGFobject
 {
@@ -205,52 +260,75 @@ class Trapezium extends CGFobject
 
 
 
-class Quadrangle extends CGFobject
+class tPolygon extends CGFobject
 {
-	constructor(scene, xy = [[-1, -1], [-1, 1], [1, 1], [1, -1]], coords = [0, 1, 0, 1])
+	constructor(scene, tfunction, limits = [0, 1], samples = 1024, coords = [0, 1, 0, 1])
 	{
 		super(scene);
-		this.xy = xy;
-		this.coords = {
-			minS: coords[0],
-			maxS: coords[1],
-			minT: coords[2],
-			maxT: coords[3]
+		this.tfunction = tfunction;
+		this.limits = {
+			minT: limits[0],
+			maxT: limits[1]
 		};
-		this.initBuffers();
+		this.samples = samples;
+		this.coords = coords;
+		this.initBuffers()
 	};
 
 	initBuffers()
 	{
-		const xy = this.xy, coords = this.coords;
+		const tfunction = this.tfunction, l = this.limits,
+			samples = this.samples, coords = this.coords;
 
-		this.vertices = [
-			xy[0][0], xy[0][1], 0,
-			xy[1][0], xy[1][1], 0,
-			xy[2][0], xy[2][1], 0,
-			xy[3][0], xy[3][1], 0,
-		];
+		const tInc = (l.maxT - l.minT) / samples;
 
-		this.indices = [
-			0, 1, 2,
-			0, 2, 3,
-			0, 2, 1,
-			0, 3, 2
-		];
+		// We'll proceed differently from usual:
+		// We'll compute mins and maxs as we fill in vertices and normals,
+		// and only after fill in texCoords with the found mins and maxs.
+		let b = {
+			minX: Infinity,
+			maxX: -Infinity,
+			minY: Infinity,
+			maxY: -Infinity
+		};
 
-		this.normals = [
-			0, 0, 1,
-			0, 0, 1,
-			0, 0, 1,
-			0, 0, 1
-		];
+		this.vertices = [];
+    	this.indices = [];
+    	this.normals = [];
+    	this.texCoords = [];
+		
+		for (let i = 0; i <= samples; ++i) {
+			let t = l.minT + tInc * i;
+			let Point = tfunction(t);
 
-		this.texCoords = [
-			coords.minS, coords.minT,
-			coords.maxS, coords.minT,
-			coords.minS, coords.maxT,
-			coords.maxS, coords.maxT
-		];
+            let X = Point.X;
+            let Y = Point.Y;
+
+            this.vertices.push(X, Y, 0);
+			this.normals.push(0, 0, 1);
+
+			if (X < b.minX) b.minX = X;
+			if (X > b.maxX) b.maxX = X;
+			if (Y < b.minY) b.minY = Y;
+			if (Y > b.maxY) b.maxY = Y;
+		}
+
+		for (let i = 0; i <= samples; ++i) {
+			let X = this.vertices[3 * i];
+			let Y = this.vertices[3 * i + 1];
+
+			let stexUnit = (X - b.minX) / (b.maxX - b.minX);
+			let ttexUnit = (Y - b.minY) / (b.maxY - b.minY);
+			let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
+			let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
+
+			this.texCoords.push(stex, ttex);
+		}
+		
+		for (let i = 1; i < samples; ++i) {
+			this.indices.push(0, i, i + 1);
+			this.indices.push(0, i + 1, i);
+		}
 
 		this.primitiveType = this.scene.gl.TRIANGLES;
 		this.initGLBuffers();

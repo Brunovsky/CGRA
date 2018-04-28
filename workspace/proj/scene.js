@@ -22,6 +22,14 @@ class LightingScene extends CGFscene
 
 		this.axis = new CGFaxis(this, 10);
 
+		function heart(t) {
+			const sin = Math.sin, cos = Math.cos;
+			return {
+				X: 2 * sin(t) * sin(t) * sin(t),
+				Y: (13 * cos(t) - 5 * cos(2*t) - 2 * cos(3*t) - cos(4*t)) / 8
+			};
+		}
+
 		// Scene elements
 		this.octagon = new Regular(this, 8);
 		this.square = new Square(this, 2);
@@ -30,7 +38,8 @@ class LightingScene extends CGFscene
 		this.circle = new Circle(this, 1);
 		this.hexagon = new Regular(this, 6);
 		this.trapezium = new Trapezium(this, 3, 2, 1);
-		this.quadrangle = new Quadrangle(this, [[-2, -1], [1, 0], [1.5, 2], [-3, 2]]);
+		this.quadrangle = new Polygon(this, [[-2, -1], [1, 0], [1.5, 2], [0.5, 2.5], [-1.5, 2], [-3, 2]]);
+		this.heart = new tPolygon(this, heart, [0, 2 * Math.PI]);
 
 		this.cube = new Cube(this, 2);
 		this.block = new Block(this, 1, 2, 4);
@@ -50,7 +59,7 @@ class LightingScene extends CGFscene
 		this.closedpyramid = new ClosedPyramid(this, 7, 1.5, 3);
 		this.doublepyramid = new DoublePyramid(this, 4, 1, 3);
 
-		this.cutcone = new CutCone(this, 2, 1, 1);
+		this.cutcone = new CutCone(this, 1.5, 1, 1);
 		this.closedcutcone = new ClosedCutCone(this, 1, 0.5, 2);
 		this.doublecutcone = new DoubleCutCone(this, 1.5, 1, 1);
 		this.cutpyramid = new CutPyramid(this, 3, 1, 1/3, 2);
@@ -60,7 +69,6 @@ class LightingScene extends CGFscene
 		this.sqXYsurface = new zSurface(this, (X,Y) => X*X + Y*Y, [-1, 1, -1.5, 2]);
 		this.cubesurface = new zSurface(this, (X,Y) => 1 + X*X + Y);
 		this.firstUV = new uvSurface(this, (U,V) => {return {X: U*U + V, Y: V + 1, Z: Math.sqrt(V)}});
-
 
 		this.car = new zSurface(this, carFunction, carProportions, carSlices);
 
@@ -159,6 +167,8 @@ class LightingScene extends CGFscene
 		this.trapezium.display();
 		this.translate(5, 0, 0);
 		this.quadrangle.display();
+		this.translate(5, 0, 0);
+		this.heart.display();
 		this.translate(3, 0, 0);
 
 		this.popMatrix();

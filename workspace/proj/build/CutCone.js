@@ -20,7 +20,7 @@ class CutCone extends CGFobject
 
         const thetaInc = 2 * PI / slices;
         const stackHeight = height / stacks;
-        const rhRatio = radius / height;
+        const rhRatio = baseRadius / height;
 
         this.vertices = [];
         this.indices = [];

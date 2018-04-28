@@ -19,7 +19,7 @@ class CutPyramid extends CGFobject
         
         const thetaInc = 2 * PI / sides;
         const stackHeight = height / stacks;
-        const rhRatio = radius * cos(PI / sides) / height;
+        const rhRatio = baseRadius * cos(PI / sides) / height;
 
         this.vertices = [];
         this.indices = [];
