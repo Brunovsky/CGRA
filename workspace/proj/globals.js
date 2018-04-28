@@ -73,3 +73,45 @@ var carFunction = (function() {
 var carProportions = [0, 32, -5.5, 5.5];
 
 var carSlices = 128;
+
+
+
+
+
+
+
+function heart(t) {
+	const sin = Math.sin, cos = Math.cos;
+	return {
+		X: 2 * sin(t) * sin(t) * sin(t),
+		Y: (13 * cos(t) - 5 * cos(2*t) - 2 * cos(3*t) - cos(4*t)) / 8
+	};
+}
+
+function butterfly(t) {
+	const sin = Math.sin, cos = Math.cos, pow = Math.pow, e = Math.E;
+	const p = pow(e, cos(t)) - 2 * cos(4*t) + pow(sin(t/12), 5);
+	return {
+		X: sin(t) * p,
+		Y: cos(t) * p
+	};
+}
+
+function protoFolium(a, b, theta) {
+	const sin = Math.sin, cos = Math.cos;
+	return cos(theta) * (4 * a * sin(theta) * sin(theta) - b);
+}
+
+function trifolium(theta) {
+	const sin = Math.sin, cos = Math.cos;
+	return cos(theta) * (4 * sin(theta) * sin(theta) - 1);
+}
+
+function protoTorus(c, a, u, v) {
+	const sin = Math.sin, cos = Math.cos;
+	return {
+		X: (c + a * cos(v)) * cos(u),
+		Y: (c + a * cos(v)) * sin(u),
+		Z: a * sin(v)
+	};
+}

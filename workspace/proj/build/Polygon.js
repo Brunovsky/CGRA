@@ -334,3 +334,85 @@ class tPolygon extends CGFobject
 		this.initGLBuffers();
 	};
 };
+
+
+
+class rPolygon extends CGFobject
+{
+	constructor(scene, rfunction, limits = [-Math.PI, Math.PI], samples = 1024, coords = [0, 1, 0, 1])
+	{
+		super(scene);
+		this.rfunction = rfunction;
+		this.limits = {
+			minTheta: limits[0],
+			maxTheta: limits[1]
+		};
+		this.samples = samples;
+		this.coords = coords;
+		this.initBuffers();
+	};
+
+	initBuffers()
+	{
+		const cos = Math.cos, sin = Math.sin, PI = Math.PI;
+		const rfunction = this.rfunction, l = this.limits,
+			samples = this.samples, coords = this.coords;
+
+		const thetaInc = (l.maxTheta - l.minTheta) / samples;
+
+		// We'll proceed differently from usual:
+		// We'll compute mins and maxs as we fill in vertices and normals,
+		// and only after fill in texCoords with the found mins and maxs.
+		let b = {
+			minX: Infinity,
+			maxX: -Infinity,
+			minY: Infinity,
+			maxY: -Infinity
+		};
+
+		this.vertices = [];
+    	this.indices = [];
+    	this.normals = [];
+    	this.texCoords = [];
+		
+		// Center vertex
+		this.vertices.push(0, 0, 0);
+		this.normals.push(0, 0, 1);
+		
+		for (let i = 0; i <= samples; ++i) {
+			let theta = l.minTheta + thetaInc * i;
+			let r = rfunction(theta);
+
+            let X = r * cos(theta);
+            let Y = r * sin(theta);
+
+            this.vertices.push(X, Y, 0);
+			this.normals.push(0, 0, 1);
+
+			if (X < b.minX) b.minX = X;
+			if (X > b.maxX) b.maxX = X;
+			if (Y < b.minY) b.minY = Y;
+			if (Y > b.maxY) b.maxY = Y;
+		}
+
+		for (let i = 0; i <= samples + 1; ++i) {
+			let X = this.vertices[3 * i];
+			let Y = this.vertices[3 * i + 1];
+
+			let stexUnit = (X - b.minX) / (b.maxX - b.minX);
+			let ttexUnit = (Y - b.minY) / (b.maxY - b.minY);
+			let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
+			let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
+
+			this.texCoords.push(stex, ttex);
+		}
+		
+		for (let i = 1; i <= samples; ++i) {
+			this.indices.push(0, i, i + 1);
+			this.indices.push(0, i + 1, i);
+		}
+
+		this.primitiveType = this.scene.gl.TRIANGLES;
+		this.initGLBuffers();
+	};
+};
