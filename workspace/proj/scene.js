@@ -58,6 +58,7 @@ class LightingScene extends CGFscene
 
 		this.sqXYsurface = new zSurface(this, (X,Y) => X*X + Y*Y);
 		this.cubesurface = new zSurface(this, (X,Y) => 1 + X*X + Y);
+		this.car = new zSurface(this, carFunction, [0, 32, 0, 9], 128);
 
 		// Materials
 		this.materialDefault = new CGFappearance(this);
@@ -222,6 +223,12 @@ class LightingScene extends CGFscene
 		this.translate(3, 0, 0);
 		this.cubesurface.display();
 		this.translate(3, 0, 0);
+
+		this.popMatrix();
+		this.pushMatrix();
+		this.translate(0, -25, 0);
+
+		this.car.display();
 
 		// ---- END Scene drawing section
 	};
