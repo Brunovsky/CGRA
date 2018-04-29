@@ -46,11 +46,6 @@ class Regular extends CGFobject
             let X = radius * xUnit;
             let Y = radius * yUnit;
 
-            let stexUnit = 0.5 * (X + 1);
-            let ttexUnit = 0.5 * (Y - 1);
-            let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
-            let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
-
             // Up
             this.vertices.push(X, Y, 0); // vU
             this.normals.push(0, 0, 1);
@@ -58,6 +53,12 @@ class Regular extends CGFobject
             // Down
             this.vertices.push(X, Y, 0); // vD
             this.normals.push(0, 0, -1);
+
+            // Texture Up, Down
+            let stexUnit = 0.5 * (xUnit + 1);
+            let ttexUnit = 0.5 * (1 - yUnit);
+            let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
+            let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
 
             this.texCoords.push(stex, ttex);
             this.texCoords.push(stex, ttex);
@@ -77,7 +78,6 @@ class Regular extends CGFobject
             let v2D = 1 + v2U;
 
             this.indices.push(v0U, v1U, v2U);
-
             this.indices.push(v0D, v2D, v1D);
         }
 
@@ -94,7 +94,12 @@ class Polygon extends CGFobject
     {
         super(scene);
         this.V = V;
-        this.coords = coords;
+        this.coords = {
+            minS: coords[0],
+            maxS: coords[1],
+            minT: coords[2],
+            maxT: coords[3]
+        };
         this.initBuffers(); 
     };
 
@@ -133,11 +138,12 @@ class Polygon extends CGFobject
         }
 
         for (let i = 0; i < V.length; ++i) {
-            let X = this.vertices[3 * i];
-            let Y = this.vertices[3 * i + 1];
+            const inc = 6;
+            let X = this.vertices[inc * i];
+            let Y = this.vertices[inc * i + 1];
 
             let stexUnit = (X - b.minX) / (b.maxX - b.minX);
-            let ttexUnit = (Y - b.minY) / (b.maxY - b.minY);
+            let ttexUnit = (b.maxY - Y) / (b.maxY - b.minY);
             let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
             let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
 
@@ -285,7 +291,12 @@ class tPolygon extends CGFobject
             maxT: limits[1]
         };
         this.samples = samples;
-        this.coords = coords;
+        this.coords = {
+            minS: coords[0],
+            maxS: coords[1],
+            minT: coords[2],
+            maxT: coords[3]
+        };
         this.initBuffers()
     };
 
@@ -330,11 +341,12 @@ class tPolygon extends CGFobject
         }
 
         for (let i = 0; i <= samples; ++i) {
-            let X = this.vertices[6 * i];
-            let Y = this.vertices[6 * i + 1];
+            const inc = 6;
+            let X = this.vertices[inc * i];
+            let Y = this.vertices[inc * i + 1];
 
             let stexUnit = (X - b.minX) / (b.maxX - b.minX);
-            let ttexUnit = (Y - b.minY) / (b.maxY - b.minY);
+            let ttexUnit = (b.maxY - Y) / (b.maxY - b.minY);
             let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
             let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
 
@@ -386,7 +398,12 @@ class rPolygon extends CGFobject
             maxTheta: limits[1]
         };
         this.samples = samples;
-        this.coords = coords;
+        this.coords = {
+            minS: coords[0],
+            maxS: coords[1],
+            minT: coords[2],
+            maxT: coords[3]
+        };
         this.initBuffers();
     };
 
@@ -446,11 +463,12 @@ class rPolygon extends CGFobject
         }
 
         for (let i = 0; i <= samples + 1; ++i) {
-            let X = this.vertices[6 * i];
-            let Y = this.vertices[6 * i + 1];
+            const inc = 6;
+            let X = this.vertices[inc * i];
+            let Y = this.vertices[inc * i + 1];
 
             let stexUnit = (X - b.minX) / (b.maxX - b.minX);
-            let ttexUnit = (Y - b.minY) / (b.maxY - b.minY);
+            let ttexUnit = (b.maxY - Y) / (b.maxY - b.minY);
             let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
             let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
 

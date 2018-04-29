@@ -72,10 +72,19 @@ class LightingScene extends CGFscene
 
         //this.car = new zSurface(this, carFunction, carProportions, carSlices);
 
-
-
         // Materials
         this.materialDefault = new CGFappearance(this);
+        this.materialDefault.setAmbient(0.10, 0.45, 0.7, 1);
+        this.materialDefault.setDiffuse(0.2, 0.4, 0.6, 1);
+        this.materialDefault.setSpecular(0.7, 0.6, 0.9, 1);
+        this.materialDefault.setShininess(20);
+
+        // Table
+        this.tableTex = new CGFappearance(this);
+        this.tableTex.setAmbient(0.5, 0.5, 0.5, 1);
+        this.tableTex.setDiffuse(0.7, 0.7, 0.7, 1);
+        this.tableTex.setShininess(150);
+        this.tableTex.loadTexture("tex/table.png");
     };
 
     initCameras() 
@@ -91,6 +100,7 @@ class LightingScene extends CGFscene
 
         this.lights[i].setPosition(6, 0, 15, 1);
         this.lights[i].setDiffuse(1.0, 1.0, 0.25, 1.0);
+        this.lights[i].setConstantAttenuation(0.5);
         this.lights[i].setVisible(true);
         this.lights[i].enable();
         i++;
@@ -104,6 +114,7 @@ class LightingScene extends CGFscene
 
         this.lights[i].setPosition(0, 10, 8, 1);
         this.lights[i].setDiffuse(0.25, 1.0, 1.0, 1.0);
+        this.lights[i].setConstantAttenuation(0.5);
         this.lights[i].setVisible(true);
         this.lights[i].enable();
         i++;
@@ -150,13 +161,14 @@ class LightingScene extends CGFscene
         // Draw axis
         this.axis.display();
 
-        this.setDefaultAppearance();
-
         // ---- END Background, camera and axis setup
 
         // ---- BEGIN Scene drawing section
 
+        this.materialDefault.apply();
+
         this.pushMatrix();
+        this.tableTex.apply();
 
         this.octagon.display();
         this.translate(3, 0, 0);
@@ -176,6 +188,8 @@ class LightingScene extends CGFscene
 
         this.popMatrix();
         this.pushMatrix();
+        this.materialDefault.apply();
+
         this.translate(0, 5, 0); // +5
 
         this.cube.display();
