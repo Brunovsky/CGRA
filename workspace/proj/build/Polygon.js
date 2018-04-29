@@ -158,9 +158,17 @@ class Polygon extends CGFobject
             let v1D = 1 + v1U;
             let v2D = 1 + v2U;
 
-            this.indices.push(v0U, v1U, v2U);
+            let p0 = this.vertices.slice(3 * v0U, 3 * v0U + 3);
+            let p1 = this.vertices.slice(3 * v1U, 3 * v1U + 3);
+            let p2 = this.vertices.slice(3 * v2U, 3 * v2U + 3);
 
-            this.indices.push(v0D, v2D, v1D);
+            if (orientationRule(p0, p1, p2) === rightHandOrientation) {
+                this.indices.push(v0U, v1U, v2U);
+                this.indices.push(v0D, v2D, v1D);
+            } else {
+                this.indices.push(v0U, v2U, v1U);
+                this.indices.push(v0D, v1D, v2D);
+            }
         }
 
         this.primitiveType = this.scene.gl.TRIANGLES;
@@ -347,9 +355,17 @@ class tPolygon extends CGFobject
             let v1D = 1 + v1U;
             let v2D = 1 + v2U;
 
-            this.indices.push(v0U, v1U, v2U);
+            let p0 = this.vertices.slice(3 * v0U, 3 * v0U + 3);
+            let p1 = this.vertices.slice(3 * v1U, 3 * v1U + 3);
+            let p2 = this.vertices.slice(3 * v2U, 3 * v2U + 3);
 
-            this.indices.push(v0D, v2D, v1D);
+            if (orientationRule(p0, p1, p2) === rightHandOrientation) {
+                this.indices.push(v0U, v1U, v2U);
+                this.indices.push(v0D, v2D, v1D);
+            } else {
+                this.indices.push(v0U, v2U, v1U);
+                this.indices.push(v0D, v1D, v2D);
+            }
         }
 
         this.primitiveType = this.scene.gl.TRIANGLES;
@@ -373,6 +389,12 @@ class rPolygon extends CGFobject
         this.coords = coords;
         this.initBuffers();
     };
+
+    orientate(v0, v1, v2) {
+        const rh = true, lh = false;
+
+
+    }
 
     initBuffers()
     {
@@ -449,9 +471,17 @@ class rPolygon extends CGFobject
             let v1D = 1 + v1U;
             let v2D = 1 + v2U;
 
-            this.indices.push(v0U, v1U, v2U);
+            let p0 = this.vertices.slice(3 * v0U, 3 * v0U + 3);
+            let p1 = this.vertices.slice(3 * v1U, 3 * v1U + 3);
+            let p2 = this.vertices.slice(3 * v2U, 3 * v2U + 3);
 
-            this.indices.push(v0D, v2D, v1D);
+            if (orientationRule(p0, p1, p2) === rightHandOrientation) {
+                this.indices.push(v0U, v1U, v2U);
+                this.indices.push(v0D, v2D, v1D);
+            } else {
+                this.indices.push(v0U, v2U, v1U);
+                this.indices.push(v0D, v1D, v2D);
+            }
         }
 
         this.primitiveType = this.scene.gl.TRIANGLES;

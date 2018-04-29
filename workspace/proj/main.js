@@ -7,6 +7,7 @@ var myScene;
 serialInclude([
 	'../lib/CGF.js',
 	'globals.js',
+	'utils.js',
 	'functions.js',
 	//'scene.js',
 	'trialscene.js',
