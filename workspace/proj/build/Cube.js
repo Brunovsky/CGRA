@@ -45,7 +45,7 @@ class Cube extends CGFobject
         this.scene.popMatrix();
 
         this.scene.pushMatrix(); // -Z
-            this.scene.rotate(Math.PI, 1, 1, 0);
+            this.scene.rotate(Math.PI, 1, 0, 0);
             this.scene.translate(0, 0, move);
             this.square.display();
         this.scene.popMatrix();
