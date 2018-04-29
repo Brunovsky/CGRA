@@ -123,16 +123,18 @@ class Sphere extends CGFobject
     constructor(scene, radius = 1, slices = 64, stacks = 32, coords = [0, 1, 0, 1])
     {
         super(scene);
-        this.half = new HalfSphere(scene, radius, slices, stacks, coords);
+        let reverse = [coords[0], coords[1], coords[3], coords[2]];
+        this.up = new HalfSphere(scene, radius, slices, stacks, coords);
+        this.down = new HalfSphere(scene, radius, slices, stacks, reverse);
         this.initBuffers();
     };
 
     display()
     {
         this.scene.pushMatrix();
-            this.half.display();
+            this.up.display();
             this.scene.rotate(Math.PI, 1, 0, 0);
-            this.half.display();
+            this.down.display();
         this.scene.popMatrix();
     };
 };
