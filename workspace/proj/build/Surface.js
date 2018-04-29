@@ -1,3 +1,7 @@
+let zSURFACE_DEFAULT_SLICES = 32;
+let uvSURFACE_DEFAULT_SLICES = 32;
+let revSURFACE_DEFAULT_SLICES = 32, revSURFACE_DEFAULT_STACKS = 64;
+
 function zComputeSurfaceNormal(zfunction, X, Y, xDelta, yDelta) {
     const deltaDivider = 256;
 
@@ -158,7 +162,7 @@ function sampleREVfunction(revfunction, Z, theta, zDelta) {
 
 class zSurface extends CGFobject
 {
-    constructor(scene, zfunction, boundary = [-1, 1, -1, 1], slices = 16, coords = [0, 1, 0, 1])
+    constructor(scene, zfunction, boundary = [-1, 1, -1, 1], slices = 32, coords = [0, 1, 0, 1])
     {
         super(scene);
         this.zfunction = zfunction;

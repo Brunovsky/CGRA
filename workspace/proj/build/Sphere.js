@@ -1,11 +1,19 @@
+let SPHERE_DEFAULT_SLICES = 64, SPHERE_DEFAULT_STACKS = 32;
+
 class HalfSphere extends CGFobject
 {
-    constructor(scene, radius = 1, slices = 32, stacks = 32)
+    constructor(scene, radius = 1, slices = 64, stacks = 32, coords = [0, 1, 0, 1])
     {
         super(scene);
         this.radius = radius;
         this.slices = slices;
         this.stacks = stacks;
+        this.coords = {
+            minS: coords[0],
+            maxS: coords[1],
+            minT: coords[2],
+            maxT: coords[3]
+        }
         this.initBuffers();
     };
 
@@ -13,7 +21,7 @@ class HalfSphere extends CGFobject
     {
         const sin = Math.sin, cos = Math.cos, PI = Math.PI;
         const radius = this.radius, slices = this.slices,
-            stacks = this.stacks;
+            stacks = this.stacks, coords = this.coords;
 
         const thetaInc = 2 * PI / slices;
         const phiInc = (PI / 2) / stacks; 
@@ -21,6 +29,7 @@ class HalfSphere extends CGFobject
         this.vertices = [];
         this.indices = [];
         this.normals = [];
+        this.texCoords = [];
 
         for (let s = 0; s <= stacks; ++s) { // stack
             for (let i = 0; i <= slices; ++i) { // virtual slice
@@ -40,6 +49,15 @@ class HalfSphere extends CGFobject
                 // Down (in)
                 this.vertices.push(X, Y, Z);
                 this.normals.push(-xUnit, -yUnit, -zUnit);
+
+                // Texture Up, Down
+                let stexUnit = 0.5 * (xUnit + 1);
+                let ttexUnit = 0.5 * (1 - yUnit);
+                let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
+                let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
+
+                this.texCoords.push(stex, ttex); // Up
+                this.texCoords.push(stex, ttex); // Down
             }
         }
 
@@ -80,10 +98,10 @@ class HalfSphere extends CGFobject
 
 class ClosedHalfSphere extends CGFobject
 {
-    constructor(scene, radius = 1, slices = 32, stacks = 32)
+    constructor(scene, radius = 1, slices = 64, stacks = 32, coords = [0, 1, 0, 1])
     {
         super(scene);
-        this.half = new HalfSphere(scene, radius, slices, stacks);
+        this.half = new HalfSphere(scene, radius, slices, stacks, coords);
         this.base = new Regular(scene, slices, radius);
         this.initBuffers();
     };
@@ -102,10 +120,10 @@ class ClosedHalfSphere extends CGFobject
 
 class Sphere extends CGFobject
 {
-    constructor(scene, radius = 1, slices = 32, stacks = 32)
+    constructor(scene, radius = 1, slices = 64, stacks = 32, coords = [0, 1, 0, 1])
     {
         super(scene);
-        this.half = new HalfSphere(scene, radius, slices, stacks);
+        this.half = new HalfSphere(scene, radius, slices, stacks, coords);
         this.initBuffers();
     };
 

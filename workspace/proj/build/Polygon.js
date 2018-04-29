@@ -60,8 +60,8 @@ class Regular extends CGFobject
             let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
             let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
 
-            this.texCoords.push(stex, ttex);
-            this.texCoords.push(stex, ttex);
+            this.texCoords.push(stex, ttex); // Up
+            this.texCoords.push(stex, ttex); // Down
         }
 
         for (let i = 1; i <= sides; ++i) {
@@ -147,8 +147,8 @@ class Polygon extends CGFobject
             let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
             let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
 
-            this.texCoords.push(stex, ttex);
-            this.texCoords.push(stex, ttex);
+            this.texCoords.push(stex, ttex); // Up
+            this.texCoords.push(stex, ttex); // Down
         }
 
         for (let i = 1; i < V.length - 1; ++i) {
@@ -350,8 +350,8 @@ class tPolygon extends CGFobject
             let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
             let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
 
-            this.texCoords.push(stex, ttex);
-            this.texCoords.push(stex, ttex);
+            this.texCoords.push(stex, ttex); // Up
+            this.texCoords.push(stex, ttex); // Down
         }
 
         for (let i = 1; i < samples; ++i) {
@@ -472,8 +472,8 @@ class rPolygon extends CGFobject
             let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
             let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
 
-            this.texCoords.push(stex, ttex);
-            this.texCoords.push(stex, ttex);
+            this.texCoords.push(stex, ttex); // Up
+            this.texCoords.push(stex, ttex); // Down
         }
 
         for (let i = 1; i <= samples; ++i) {

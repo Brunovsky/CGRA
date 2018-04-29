@@ -1,6 +1,8 @@
+let CUTCONE_DEFAULT_SLICES = 64, CUTCONE_DEFAULT_STACKS = 1;
+
 class CutCone extends CGFobject
 {
-    constructor(scene, baseRadius = 1, topRadius = 0.5, height = 1, slices = 32, stacks = 4)
+    constructor(scene, baseRadius = 1, topRadius = 0.5, height = 1, slices = 64, stacks = 1, coords = [0, 1, 0, 1])
     {
         super(scene);
         this.baseRadius = baseRadius;
@@ -8,6 +10,12 @@ class CutCone extends CGFobject
         this.height = height;
         this.slices = slices;
         this.stacks = stacks;
+        this.coords = {
+            minS: coords[0],
+            maxS: coords[1],
+            minT: coords[2],
+            maxT: coords[3]
+        }
         this.initBuffers();
     };
 
@@ -15,7 +23,8 @@ class CutCone extends CGFobject
     {
         const sin = Math.sin, cos = Math.cos, PI = Math.PI, sqrt = Math.sqrt;
         const baseRadius = this.baseRadius, topRadius = this.topRadius,
-            height = this.height, slices = this.slices, stacks = this.stacks;
+            height = this.height, slices = this.slices,
+            stacks = this.stacks, coords = this.coords;
 
         const thetaInc = 2 * PI / slices;
         const stackHeight = height / stacks;
@@ -26,6 +35,7 @@ class CutCone extends CGFobject
         this.vertices = [];
         this.indices = [];
         this.normals = [];
+        this.texCoords = [];
 
         for (let s = 0; s <= stacks; ++s) { // stack
             for (let i = 0; i <= slices; ++i) { // virtual side
@@ -45,6 +55,14 @@ class CutCone extends CGFobject
                 // Down
                 this.vertices.push(X, Y, Z);
                 this.normals.push(-xUnit * dXY, -yUnit * dXY, -dZ);
+
+                // Texture Up, Down
+                let stexUnit = theta / (2 * PI);
+                let ttexUnit = Z / height;
+                let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
+                let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
+                this.texCoords.push(stex, ttex); // Up
+                this.texCoords.push(stex, ttex); // Down
             }
         }
 
@@ -85,10 +103,10 @@ class CutCone extends CGFobject
 
 class ClosedCutCone extends CGFobject
 {
-    constructor(scene, baseRadius = 1, topRadius = 0.5, height = 1, slices = 32, stacks = 4)
+    constructor(scene, baseRadius = 1, topRadius = 0.5, height = 1, slices = 64, stacks = 1, coords = [0, 1, 0, 1])
     {
         super(scene);
-        this.cone = new CutCone(scene, baseRadius, topRadius, height, slices, stacks);
+        this.cone = new CutCone(scene, baseRadius, topRadius, height, slices, stacks, coords);
         this.base = new Circle(scene, baseRadius, slices);
         this.top = new Circle(scene, topRadius, slices);
         this.height = height;
@@ -113,10 +131,10 @@ class ClosedCutCone extends CGFobject
 
 class DoubleCutCone extends CGFobject
 {
-    constructor(scene, baseRadius = 1, topRadius = 0.5, height = 1, slices = 32, stacks = 4)
+    constructor(scene, baseRadius = 1, topRadius = 0.5, height = 1, slices = 64, stacks = 1, coords = [0, 1, 0, 1])
     {
         super(scene);
-        this.cone = new CutCone(scene, baseRadius, topRadius, height, slices, stacks);
+        this.cone = new CutCone(scene, baseRadius, topRadius, height, slices, stacks, coords);
         this.top = new Circle(scene, topRadius, slices);
         this.height = height;
         this.initBuffers();

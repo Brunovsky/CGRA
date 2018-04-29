@@ -1,12 +1,20 @@
+let CYLINDER_DEFAULT_SLICES = 64, CYLINDER_DEFAULT_STACKS = 1;
+
 class Cylinder extends CGFobject
 {
-    constructor(scene, radius = 1, height = 1, slices = 32, stacks = 1)
+    constructor(scene, radius = 1, height = 1, slices = 64, stacks = 1, coords = [0, 1, 0, 1])
     {
         super(scene);
         this.slices = slices;
         this.stacks = stacks;
         this.radius = radius;
         this.height = height;
+        this.coords = {
+            minS: coords[0],
+            maxS: coords[1],
+            minT: coords[2],
+            maxT: coords[3]
+        }
         this.initBuffers();
     };
 
@@ -14,7 +22,8 @@ class Cylinder extends CGFobject
     {
         const sin = Math.sin, cos = Math.cos, PI = Math.PI;
         const slices = this.slices, stacks = this.stacks,
-            radius = this.radius, height = this.height;
+            radius = this.radius, height = this.height,
+            coords = this.coords;
 
         const thetaInc = 2 * PI / slices;
         const stackHeight = height / stacks;
@@ -22,6 +31,7 @@ class Cylinder extends CGFobject
         this.vertices = [];
         this.indices = [];
         this.normals = [];
+        this.texCoords = [];
 
         for (let s = 0; s <= stacks; ++s) { // stack
             for (let i = 0; i <= slices; ++i) { // virtual side
@@ -39,6 +49,14 @@ class Cylinder extends CGFobject
                 // Down
                 this.vertices.push(X, Y, Z);
                 this.normals.push(-xUnit, -yUnit, 0);
+
+                // Texture Up, Down
+                let stexUnit = theta / (2 * PI);
+                let ttexUnit = Z / height;
+                let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
+                let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
+                this.texCoords.push(stex, ttex); // Up
+                this.texCoords.push(stex, ttex); // Down
             }
         }
 
@@ -79,10 +97,10 @@ class Cylinder extends CGFobject
 
 class ClosedCylinder extends CGFobject
 {
-    constructor(scene, radius = 1, height = 1, slices = 32, stacks = 1)
+    constructor(scene, radius = 1, height = 1, slices = 64, stacks = 1, coords = [0, 1, 0, 1])
     {
         super(scene);
-        this.cylinder = new Cylinder(scene, radius, height, slices, stacks);
+        this.cylinder = new Cylinder(scene, radius, height, slices, stacks, coords);
         this.base = new Circle(scene, radius, slices);
         this.height = height;
         this.initBuffers();

@@ -168,8 +168,8 @@ class LightingScene extends CGFscene
         this.materialDefault.apply();
 
         this.pushMatrix();
-        this.tableTex.apply();
 
+            this.tableTex.apply();
         this.octagon.display();
         this.translate(3, 0, 0);
         this.square.display();
@@ -188,7 +188,6 @@ class LightingScene extends CGFscene
 
         this.popMatrix();
         this.pushMatrix();
-        this.materialDefault.apply();
 
         this.translate(0, 5, 0); // +5
 
@@ -214,8 +213,6 @@ class LightingScene extends CGFscene
         this.prism.display();
         this.translate(3, 0, 0);
         this.closedprism.display();
-        this.translate(3, 0, 0);
-        this.revcylinder.display();
         this.translate(3, 0, 0);
 
         this.popMatrix();
@@ -256,6 +253,7 @@ class LightingScene extends CGFscene
         this.pushMatrix();
         this.translate(0, -10, 0); // -10
 
+            this.materialDefault.apply();
         this.sqXYsurface.display();
         this.translate(5, 0, 0);
         this.cubesurface.display();
