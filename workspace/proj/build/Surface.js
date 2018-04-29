@@ -315,7 +315,6 @@ class zSurface extends CGFobject
                 let v2U = current + right;
                 let v3U = current + right + above;
                 let v4U = current + above;
-
                 let v1D = 1 + v1U;
                 let v2D = 1 + v2U;
                 let v3D = 1 + v3U;
@@ -409,7 +408,6 @@ class uvSurface extends CGFobject
                 let v2U = current + right;
                 let v3U = current + right + above;
                 let v4U = current + above;
-
                 let v1D = 1 + v1U;
                 let v2D = 1 + v2U;
                 let v3D = 1 + v3U;
@@ -505,7 +503,6 @@ class revSurface extends CGFobject
                 let v2U = current + right;
                 let v3U = current + right + above;
                 let v4U = current + above;
-
                 let v1D = 1 + v1U;
                 let v2D = 1 + v2U;
                 let v3D = 1 + v3U;

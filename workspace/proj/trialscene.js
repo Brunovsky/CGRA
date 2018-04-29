@@ -96,11 +96,18 @@ class LightingScene extends CGFscene
 
         this.lights[i].setPosition(3, 5, -10, 1);
         this.lights[i].setDiffuse(1.0, 0.25, 1.0, 1.0);
+        this.lights[i].setConstantAttenuation(0.5);
         this.lights[i].setVisible(true);
         this.lights[i].enable();
         i++;
 
         this.lights[i].setPosition(0, 10, 8, 1);
+        this.lights[i].setDiffuse(0.25, 1.0, 1.0, 1.0);
+        this.lights[i].setVisible(true);
+        this.lights[i].enable();
+        i++;
+
+        this.lights[i].setPosition(3, 0, -4, 1);
         this.lights[i].setDiffuse(0.25, 1.0, 1.0, 1.0);
         this.lights[i].setVisible(true);
         this.lights[i].enable();

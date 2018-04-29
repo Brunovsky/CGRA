@@ -20,16 +20,22 @@ class Regular extends CGFobject
         const sides = this.sides, radius = this.radius,
             coords = this.coords;
 
-        const thetaInc = 2 * (Math.PI) / sides;
+        const thetaInc = 2 * (PI) / sides;
 
         this.vertices = [];
         this.indices = [];
         this.normals = [];
         this.texCoords = [];
 
-        // Center vertex
+        // Center vertex Up
         this.vertices.push(0, 0, 0);
         this.normals.push(0, 0, 1);
+        this.texCoords.push((coords.minS + coords.maxS) / 2);
+        this.texCoords.push((coords.minT + coords.maxT) / 2);
+
+        // Center vertex Down
+        this.vertices.push(0, 0, 0);
+        this.normals.push(0, 0, -1);
         this.texCoords.push((coords.minS + coords.maxS) / 2);
         this.texCoords.push((coords.minT + coords.maxT) / 2);
         
@@ -45,14 +51,34 @@ class Regular extends CGFobject
             let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
             let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
 
-            this.vertices.push(X, Y, 0);
+            // Up
+            this.vertices.push(X, Y, 0); // vU
             this.normals.push(0, 0, 1);
+
+            // Down
+            this.vertices.push(X, Y, 0); // vD
+            this.normals.push(0, 0, -1);
+
+            this.texCoords.push(stex, ttex);
             this.texCoords.push(stex, ttex);
         }
 
         for (let i = 1; i <= sides; ++i) {
-            this.indices.push(0, i, i + 1);
-            this.indices.push(0, i + 1, i);
+            let next = 2, right = 2;
+
+            let current = next * i;
+
+            // ... v1U v1D      v2U v2D ... --- around the unit circle
+            let v0U = 0;
+            let v1U = current;
+            let v2U = current + right;
+            let v0D = 1 + v0U;
+            let v1D = 1 + v1U;
+            let v2D = 1 + v2U;
+
+            this.indices.push(v0U, v1U, v2U);
+
+            this.indices.push(v0D, v2D, v1D);
         }
 
         this.primitiveType = this.scene.gl.TRIANGLES;
