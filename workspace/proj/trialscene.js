@@ -37,6 +37,7 @@ class LightingScene extends CGFscene
         this.closedcylinder = new ClosedCylinder(this, 1, 3);
         this.prism = new Prism(this, 5, 1, 3);
         this.closedprism = new ClosedPrism(this, 7, 1, 2);
+        this.revcylinder = new revSurface(this, (Z) => 1, [0, 2, -Math.PI, Math.PI]);
 
         this.cone = new Cone(this, 1, 2);
         this.closedcone = new ClosedCone(this, 1.5, 3);
@@ -155,7 +156,6 @@ class LightingScene extends CGFscene
 
         // ---- BEGIN Scene drawing section
 
-        // Floor
         this.pushMatrix();
 
         this.octagon.display();
@@ -200,6 +200,8 @@ class LightingScene extends CGFscene
         this.prism.display();
         this.translate(3, 0, 0);
         this.closedprism.display();
+        this.translate(3, 0, 0);
+        this.revcylinder.display();
         this.translate(3, 0, 0);
 
         this.popMatrix();
@@ -250,6 +252,11 @@ class LightingScene extends CGFscene
         this.translate(3, 0, 0);
         this.astroidal.display();
         this.translate(3, 0, 0);
+
+        this.popMatrix();
+        this.pushMatrix();
+        this.translate(0, -15, 0); // -15
+
         this.kiss.display();
         this.translate(3, 0, 0);
         this.bohemianDome.display();
@@ -263,7 +270,7 @@ class LightingScene extends CGFscene
 
         this.popMatrix();
         this.pushMatrix();
-        this.translate(0, -15, 0), // -15
+        this.translate(0, -22, 0), // -22
 
         this.heart.display();
         this.translate(5, 0, 0);
