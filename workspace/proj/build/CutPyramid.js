@@ -13,13 +13,16 @@ class CutPyramid extends CGFobject
 
     initBuffers() 
     {
-        const cos = Math.cos, sin = Math.sin, PI = Math.PI;
+        const cos = Math.cos, sin = Math.sin, PI = Math.PI, sqrt = Math.sqrt;
         const sides = this.sides, baseRadius = this.baseRadius,
             topRadius = this.topRadius, height = this.height, stacks = this.stacks;
         
         const thetaInc = 2 * PI / sides;
         const stackHeight = height / stacks;
-        const rhRatio = baseRadius * cos(PI / sides) / height;
+        const radius = baseRadius - topRadius;
+        const apotema = cos(PI / sides) * radius; // signed
+        const hypotenuse = sqrt(apotema * apotema + height * height);
+        const dXY = height / hypotenuse, dZ = apotema / hypotenuse;
 
         this.vertices = [];
         this.indices = [];
@@ -46,8 +49,8 @@ class CutPyramid extends CGFobject
                 theta = thetaInc * i;
                 xUnit = cos(theta);
                 yUnit = sin(theta);
-                this.normals.push(xUnit / rhRatio, yUnit / rhRatio, rhRatio); // v1's normals
-                this.normals.push(xUnit / rhRatio, yUnit / rhRatio, rhRatio); // v2's normals
+                this.normals.push(xUnit * dXY, yUnit * dXY, dZ); // v1's normals
+                this.normals.push(xUnit * dXY, yUnit * dXY, dZ); // v2's normals
 
             	// v2
                 theta = thetaInc * (i + 0.5); 

@@ -63,10 +63,18 @@ class LightingScene extends CGFscene
 
 		this.sqXYsurface = new zSurface(this, (X,Y) => X*X + Y*Y, [-1, 1, -1.5, 2]);
 		this.cubesurface = new zSurface(this, (X,Y) => 1 + X*X + Y);
-		this.firstUV = new uvSurface(this, (U,V) => {return {X: U*U + V, Y: V + 1, Z: Math.sqrt(V)}});
-		this.torus = new uvSurface(this, protoTorus.bind(null, 2, 0.5), [0, 2 * Math.PI, 0, 2 * Math.PI]);
+		this.torus = new uvSurface(this, protoTorus.bind(null, 2, 0.75), [0, 2 * Math.PI, 0, 2 * Math.PI]);
+		this.eight = new uvSurface(this, eightSurface, [0, 2 * Math.PI, -Math.PI / 2, Math.PI / 2]);
+		this.astroidal = new uvSurface(this, astroidalEllipsoid, [-Math.PI / 2, Math.PI / 2, -Math.PI, Math.PI]);
+		this.kiss = new uvSurface(this, kissSurface, [-Math.PI, Math.PI, -1, 1]);
+		this.bohemianDome = new uvSurface(this, bohemianDome, [-Math.PI, Math.PI, -Math.PI, Math.PI], 64);
+		this.crossedTrough = new zSurface(this, (X,Y) => X*X*Y*Y);
+		this.sineSurface = new uvSurface(this, sineSurface, [-Math.PI, Math.PI, -Math.PI, Math.PI], 64);
+		this.cayleySurface = new zSurface(this, cayleySurface);
+		this.vase = new revSurface(this, (Z) => 1 + 0.5 * Math.cos(2*Z), [-Math.PI / 2, 0.65 * Math.PI, -Math.PI, Math.PI]);
+		this.mobius = new uvSurface(this, mobiusStrip, [-Math.PI, Math.PI, -0.5, 0.5]);
 
-		this.car = new zSurface(this, carFunction, carProportions, carSlices);
+		//this.car = new zSurface(this, carFunction, carProportions, carSlices);
 
 
 
@@ -234,10 +242,22 @@ class LightingScene extends CGFscene
 		this.translate(5, 0, 0);
 		this.cubesurface.display();
 		this.translate(5, 0, 0);
-		this.firstUV.display();
-		this.translate(5, 0, 0);
 		this.torus.display();
 		this.translate(5, 0, 0);
+		this.eight.display();
+		this.translate(3, 0, 0);
+		this.astroidal.display();
+		this.translate(3, 0, 0);
+		this.kiss.display();
+		this.translate(3, 0, 0);
+		this.bohemianDome.display();
+		this.translate(3, 0, 0);
+		this.crossedTrough.display();
+		this.translate(3, 0, 0);
+		this.sineSurface.display();
+		this.translate(3, 0, 0);
+		this.cayleySurface.display();
+		this.translate(3, 0, 0);
 
 		this.popMatrix();
 		this.pushMatrix();
@@ -249,6 +269,10 @@ class LightingScene extends CGFscene
 		this.translate(5, 0, 0);
 		this.trifolium.display();
 		this.translate(5, 0, 0);
+		this.vase.display();
+		this.translate(5, 0, 0);
+		this.mobius.display();
+		this.translate(3, 0, 0);
 
 		//this.translate(0, -30, 0);
 

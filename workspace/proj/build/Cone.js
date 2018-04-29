@@ -13,13 +13,14 @@ class Cone extends CGFobject
 
     initBuffers() 
     {
-        const cos = Math.cos, sin = Math.sin, PI = Math.PI;
+        const cos = Math.cos, sin = Math.sin, PI = Math.PI, sqrt = Math.sqrt;
         const radius = this.radius, height = this.height,
             slices = this.slices, stacks = this.stacks;
 
         const thetaInc = 2 * PI / slices;
         const stackHeight = height / stacks;
-        const rhRatio = radius / height;
+        const hypotenuse = sqrt(radius * radius + height * height);
+        const dXY = height / hypotenuse, dZ = radius / hypotenuse;
 
         this.vertices = [];
         this.indices = [];
@@ -35,7 +36,7 @@ class Cone extends CGFobject
                 let Z = s * stackHeight;
 
                 this.vertices.push(X, Y, Z);
-                this.normals.push(xUnit / rhRatio, yUnit / rhRatio, rhRatio);
+                this.normals.push(xUnit * dXY, yUnit * dXY, dZ);
             }
         }
 

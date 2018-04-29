@@ -14,13 +14,15 @@ class CutCone extends CGFobject
 
     initBuffers() 
     {
-        const cos = Math.cos, sin = Math.sin, PI = Math.PI;
+        const cos = Math.cos, sin = Math.sin, PI = Math.PI, sqrt = Math.sqrt;
         const baseRadius = this.baseRadius, topRadius = this.topRadius,
             height = this.height, slices = this.slices, stacks = this.stacks;
 
         const thetaInc = 2 * PI / slices;
         const stackHeight = height / stacks;
-        const rhRatio = baseRadius / height;
+        const radius = baseRadius - topRadius;
+        const hypotenuse = sqrt(radius * radius + height * height);
+        const dXY = height / hypotenuse, dZ = radius / hypotenuse;
 
         this.vertices = [];
         this.indices = [];
@@ -38,7 +40,7 @@ class CutCone extends CGFobject
                 let Z = s * stackHeight;
 
                 this.vertices.push(X, Y, Z);
-                this.normals.push(xUnit / rhRatio, yUnit / rhRatio, rhRatio);
+                this.normals.push(xUnit * dXY, yUnit * dXY, dZ);
             }
         }
 
