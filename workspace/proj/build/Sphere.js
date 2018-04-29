@@ -33,32 +33,41 @@ class HalfSphere extends CGFobject
                 let Y = radius * yUnit;
                 let Z = radius * zUnit;
 
+                // Up (out)
                 this.vertices.push(X, Y, Z);
                 this.normals.push(xUnit, yUnit, zUnit);
+
+                // Down (in)
+                this.vertices.push(X, Y, Z);
+                this.normals.push(-xUnit, -yUnit, -zUnit);
             }
         }
 
         for (let s = 0; s < stacks; ++s) { // stack
             for (let i = 0; i < slices; ++i) { // virtual slice
-                let above = slices + 1;
-                let next = 1, right = 1;
+                let above = 2 * slices + 2;
+                let next = 2, right = 2;
 
                 let stack = s * above;
                 let current = next * i + stack;
 
-                // ... v4  v3 ...
+                // ... v4U v4D      v3U v3D ... --- stack s + 1
                 // 
-                // ... v1  v2 ...
-                let v1 = current;
-                let v2 = current + right;
-                let v3 = current + right + above;
-                let v4 = current + above;
+                // ... v1U v1D      v2U v2D ... --- stack s
+                let v1U = current;
+                let v2U = current + right;
+                let v3U = current + right + above;
+                let v4U = current + above;
+                let v1D = 1 + v1U;
+                let v2D = 1 + v2U;
+                let v3D = 1 + v3U;
+                let v4D = 1 + v4U;
 
-                this.indices.push(v1, v2, v3);
-                this.indices.push(v1, v3, v4);
-
-                this.indices.push(v1, v3, v2);
-                this.indices.push(v1, v4, v3);
+                this.indices.push(v1U, v2U, v3U);
+                this.indices.push(v1U, v3U, v4U);
+                
+                this.indices.push(v1D, v3D, v2D);
+                this.indices.push(v1D, v4D, v3D);
             }
         }
 

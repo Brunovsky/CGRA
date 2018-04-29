@@ -36,14 +36,17 @@ class Prism extends CGFobject
                 X = radius * xUnit;
                 Y = radius * yUnit;
                 Z = s * stackHeight;
-                this.vertices.push(X, Y, Z); // v1
+                this.vertices.push(X, Y, Z); // v1U
+                this.vertices.push(X, Y, Z); // v1D
 
                 // M
                 theta = thetaInc * i;
                 xUnit = cos(theta);
                 yUnit = sin(theta);
-                this.normals.push(xUnit, yUnit, 0); // v1's normals
-                this.normals.push(xUnit, yUnit, 0); // v2's normals
+                this.normals.push(xUnit, yUnit, 0); // v1U's normals
+                this.normals.push(-xUnit, -yUnit, 0); // v1D's normals
+                this.normals.push(xUnit, yUnit, 0); // v2U's normals
+                this.normals.push(-xUnit, -yUnit, 0); // v2D's normals
 
                 // v2
                 theta = thetaInc * (i + 0.5);
@@ -52,31 +55,36 @@ class Prism extends CGFobject
                 X = radius * xUnit;
                 Y = radius * yUnit;
                 Z = s * stackHeight;
-                this.vertices.push(X, Y, Z); // v2
+                this.vertices.push(X, Y, Z); // v2U
+                this.vertices.push(X, Y, Z); // v2D
             }
         }
 
         for (let s = 0; s < stacks; ++s) { // stack
             for (let i = 0; i < sides; ++i) { // side
-                let above = 2 * sides;
-                let next = 2, right = 1;
+                let above = 4 * sides;
+                let next = 4, right = 2;
 
                 let stack = s * above;
                 let current = next * i + stack;
 
-                // ... v4  v3 ...  -- stack s+1
+                // ... v4U v4D      v3U v3D ... --- stack s + 1
                 // 
-                // ... v1  v2 ...  -- stack s
-                let v1 = current;
-                let v2 = current + right;
-                let v3 = current + right + above;
-                let v4 = current + above;
+                // ... v1U v1D      v2U v2D ... --- stack s
+                let v1U = current;
+                let v2U = current + right;
+                let v3U = current + right + above;
+                let v4U = current + above;
+                let v1D = 1 + v1U;
+                let v2D = 1 + v2U;
+                let v3D = 1 + v3U;
+                let v4D = 1 + v4U;
 
-                this.indices.push(v1, v2, v3);
-                this.indices.push(v1, v3, v4);
-
-                this.indices.push(v1, v3, v2);
-                this.indices.push(v1, v4, v3);
+                this.indices.push(v1U, v2U, v3U);
+                this.indices.push(v1U, v3U, v4U);
+                
+                this.indices.push(v1D, v3D, v2D);
+                this.indices.push(v1D, v4D, v3D);
             }
         }
 
