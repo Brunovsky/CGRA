@@ -10,7 +10,7 @@ class Pyramid extends CGFobject
         this.initBuffers();
     };
 
-    initBuffers() 
+    initBuffers()
     {
         const cos = Math.cos, sin = Math.sin, PI = Math.PI, sqrt = Math.sqrt;
         const sides = this.sides, radius = this.radius,
@@ -28,11 +28,11 @@ class Pyramid extends CGFobject
 
         for (let s = 0; s <= stacks; ++s) { // stack
             for (let i = 0; i < sides; ++i) { // side
-            	// ... ][v1   M   v2][ ...  -- stack s
-            	
-            	let theta, xUnit, yUnit, X, Y, Z;
+                // ... ][v1   M   v2][ ...  -- stack s
+                
+                let theta, xUnit, yUnit, X, Y, Z;
 
-            	// v1
+                // v1
                 theta = thetaInc * (i - 0.5); 
                 xUnit = cos(theta);
                 yUnit = sin(theta);
@@ -48,7 +48,7 @@ class Pyramid extends CGFobject
                 this.normals.push(xUnit * dXY, yUnit * dXY, dZ); // v1's normals
                 this.normals.push(xUnit * dXY, yUnit * dXY, dZ); // v2's normals
 
-            	// v2
+                // v2
                 theta = thetaInc * (i + 0.5);
                 xUnit = cos(theta);
                 yUnit = sin(theta);
@@ -92,41 +92,41 @@ class Pyramid extends CGFobject
 
 class ClosedPyramid extends CGFobject
 {
-	constructor(scene, sides, radius = 1, height = 1, stacks = 4)
-	{
-		super(scene);
-		this.pyramid = new Pyramid(scene, sides, radius, height, stacks);
-		this.base = new Regular(scene, sides, radius);
-		this.initBuffers();
-	};
+    constructor(scene, sides, radius = 1, height = 1, stacks = 4)
+    {
+        super(scene);
+        this.pyramid = new Pyramid(scene, sides, radius, height, stacks);
+        this.base = new Regular(scene, sides, radius);
+        this.initBuffers();
+    };
 
-	display()
-	{
-		this.scene.pushMatrix();
-			this.pyramid.display();
-			this.scene.rotate(Math.PI, 1, 0, 0);
-			this.base.display();
-		this.scene.popMatrix();
-	};
+    display()
+    {
+        this.scene.pushMatrix();
+            this.pyramid.display();
+            this.scene.rotate(Math.PI, 1, 0, 0);
+            this.base.display();
+        this.scene.popMatrix();
+    };
 };
 
 
 
 class DoublePyramid extends CGFobject
 {
-	constructor(scene, sides, radius = 1, height = 1, stacks = 4)
-	{
-		super(scene);
-		this.pyramid = new Pyramid(scene, sides, radius, height, stacks);
-		this.initBuffers();
-	};
+    constructor(scene, sides, radius = 1, height = 1, stacks = 4)
+    {
+        super(scene);
+        this.pyramid = new Pyramid(scene, sides, radius, height, stacks);
+        this.initBuffers();
+    };
 
-	display()
-	{
-		this.scene.pushMatrix();
-			this.pyramid.display();
-			this.scene.rotate(Math.PI, 1, 0, 0);
-			this.pyramid.display();
-		this.scene.popMatrix();
-	};
+    display()
+    {
+        this.scene.pushMatrix();
+            this.pyramid.display();
+            this.scene.rotate(Math.PI, 1, 0, 0);
+            this.pyramid.display();
+        this.scene.popMatrix();
+    };
 };

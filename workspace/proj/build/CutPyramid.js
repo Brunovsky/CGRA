@@ -11,12 +11,12 @@ class CutPyramid extends CGFobject
         this.initBuffers();
     };
 
-    initBuffers() 
+    initBuffers()
     {
         const cos = Math.cos, sin = Math.sin, PI = Math.PI, sqrt = Math.sqrt;
         const sides = this.sides, baseRadius = this.baseRadius,
             topRadius = this.topRadius, height = this.height, stacks = this.stacks;
-        
+
         const thetaInc = 2 * PI / sides;
         const stackHeight = height / stacks;
         const radius = baseRadius - topRadius;
@@ -30,12 +30,12 @@ class CutPyramid extends CGFobject
 
         for (let s = 0; s <= stacks; ++s) { // stack
             for (let i = 0; i < sides; ++i) { // side
-            	// ... ][v1   M   v2][ ...  -- stack s
-            	
-            	let theta, xUnit, yUnit, X, Y, Z;
+                // ... ][v1   M   v2][ ...  -- stack s
 
-            	// v1
-                theta = thetaInc * (i - 0.5); 
+                let theta, xUnit, yUnit, X, Y, Z;
+
+                // v1
+                theta = thetaInc * (i - 0.5);
                 xUnit = cos(theta);
                 yUnit = sin(theta);
                 X = baseRadius * xUnit * (1 - s / stacks)
@@ -52,8 +52,8 @@ class CutPyramid extends CGFobject
                 this.normals.push(xUnit * dXY, yUnit * dXY, dZ); // v1's normals
                 this.normals.push(xUnit * dXY, yUnit * dXY, dZ); // v2's normals
 
-            	// v2
-                theta = thetaInc * (i + 0.5); 
+                // v2
+                theta = thetaInc * (i + 0.5);
                 xUnit = cos(theta);
                 yUnit = sin(theta);
                 X = baseRadius * xUnit * (1 - s / stacks)
@@ -98,46 +98,46 @@ class CutPyramid extends CGFobject
 
 class ClosedCutPyramid extends CGFobject
 {
-	constructor(scene, sides, baseRadius = 1, topRadius = 0.5, height = 1, stacks = 4)
-	{
-		super(scene);
-		this.cutPyramid = new CutPyramid(scene, sides, baseRadius, topRadius, height, stacks);
-		this.base = new Regular(scene, sides, baseRadius);
+    constructor(scene, sides, baseRadius = 1, topRadius = 0.5, height = 1, stacks = 4)
+    {
+        super(scene);
+        this.cutPyramid = new CutPyramid(scene, sides, baseRadius, topRadius, height, stacks);
+        this.base = new Regular(scene, sides, baseRadius);
         this.top = new Regular(scene, sides, topRadius);
         this.height = height;
-		this.initBuffers();
-	};
+        this.initBuffers();
+    };
 
-	display()
-	{
-		this.scene.pushMatrix();
-			this.cutPyramid.display();
+    display()
+    {
+        this.scene.pushMatrix();
+            this.cutPyramid.display();
             this.scene.pushMatrix();
-    			this.scene.rotate(Math.PI, 1, 0, 0);
-    			this.base.display();
+                this.scene.rotate(Math.PI, 1, 0, 0);
+                this.base.display();
             this.scene.popMatrix();
                 this.scene.translate(0, 0, this.height);
                 this.top.display();
-		this.scene.popMatrix();
-	};
+        this.scene.popMatrix();
+    };
 };
 
 
 
 class DoubleCutPyramid extends CGFobject
 {
-	constructor(scene, sides, baseRadius = 1, topRadius = 0.5, height = 1, stacks = 4)
-	{
-		super(scene);
-		this.cutPyramid = new CutPyramid(scene, sides, baseRadius, topRadius, height, stacks);
+    constructor(scene, sides, baseRadius = 1, topRadius = 0.5, height = 1, stacks = 4)
+    {
+        super(scene);
+        this.cutPyramid = new CutPyramid(scene, sides, baseRadius, topRadius, height, stacks);
         this.top = new Regular(scene, sides, topRadius);
         this.height = height;
-		this.initBuffers();
-	};
+        this.initBuffers();
+    };
 
-	display()
-	{
-		this.scene.pushMatrix();
+    display()
+    {
+        this.scene.pushMatrix();
             this.scene.pushMatrix();
                 this.cutPyramid.display();
                 this.scene.translate(0, 0, this.height);
@@ -147,6 +147,6 @@ class DoubleCutPyramid extends CGFobject
                 this.cutPyramid.display();
                 this.scene.translate(0, 0, this.height);
                 this.top.display();
-		this.scene.popMatrix();
-	};
+        this.scene.popMatrix();
+    };
 };

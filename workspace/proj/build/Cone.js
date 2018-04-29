@@ -11,7 +11,7 @@ class Cone extends CGFobject
     };
 
 
-    initBuffers() 
+    initBuffers()
     {
         const cos = Math.cos, sin = Math.sin, PI = Math.PI, sqrt = Math.sqrt;
         const radius = this.radius, height = this.height,

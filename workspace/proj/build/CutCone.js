@@ -12,7 +12,7 @@ class CutCone extends CGFobject
     };
 
 
-    initBuffers() 
+    initBuffers()
     {
         const cos = Math.cos, sin = Math.sin, PI = Math.PI, sqrt = Math.sqrt;
         const baseRadius = this.baseRadius, topRadius = this.topRadius,

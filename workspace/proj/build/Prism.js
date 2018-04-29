@@ -10,7 +10,7 @@ class Prism extends CGFobject
         this.initBuffers();
     };
 
-    initBuffers() 
+    initBuffers()
     {
         const cos = Math.cos, sin = Math.sin, PI = Math.PI;
         const sides = this.sides, stacks = this.stacks,

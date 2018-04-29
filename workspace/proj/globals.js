@@ -1,10 +1,8 @@
 // The entire scene's background color, RGB
-var BG_COLOR = [0.03, 0.06, 0.02, 1.0];
+let BG_COLOR = [0.03, 0.06, 0.02, 1.0];
 
 // Global ambient light
-var AMBIENT = [0.5, 0.5, 0.5, 1.0];
-
-
+let AMBIENT = [0.5, 0.5, 0.5, 1.0];
 
 
 
@@ -94,6 +92,18 @@ function mobiusStrip(u, v) {
 	}
 }
 
+function peanoSurface(x, y) {
+	return (2 * x * x - y) * (y - x * x);
+}
+
+function boursMinimal(r, theta) {
+	const sin = Math.sin, cos = Math.cos, pow = Math.pow;
+	return {
+		X: r * cos(theta) - r * r * cos(2*theta) / 2,
+		Y: r * sin(theta) - r * r * sin(2*theta) / 2,
+		Z: (4/3) * pow(r, 3/2) * cos((3/2)*theta)
+	}
+}
 
 
 

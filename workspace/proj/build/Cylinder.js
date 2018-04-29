@@ -10,7 +10,6 @@ class Cylinder extends CGFobject
         this.initBuffers();
     };
 
-
     initBuffers()
     {
         const cos = Math.cos, sin = Math.sin, PI = Math.PI;
