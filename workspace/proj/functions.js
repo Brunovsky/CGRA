@@ -136,6 +136,16 @@ function mennSurface(x, y) {
     return (x * x * x * x) + (x * x * y) - y * y; 
 }
 
+function romanSurface(u, v) {
+    const sin = Math.sin, cos = Math.cos;
+    return {
+        X: sin(2*u) * sin(v) * sin(v),
+        Y: sin(u) * cos(2*v),
+        Z: cos(u) * sin(2*v)
+    }
+}
+
+
 
 
 
