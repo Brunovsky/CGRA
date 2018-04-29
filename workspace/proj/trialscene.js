@@ -57,7 +57,7 @@ class LightingScene extends CGFscene
         this.trifolium = new rPolygon(this, protoFolium.bind(null, 2, 2));
 
         this.sqXYsurface = new zSurface(this, (X,Y) => X*X + Y*Y, [-1, 1, -1.5, 2]);
-        this.cubesurface = new zSurface(this, (X,Y) => 1 + X*X + Y);
+        this.cubesurface = new zSurface(this, (X,Y) => 1 + X*X - Y);
         this.torus = new uvSurface(this, protoTorus.bind(null, 2, 0.75), [0, 2 * Math.PI, 0, 2 * Math.PI]);
         this.eight = new uvSurface(this, eightSurface, [0, 2 * Math.PI, -Math.PI / 2, Math.PI / 2]);
         this.astroidal = new uvSurface(this, astroidalEllipsoid, [-Math.PI / 2, Math.PI / 2, -Math.PI, Math.PI]);

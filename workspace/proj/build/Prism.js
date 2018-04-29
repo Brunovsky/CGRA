@@ -59,7 +59,7 @@ class Prism extends CGFobject
         for (let s = 0; s < stacks; ++s) { // stack
             for (let i = 0; i < sides; ++i) { // side
                 let above = 2 * sides;
-                let next = 2;
+                let next = 2, right = 1;
 
                 let stack = s * above;
                 let current = next * i + stack;
@@ -68,8 +68,8 @@ class Prism extends CGFobject
                 // 
                 // ... v1  v2 ...  -- stack s
                 let v1 = current;
-                let v2 = current + 1;
-                let v3 = current + 1 + above;
+                let v2 = current + right;
+                let v3 = current + right + above;
                 let v4 = current + above;
 
                 this.indices.push(v1, v2, v3);

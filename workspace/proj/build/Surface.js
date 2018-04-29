@@ -289,18 +289,21 @@ class zSurface extends CGFobject
                 let X = b.minX + xDelta * i;
                 let Y = b.minY + yDelta * j;
                 let Point = sampleZfunction(zfunction, X, Y, xDelta, yDelta);
-                //let Z = zfunction(X, Y);
-                //let normalV = zComputeSurfaceNormal(zfunction, X, Y, xDelta, yDelta);
 
+                // Up
                 this.vertices.push(Point.X, Point.Y, Point.Z);
                 this.normals.push(Point.N.X, Point.N.Y, Point.N.Z);
+
+                // Down
+                this.vertices.push(Point.X, Point.Y, Point.Z);
+                this.normals.push(-Point.N.X, -Point.N.Y, -Point.N.Z);
             }
         }
 
         for (let j = 0; j < slices; ++j) { // iterate Y (line)
             for (let i = 0; i < slices; ++i) { // iterate X (column)
-                let above = slices + 1;
-                let next = 1;
+                let above = 2 * slices + 2;
+                let next = 2, right = 2;
 
                 let line = j * above;
                 let current = next * i + line;
@@ -308,16 +311,21 @@ class zSurface extends CGFobject
                 // ... v4  v3 ... --- line x + 1
                 // 
                 // ... v1  v2 ... --- line x
-                let v1 = current;
-                let v2 = current + 1;
-                let v3 = current + 1 + above;
-                let v4 = current + above;
+                let v1U = current;
+                let v2U = current + right;
+                let v3U = current + right + above;
+                let v4U = current + above;
 
-                this.indices.push(v1, v2, v3);
-                this.indices.push(v1, v3, v4);
+                let v1D = 1 + v1U;
+                let v2D = 1 + v2U;
+                let v3D = 1 + v3U;
+                let v4D = 1 + v4U;
+
+                this.indices.push(v1U, v2U, v3U);
+                this.indices.push(v1U, v3U, v4U);
                 
-                this.indices.push(v1, v3, v2);
-                this.indices.push(v1, v4, v3);
+                this.indices.push(v1D, v3D, v2D);
+                this.indices.push(v1D, v4D, v3D);
             }
         }
 
@@ -376,32 +384,42 @@ class uvSurface extends CGFobject
                 let V = b.minV + vDelta * j;
                 let Point = sampleUVfunction(uvfunction, U, V, uDelta, vDelta);
 
+                // Up
                 this.vertices.push(Point.X, Point.Y, Point.Z);
                 this.normals.push(Point.N.X, Point.N.Y, Point.N.Z);
+
+                // Down
+                this.vertices.push(Point.X, Point.Y, Point.Z);
+                this.normals.push(-Point.N.X, -Point.N.Y, -Point.N.Z);
             }
         }
 
         for (let j = 0; j < slices; ++j) { // iterate Y (line)
             for (let i = 0; i < slices; ++i) { // iterate X (column)
-                let above = slices + 1;
-                let next = 1;
+                let above = 2 * slices + 2;
+                let next = 2, right = 2;
 
                 let line = j * above;
                 let current = next * i + line;
 
-                // ... v4  v3 ... --- line x + 1
+                // ... v4U v4D      v3U v3D ... --- line x + 1
                 // 
-                // ... v1  v2 ... --- line x
-                let v1 = current;
-                let v2 = current + 1;
-                let v3 = current + 1 + above;
-                let v4 = current + above;
+                // ... v1U v1D      v2U v2D ... --- line x
+                let v1U = current;
+                let v2U = current + right;
+                let v3U = current + right + above;
+                let v4U = current + above;
 
-                this.indices.push(v1, v2, v3);
-                this.indices.push(v1, v3, v4);
+                let v1D = 1 + v1U;
+                let v2D = 1 + v2U;
+                let v3D = 1 + v3U;
+                let v4D = 1 + v4U;
+
+                this.indices.push(v1U, v2U, v3U);
+                this.indices.push(v1U, v3U, v4U);
                 
-                this.indices.push(v1, v3, v2);
-                this.indices.push(v1, v4, v3);
+                this.indices.push(v1D, v3D, v2D);
+                this.indices.push(v1D, v4D, v3D);
             }
         }
 
@@ -462,32 +480,42 @@ class revSurface extends CGFobject
                 let theta = b.minTheta + thetaDelta * i;
                 let Point = sampleREVfunction(revfunction, Z, theta, zDelta);
 
+                // Up
                 this.vertices.push(Point.X, Point.Y, Point.Z);
                 this.normals.push(Point.N.X, Point.N.Y, Point.N.Z);
+
+                // Down
+                this.vertices.push(Point.X, Point.Y, Point.Z);
+                this.normals.push(-Point.N.X, -Point.N.Y, -Point.N.Z);
             }
         }
 
         for (let j = 0; j < stacks; ++j) { // iterate Y (line)
             for (let i = 0; i < slices; ++i) { // iterate X (column)
-                let above = slices + 1;
-                let next = 1;
+                let above = 2 * slices + 2;
+                let next = 2, right = 2;
 
                 let line = j * above;
                 let current = next * i + line;
 
-                // ... v4  v3 ... --- line x + 1
+                // ... v4U v4D      v3U v3D ... --- line x + 1
                 // 
-                // ... v1  v2 ... --- line x
-                let v1 = current;
-                let v2 = current + 1;
-                let v3 = current + 1 + above;
-                let v4 = current + above;
+                // ... v1U v1D      v2U v2D ... --- line x
+                let v1U = current;
+                let v2U = current + right;
+                let v3U = current + right + above;
+                let v4U = current + above;
 
-                this.indices.push(v1, v2, v3);
-                this.indices.push(v1, v3, v4);
+                let v1D = 1 + v1U;
+                let v2D = 1 + v2U;
+                let v3D = 1 + v3U;
+                let v4D = 1 + v4U;
+
+                this.indices.push(v1U, v2U, v3U);
+                this.indices.push(v1U, v3U, v4U);
                 
-                this.indices.push(v1, v3, v2);
-                this.indices.push(v1, v4, v3);
+                this.indices.push(v1D, v3D, v2D);
+                this.indices.push(v1D, v4D, v3D);
             }
         }
 
