@@ -187,7 +187,13 @@ class Square extends CGFobject
     constructor(scene, side = 1, coords = [0, 1, 0, 1]) 
     {
         super(scene);
-        this.square = new Regular(scene, 4, side / Math.sqrt(2), coords);
+        let V = [
+            [-side / 2, -side / 2],
+            [ side / 2, -side / 2],
+            [ side / 2,  side / 2],
+            [-side / 2,  side / 2]
+        ];
+        this.square = new Polygon(scene, V, coords);
         this.initBuffers();
     };
 
@@ -201,7 +207,7 @@ class Square extends CGFobject
 
 class Circle extends CGFobject
 {
-    constructor(scene, radius = 1, slices = 32, coords = [0, 1, 0, 1])
+    constructor(scene, radius = 1, slices = 64, coords = [0, 1, 0, 1])
     {
         super(scene);
         this.circle = new Regular(scene, slices, radius, coords);

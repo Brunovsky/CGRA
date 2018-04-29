@@ -52,7 +52,7 @@ class Prism extends CGFobject
 
                 // Texture v1
                 stexUnit = theta / (2 * PI);
-                ttexUnit = Z / height;
+                ttexUnit = 1 - Z / height;
                 stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
                 ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
                 this.texCoords.push(stex, ttex); // v1U's texcoords
@@ -79,7 +79,7 @@ class Prism extends CGFobject
 
                 // Texture v2
                 stexUnit = theta / (2 * PI);
-                ttexUnit = Z / height;
+                ttexUnit = 1 - Z / height;
                 stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
                 ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
                 this.texCoords.push(stex, ttex); // v2U's texcoords

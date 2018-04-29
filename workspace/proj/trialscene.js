@@ -32,6 +32,7 @@ class LightingScene extends CGFscene
         this.halfsphere = new HalfSphere(this, 1);
         this.closedhalfsphere = new ClosedHalfSphere(this, 1);
         this.sphere = new Sphere(this, 1);
+        this.flipsphere = new FlipSphere(this, 1.5);
 
         this.cylinder = new Cylinder(this, 1, 2);
         this.closedcylinder = new ClosedCylinder(this, 1, 3);
@@ -84,7 +85,7 @@ class LightingScene extends CGFscene
         this.tableTex.setAmbient(0.5, 0.5, 0.5, 1);
         this.tableTex.setDiffuse(0.7, 0.7, 0.7, 1);
         this.tableTex.setShininess(150);
-        this.tableTex.loadTexture("tex/table.png");
+        this.tableTex.loadTexture("tex/board.png");
     };
 
     initCameras() 
@@ -200,6 +201,8 @@ class LightingScene extends CGFscene
         this.closedhalfsphere.display();
         this.translate(3, 0, 0);
         this.sphere.display();
+        this.translate(3, 0, 0);
+        this.flipsphere.display();
         this.translate(3, 0, 0);
 
         this.popMatrix();

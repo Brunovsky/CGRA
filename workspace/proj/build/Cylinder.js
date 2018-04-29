@@ -52,7 +52,7 @@ class Cylinder extends CGFobject
 
                 // Texture Up, Down
                 let stexUnit = theta / (2 * PI);
-                let ttexUnit = Z / height;
+                let ttexUnit = 1 - Z / height;
                 let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
                 let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
                 this.texCoords.push(stex, ttex); // Up

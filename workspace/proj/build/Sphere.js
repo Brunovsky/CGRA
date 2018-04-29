@@ -138,3 +138,24 @@ class Sphere extends CGFobject
         this.scene.popMatrix();
     };
 };
+
+
+
+class FlipSphere extends CGFobject
+{
+    constructor(scene, radius = 1, slices = 64, stacks = 32, coords = [0, 1, 0, 1])
+    {
+        super(scene);
+        this.sphere = new HalfSphere(scene, radius, slices, stacks, coords);
+        this.initBuffers();
+    };
+
+    display()
+    {
+        this.scene.pushMatrix();
+            this.sphere.display();
+            this.scene.rotate(Math.PI, 1, 0, 0);
+            this.sphere.display();
+        this.scene.popMatrix();
+    };
+}

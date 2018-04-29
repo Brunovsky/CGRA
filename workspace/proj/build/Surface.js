@@ -219,7 +219,7 @@ class zSurface extends CGFobject
 
                 // Texture Up, Down
                 let stexUnit = i / slices;
-                let ttexUnit = j / slices;
+                let ttexUnit = 1 - j / slices;
                 let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
                 let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
                 this.texCoords.push(stex, ttex); // Up
@@ -321,7 +321,7 @@ class uvSurface extends CGFobject
 
                 // Texture Up, Down
                 let stexUnit = i / slices;
-                let ttexUnit = j / slices;
+                let ttexUnit = 1 - j / slices;
                 let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
                 let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
                 this.texCoords.push(stex, ttex); // Up
@@ -426,7 +426,7 @@ class revSurface extends CGFobject
 
                 // Texture Up, Down
                 let stexUnit = i / slices;
-                let ttexUnit = j / stacks;
+                let ttexUnit = 1 - j / stacks;
                 let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
                 let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
                 this.texCoords.push(stex, ttex); // Up
