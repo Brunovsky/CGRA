@@ -1,9 +1,21 @@
-// Returns the vector B-A, where A and B are vertices [X, Y, Z]
-function makeVector(A, B) {
+// Converts [X, Y, Z] to {X: X, Y: Y, Z: Z}
+function arrayToXYZ(P) {
     return {
-        X: B[0] - A[0],
-        Y: B[1] - A[1],
-        Z: B[2] - A[2]
+        X: P[0],
+        Y: P[1],
+        Z: P[2]
+    };
+}
+
+// Detects if P is written as [X, Y, Z] or {X: X, Y: Y, Z: Z}, returns later.
+function anyToXYZ(P) {
+    if (Array.isArray(P) && P.length >= 3) {
+        return arrayToXYZ(P);
+    } else if (P.X != null && P.Y != null && P.Z != null) {
+        return P;
+    } else {
+        console.log("Error (anyToXYZ): Invalid P");
+        return null; // let it crash
     }
 }
 
@@ -33,7 +45,7 @@ function crossProduct(a, b) {
 
 // Normalize vector a to length 1.
 function normalize(a) {
-    let N = sqrt(a.X * a.X + a.Y * a.Y + a.Z * a.Z);
+    let N = Math.sqrt(a.X * a.X + a.Y * a.Y + a.Z * a.Z);
     let normX = a.X / N;
     let normY = a.Y / N;
     let normZ = a.Z / N;
@@ -50,7 +62,8 @@ let rightHandOrientation = true, leftHandOrientation = false;
 // @return rightHandOrientation if the Z component of (B-A)x(C-B) is >= 0
 // @return leftHandOrientation  if the Z component of (B-A)x(C-B) is < 0 
 function orientationRule(A, B, C) {
-    let normal = crossProduct(makeVector(A, B), makeVector(B, C));
+    let vA = anyToXYZ(A), vB = anyToXYZ(B), vC = anyToXYZ(C);
+    let normal = crossProduct(subVectors(vA, vB), subVectors(vB, vC));
     if (normal.Z >= 0) {
         return rightHandOrientation;
     } else {
