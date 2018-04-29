@@ -16,7 +16,7 @@ class Regular extends CGFobject
 
     initBuffers()
     {
-        const cos = Math.cos, sin = Math.sin, PI = Math.PI;
+        const sin = Math.sin, cos = Math.cos, PI = Math.PI;
         const sides = this.sides, radius = this.radius,
             coords = this.coords;
 
@@ -348,7 +348,7 @@ class rPolygon extends CGFobject
 
     initBuffers()
     {
-        const cos = Math.cos, sin = Math.sin, PI = Math.PI;
+        const sin = Math.sin, cos = Math.cos, PI = Math.PI;
         const rfunction = this.rfunction, l = this.limits,
             samples = this.samples, coords = this.coords;
 

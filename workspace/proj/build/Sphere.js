@@ -11,7 +11,7 @@ class HalfSphere extends CGFobject
 
     initBuffers()
     {
-        const cos = Math.cos, sin = Math.sin, PI = Math.PI;
+        const sin = Math.sin, cos = Math.cos, PI = Math.PI;
         const radius = this.radius, slices = this.slices,
             stacks = this.stacks;
 

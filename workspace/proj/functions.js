@@ -80,7 +80,60 @@ function mobiusStrip(u, v) {
         X: 2 * cos(u) + v * cos(u / 2),
         Y: 2 * sin(u) + v * cos(u / 2),
         Z: v * sin(u / 2)
+    };
+}
+
+function ellipticHyperboloid(u, v) {
+    const sin = Math.sin, cos = Math.cos, sqrt = Math.sqrt;
+    return {
+        X: sqrt(1 + u * u) * cos(v),
+        Y: sqrt(1 + u * u) * sin(v),
+        Z: u
+    };
+}
+
+function monkeySaddle(x, y) {
+    return x * (x * x - 3 * y * y);
+}
+
+function crossCap(u, v) {
+    const sin = Math.sin, cos = Math.cos;
+    return {
+        X: cos(u) * sin(2*v),
+        Y: sin(u) * sin(2*v),
+        Z: cos(v) * cos(v) - cos(u) * cos(u) * sin(v) * sin(v)
     }
+}
+
+function crossCap2(u, v) {
+    const sin = Math.sin, cos = Math.cos;
+    return {
+        X: sin(u) * sin(2*v),
+        Y: sin(2*u) * sin(v) * sin(v),
+        Z: cos(2*u) * sin(v) * sin(v)
+    }
+}
+
+function cornucopia(u, v) {
+    const sin = Math.sin, cos = Math.cos, e = Math.E, pow = Math.pow;
+    return {
+        X: pow(e, v) * (cos(v) + cos(u) * cos(v)),
+        Y: pow(e, v) * (sin(v) + cos(u) * sin(v)),
+        Z: pow(e, v) * sin(u)
+    };
+}
+
+function hennebergMinimal(u, v) {
+    const sin = Math.sin, cos = Math.cos, sinh = Math.sinh, cosh = Math.cosh;
+    return {
+        X: 2 * sinh(u) * cos(v) - (2/3) * sinh(3*u) * cos(3*v),
+        Y: 2 * sinh(u) * sin(v) + (2/3) * sinh(3*u) * sin(3*v),
+        Z: 2 * cosh(2*u) * cos(2*v)
+    }
+}
+
+function mennSurface(x, y) {
+    return (x * x * x * x) + (x * x * y) - y * y; 
 }
 
 

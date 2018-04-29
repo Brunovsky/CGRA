@@ -1,5 +1,12 @@
-function zComputeSurfaceNormal(zfunction, X, Y, delta) {
-    const Point = {X: X, Y: Y, Z: zfunction(X, Y)};
+function zComputeSurfaceNormal(zfunction, X, Y, xDelta, yDelta) {
+    const deltaDivider = 256;
+    const sqrt = Math.sqrt;
+
+    const Point = {
+        X: X,
+        Y: Y,
+        Z: zfunction(X, Y)
+    };
 
     function sub(a, b) {
         let subX = a.X - b.X;
@@ -12,8 +19,8 @@ function zComputeSurfaceNormal(zfunction, X, Y, delta) {
         };
     }
 
-    function xTangent(delta) {
-        let deltaX = X + delta;
+    function xTangent() {
+        let deltaX = X + xDelta / deltaDivider;
         let deltaY = Y;
         let deltaZ = zfunction(deltaX, deltaY);
         return {
@@ -23,9 +30,9 @@ function zComputeSurfaceNormal(zfunction, X, Y, delta) {
         };
     }
 
-    function yTangent(delta) {
+    function yTangent() {
         let deltaX = X;
-        let deltaY = Y + delta;
+        let deltaY = Y + yDelta / deltaDivider;
         let deltaZ = zfunction(deltaX, deltaY);
         return {
             X: deltaX,
@@ -46,7 +53,7 @@ function zComputeSurfaceNormal(zfunction, X, Y, delta) {
     }
 
     function normalize(vec) {
-        let N = Math.sqrt(vec.X * vec.X + vec.Y * vec.Y + vec.Z * vec.Z);
+        let N = sqrt(vec.X * vec.X + vec.Y * vec.Y + vec.Z * vec.Z);
         let normX = vec.X / N;
         let normY = vec.Y / N;
         let normZ = vec.Z / N;
@@ -57,8 +64,8 @@ function zComputeSurfaceNormal(zfunction, X, Y, delta) {
         };
     }
 
-    let xTangentVector = sub(xTangent(delta), Point);
-    let yTangentVector = sub(yTangent(delta), Point);
+    let xTangentVector = sub(xTangent(), Point);
+    let yTangentVector = sub(yTangent(), Point);
     let normalV = normalize(cross(xTangentVector, yTangentVector));
 
     return normalV;
@@ -66,7 +73,10 @@ function zComputeSurfaceNormal(zfunction, X, Y, delta) {
 
 
 
-function uvComputeSurfaceNormal(uvfunction, U, V, delta) {
+function uvComputeSurfaceNormal(uvfunction, U, V, uDelta, vDelta) {
+    const deltaDivider = 256;
+    const sqrt = Math.sqrt;
+
     const Point = uvfunction(U, V);
 
     function sub(a, b) {
@@ -80,12 +90,12 @@ function uvComputeSurfaceNormal(uvfunction, U, V, delta) {
         };
     }
 
-    function uTangent(delta) {
-        return uvfunction(U + delta, V);
+    function uTangent() {
+        return uvfunction(U + uDelta / deltaDivider, V);
     }
 
-    function vTangent(delta) {
-        return uvfunction(U, V + delta);
+    function vTangent() {
+        return uvfunction(U, V + vDelta / deltaDivider);
     }
 
     function cross(a, b) {
@@ -111,8 +121,8 @@ function uvComputeSurfaceNormal(uvfunction, U, V, delta) {
         };
     }
 
-    let uTangentVector = sub(uTangent(delta), Point);
-    let vTangentVector = sub(vTangent(delta), Point);
+    let uTangentVector = sub(uTangent(), Point);
+    let vTangentVector = sub(vTangent(), Point);
     let normalV = normalize(cross(uTangentVector, vTangentVector));
 
     return normalV;
@@ -120,9 +130,11 @@ function uvComputeSurfaceNormal(uvfunction, U, V, delta) {
 
 
 
-function revComputeSurfaceNormal(revfunction, Z, theta, delta) {
+function revComputeSurfaceNormal(revfunction, Z, theta, zDelta) {
+    const deltaDivider = 256;
+    const sin = Math.sin, cos = Math.cos, PI = Math.PI, sqrt = Math.sqrt;
+
     const r = revfunction(Z);
-    const sin = Math.sin, cos = Math.cos, PI = Math.PI;
     const Point = {
         X: r * cos(theta),
         Y: r * sin(theta),
@@ -136,16 +148,16 @@ function revComputeSurfaceNormal(revfunction, Z, theta, delta) {
         return {X: subX, Y: subY, Z: subZ};
     }
 
-    function zTangent(delta) {
-        let r = revfunction(Z + delta);
+    function zTangent() {
+        let r = revfunction(Z + zDelta / deltaDivider);
         return {
             X: r * cos(theta),
             Y: r * sin(theta),
-            Z: Z + delta
+            Z: Z + zDelta / deltaDivider
         }
     }
 
-    function thetaTangent(delta) {
+    function thetaTangent() {
         return {
             X: -sin(theta),
             Y: cos(theta),
@@ -165,7 +177,7 @@ function revComputeSurfaceNormal(revfunction, Z, theta, delta) {
     }
 
     function normalize(vec) {
-        let N = Math.sqrt(vec.X * vec.X + vec.Y * vec.Y + vec.Z * vec.Z);
+        let N = sqrt(vec.X * vec.X + vec.Y * vec.Y + vec.Z * vec.Z);
         let normX = vec.X / N;
         let normY = vec.Y / N;
         let normZ = vec.Z / N;
@@ -176,8 +188,8 @@ function revComputeSurfaceNormal(revfunction, Z, theta, delta) {
         };
     }
 
-    let zTangentVector = sub(zTangent(delta), Point);
-    let thetaTangentVector = sub(thetaTangent(delta), Point);
+    let zTangentVector = sub(zTangent(), Point);
+    let thetaTangentVector = sub(thetaTangent(), Point);
     let normalV = normalize(cross(thetaTangentVector, zTangentVector));
 
     return normalV;
@@ -194,7 +206,7 @@ function sampleZfunction(zfunction, X, Y, xDelta, yDelta) {
     if (zfunction.normal) {
         Point.N = zfunction.normal(X, Y);
     } else {
-        Point.N = zComputeSurfaceNormal(X, Y, xDelta, yDelta);
+        Point.N = zComputeSurfaceNormal(zfunction, X, Y, xDelta, yDelta);
     }
     return Point;
 }
@@ -206,7 +218,7 @@ function sampleUVfunction(uvfunction, U, V, uDelta, vDelta) {
     if (uvfunction.normal) {
         Point.N = uvfunction.normal(U, V);
     } else {
-        Point.N = uvComputeSurfaceNormal(U, V, uDelta, vDelta);
+        Point.N = uvComputeSurfaceNormal(uvfunction, U, V, uDelta, vDelta);
     }
     return Point;
 }
@@ -216,14 +228,14 @@ function sampleUVfunction(uvfunction, U, V, uDelta, vDelta) {
 function sampleREVfunction(revfunction, Z, theta, zDelta) {
     const r = revfunction(Z, theta);
     const Point = {
-        X: r * cos(theta),
-        Y: r * sin(theta),
+        X: r * Math.cos(theta),
+        Y: r * Math.sin(theta),
         Z: Z
     };
     if (revfunction.normal) {
         Point.N = revfunction.normal(Z, theta);
     } else {
-        Point.N = revComputeSurfaceNormal(Z, theta, zDelta);
+        Point.N = revComputeSurfaceNormal(revfunction, Z, theta, zDelta);
     }
     return Point;
 }
@@ -257,7 +269,8 @@ class zSurface extends CGFobject
         const zfunction = this.zfunction, b = this.boundary,
             slices = this.slices, coords = this.coords;
 
-        const delta = Math.min(b.maxX - b.minX, b.maxY - b.minY) / (256 * slices);
+        const xDelta = (b.maxX - b.minX) / slices;
+        const yDelta = (b.maxY - b.minY) / slices;
 
         this.vertices = [];
         this.indices = [];
@@ -273,13 +286,14 @@ class zSurface extends CGFobject
 
         for (let j = 0; j <= slices; ++j) { // iterate Y (line)
             for (let i = 0; i <= slices; ++i) { // iterate X (column)
-                let X = ((slices - i) * b.minX + i * b.maxX) / slices;
-                let Y = ((slices - j) * b.minY + j * b.maxY) / slices;
-                let Z = zfunction(X, Y);
-                let normalV = zComputeSurfaceNormal(zfunction, X, Y, delta);
+                let X = b.minX + xDelta * i;
+                let Y = b.minY + yDelta * j;
+                let Point = sampleZfunction(zfunction, X, Y, xDelta, yDelta);
+                //let Z = zfunction(X, Y);
+                //let normalV = zComputeSurfaceNormal(zfunction, X, Y, xDelta, yDelta);
 
-                this.vertices.push(X, Y, Z);
-                this.normals.push(normalV.X, normalV.Y, normalV.Z);
+                this.vertices.push(Point.X, Point.Y, Point.Z);
+                this.normals.push(Point.N.X, Point.N.Y, Point.N.Z);
             }
         }
 
@@ -341,7 +355,8 @@ class uvSurface extends CGFobject
         const uvfunction = this.uvfunction, b = this.boundary,
             slices = this.slices, coords = this.coords;
 
-        const delta = Math.min(b.maxU - b.minU, b.maxV - b.minV) / (256 * slices);
+        const uDelta = (b.maxU - b.minU) / slices;
+        const vDelta = (b.maxV - b.minV) / slices;
 
         this.vertices = [];
         this.indices = [];
@@ -357,17 +372,12 @@ class uvSurface extends CGFobject
 
         for (let j = 0; j <= slices; ++j) { // iterate V
             for (let i = 0; i <= slices; ++i) { // iterate U
-                let U = ((slices - i) * b.minU + i * b.maxU) / slices;
-                let V = ((slices - j) * b.minV + j * b.maxV) / slices;
-                let Point = uvfunction(U, V);
+                let U = b.minU + uDelta * i;
+                let V = b.minV + vDelta * j;
+                let Point = sampleUVfunction(uvfunction, U, V, uDelta, vDelta);
 
-                let X = Point.X;
-                let Y = Point.Y;
-                let Z = Point.Z;
-                let normalV = uvComputeSurfaceNormal(uvfunction, U, V, delta);
-
-                this.vertices.push(X, Y, Z);
-                this.normals.push(normalV.X, normalV.Y, normalV.Z);
+                this.vertices.push(Point.X, Point.Y, Point.Z);
+                this.normals.push(Point.N.X, Point.N.Y, Point.N.Z);
             }
         }
 
@@ -431,9 +441,8 @@ class revSurface extends CGFobject
         const revfunction = this.revfunction, b = this.boundary,
             slices = this.slices, stacks = this.stacks, coords = this.coords;
 
-        const delta = (b.maxZ - b.minZ) / (256 * stacks);
-        const zInc = (b.maxZ - b.minZ) / stacks;
-        const thetaInc = 2 * PI / slices;
+        const zDelta = (b.maxZ - b.minZ) / stacks;
+        const thetaDelta = 2 * PI / slices;
 
         this.vertices = [];
         this.indices = [];
@@ -449,16 +458,12 @@ class revSurface extends CGFobject
 
         for (let j = 0; j <= stacks; ++j) { // iterate Z
             for (let i = 0; i <= slices; ++i) { // iterate Theta
-                let Z = b.minZ + zInc * j;
-                let r = revfunction(Z);
+                let Z = b.minZ + zDelta * j;
+                let theta = b.minTheta + thetaDelta * i;
+                let Point = sampleREVfunction(revfunction, Z, theta, zDelta);
 
-                let theta = thetaInc * i;
-                let X = r * cos(theta);
-                let Y = r * sin(theta);
-                let normalV = revComputeSurfaceNormal(revfunction, Z, theta, delta);
-
-                this.vertices.push(X, Y, Z);
-                this.normals.push(normalV.X, normalV.Y, normalV.Z);
+                this.vertices.push(Point.X, Point.Y, Point.Z);
+                this.normals.push(Point.N.X, Point.N.Y, Point.N.Z);
             }
         }
 
@@ -490,3 +495,6 @@ class revSurface extends CGFobject
         this.initGLBuffers();
     };
 }
+
+
+

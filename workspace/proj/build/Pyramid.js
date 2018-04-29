@@ -12,7 +12,7 @@ class Pyramid extends CGFobject
 
     initBuffers()
     {
-        const cos = Math.cos, sin = Math.sin, PI = Math.PI, sqrt = Math.sqrt;
+        const sin = Math.sin, cos = Math.cos, PI = Math.PI, sqrt = Math.sqrt;
         const sides = this.sides, radius = this.radius,
             height = this.height, stacks = this.stacks;
 

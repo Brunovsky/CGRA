@@ -12,7 +12,7 @@ class Cylinder extends CGFobject
 
     initBuffers()
     {
-        const cos = Math.cos, sin = Math.sin, PI = Math.PI;
+        const sin = Math.sin, cos = Math.cos, PI = Math.PI;
         const slices = this.slices, stacks = this.stacks,
             radius = this.radius, height = this.height;
 
