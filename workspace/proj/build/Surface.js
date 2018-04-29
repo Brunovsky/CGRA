@@ -407,12 +407,12 @@ class revSurface extends CGFobject
                 let above = 2 * slices + 2;
                 let next = 2, right = 2;
 
-                let line = j * above;
-                let current = next * i + line;
+                let stack = j * above;
+                let current = next * i + stack;
 
-                // ... v4U v4D      v3U v3D ... --- line x + 1
+                // ... v4U v4D      v3U v3D ... --- stack + 1
                 // 
-                // ... v1U v1D      v2U v2D ... --- line x
+                // ... v1U v1D      v2U v2D ... --- stack
                 let v1U = current;
                 let v2U = current + right;
                 let v3U = current + right + above;
