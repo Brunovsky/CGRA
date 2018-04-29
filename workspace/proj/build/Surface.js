@@ -193,6 +193,7 @@ class zSurface extends CGFobject
         this.vertices = [];
         this.indices = [];
         this.normals = [];
+        this.texCoords = [];
 
         // j = 5  . . . . . .
         // j = 4  . . . . . .
@@ -215,6 +216,14 @@ class zSurface extends CGFobject
                 // Down
                 this.vertices.push(Point.X, Point.Y, Point.Z);
                 this.normals.push(-Point.N.X, -Point.N.Y, -Point.N.Z);
+
+                // Texture Up, Down
+                let stexUnit = i / slices;
+                let ttexUnit = j / slices;
+                let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
+                let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
+                this.texCoords.push(stex, ttex); // Up
+                this.texCoords.push(stex, ttex); // Down
             }
         }
 
@@ -286,6 +295,7 @@ class uvSurface extends CGFobject
         this.vertices = [];
         this.indices = [];
         this.normals = [];
+        this.texCoords = [];
 
         // j = 5  . . . . . .
         // j = 4  . . . . . .
@@ -308,6 +318,14 @@ class uvSurface extends CGFobject
                 // Down
                 this.vertices.push(Point.X, Point.Y, Point.Z);
                 this.normals.push(-Point.N.X, -Point.N.Y, -Point.N.Z);
+
+                // Texture Up, Down
+                let stexUnit = i / slices;
+                let ttexUnit = j / slices;
+                let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
+                let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
+                this.texCoords.push(stex, ttex); // Up
+                this.texCoords.push(stex, ttex); // Down
             }
         }
 
@@ -373,7 +391,8 @@ class revSurface extends CGFobject
     {
         const sin = Math.sin, cos = Math.cos, PI = Math.PI;
         const revfunction = this.revfunction, b = this.boundary,
-            slices = this.slices, stacks = this.stacks, coords = this.coords;
+            slices = this.slices, stacks = this.stacks,
+            coords = this.coords;
 
         const zDelta = (b.maxZ - b.minZ) / stacks;
         const thetaDelta = (b.maxTheta - b.minTheta) / slices;
@@ -381,6 +400,7 @@ class revSurface extends CGFobject
         this.vertices = [];
         this.indices = [];
         this.normals = [];
+        this.texCoords = [];
 
         // j = 5  . . . . . .
         // j = 4  . . . . . .
@@ -403,6 +423,14 @@ class revSurface extends CGFobject
                 // Down
                 this.vertices.push(Point.X, Point.Y, Point.Z);
                 this.normals.push(-Point.N.X, -Point.N.Y, -Point.N.Z);
+
+                // Texture Up, Down
+                let stexUnit = i / slices;
+                let ttexUnit = j / stacks;
+                let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
+                let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
+                this.texCoords.push(stex, ttex); // Up
+                this.texCoords.push(stex, ttex); // Down
             }
         }
 

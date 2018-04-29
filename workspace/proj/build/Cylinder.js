@@ -42,11 +42,11 @@ class Cylinder extends CGFobject
                 let Y = radius * yUnit;
                 let Z = s * stackHeight;
 
-                // Up
+                // Up (out)
                 this.vertices.push(X, Y, Z);
                 this.normals.push(xUnit, yUnit, 0);
 
-                // Down
+                // Down (in)
                 this.vertices.push(X, Y, Z);
                 this.normals.push(-xUnit, -yUnit, 0);
 

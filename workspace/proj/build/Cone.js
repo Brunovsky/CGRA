@@ -44,11 +44,11 @@ class Cone extends CGFobject
                 let Y = radius * yUnit * (1 - s / stacks);
                 let Z = s * stackHeight;
 
-                // Up
+                // Up (out)
                 this.vertices.push(X, Y, Z);
                 this.normals.push(xUnit * dXY, yUnit * dXY, dZ);
 
-                // Down
+                // Down (in)
                 this.vertices.push(X, Y, Z);
                 this.normals.push(-xUnit * dXY, -yUnit * dXY, -dZ);
 

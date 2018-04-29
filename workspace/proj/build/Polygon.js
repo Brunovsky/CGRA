@@ -59,7 +59,6 @@ class Regular extends CGFobject
             let ttexUnit = 0.5 * (1 - yUnit);
             let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
             let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
-
             this.texCoords.push(stex, ttex); // Up
             this.texCoords.push(stex, ttex); // Down
         }
@@ -146,7 +145,6 @@ class Polygon extends CGFobject
             let ttexUnit = (b.maxY - Y) / (b.maxY - b.minY);
             let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
             let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
-
             this.texCoords.push(stex, ttex); // Up
             this.texCoords.push(stex, ttex); // Down
         }
@@ -349,7 +347,6 @@ class tPolygon extends CGFobject
             let ttexUnit = (b.maxY - Y) / (b.maxY - b.minY);
             let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
             let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
-
             this.texCoords.push(stex, ttex); // Up
             this.texCoords.push(stex, ttex); // Down
         }
@@ -471,7 +468,6 @@ class rPolygon extends CGFobject
             let ttexUnit = (b.maxY - Y) / (b.maxY - b.minY);
             let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
             let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
-
             this.texCoords.push(stex, ttex); // Up
             this.texCoords.push(stex, ttex); // Down
         }

@@ -253,7 +253,7 @@ class LightingScene extends CGFscene
         this.pushMatrix();
         this.translate(0, -10, 0); // -10
 
-            this.materialDefault.apply();
+            //this.materialDefault.apply();
         this.sqXYsurface.display();
         this.translate(5, 0, 0);
         this.cubesurface.display();
