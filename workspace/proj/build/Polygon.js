@@ -118,8 +118,13 @@ class Polygon extends CGFobject
             let X = V[i][0];
             let Y = V[i][1];
 
+            // Up
             this.vertices.push(X, Y, 0);
             this.normals.push(0, 0, 1);
+
+            // Down
+            this.vertices.push(X, Y, 0);
+            this.normals.push(0, 0, -1);
 
             if (X < b.minX) b.minX = X;
             if (X > b.maxX) b.maxX = X;
@@ -137,11 +142,25 @@ class Polygon extends CGFobject
             let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
 
             this.texCoords.push(stex, ttex);
+            this.texCoords.push(stex, ttex);
         }
 
         for (let i = 1; i < V.length - 1; ++i) {
-            this.indices.push(0, i, i + 1);
-            this.indices.push(0, i + 1, i);
+            let next = 2, right = 2;
+
+            let current = next * i;
+
+            // ... v1U v1D      v2U v2D ... --- around the unit circle
+            let v0U = 0;
+            let v1U = current;
+            let v2U = current + right;
+            let v0D = 1 + v0U;
+            let v1D = 1 + v1U;
+            let v2D = 1 + v2U;
+
+            this.indices.push(v0U, v1U, v2U);
+
+            this.indices.push(v0D, v2D, v1D);
         }
 
         this.primitiveType = this.scene.gl.TRIANGLES;
@@ -229,55 +248,19 @@ class Trapezium extends CGFobject
     constructor(scene, base = 1, height = 1, top = 1, coords = [0, 1, 0, 1])
     {
         super(scene);
-        this.base = base;
-        this.height = height;
-        this.top = top;
-        this.coords = {
-            minS: coords[0],
-            maxS: coords[1],
-            minT: coords[2],
-            maxT: coords[3]
-        };
+        let V = [
+            [-base / 2, -height / 2],
+            [ base / 2, -height / 2],
+            [  top / 2,  height / 2],
+            [ -top / 2,  height / 2]
+        ];
+        this.polygon = new Polygon(scene, V, coords);
         this.initBuffers();
     };
 
-    initBuffers()
+    display()
     {
-        const base = this.base, height = this.height,
-            top = this.top, coords = this.coords;
-
-        //   v3  v2
-        // v0      v1
-        this.vertices = [
-            -base / 2, -height / 2, 0,
-             base / 2, -height / 2, 0,
-              top / 2,  height / 2, 0,
-             -top / 2,  height / 2, 0
-        ];
-
-        this.indices = [
-            0, 1, 2,
-            0, 2, 3,
-            0, 2, 1,
-            0, 3, 2
-        ];
-
-        this.normals = [
-            0, 0, 1,
-            0, 0, 1,
-            0, 0, 1,
-            0, 0, 1
-        ];
-
-        this.texCoords = [
-            coords.minS, coords.minT,
-            coords.maxS, coords.minT,
-            coords.minS, coords.maxT,
-            coords.maxS, coords.maxT
-        ];
-
-        this.primitiveType = this.scene.gl.TRIANGLES;
-        this.initGLBuffers();
+        this.polygon.display();
     };
 };
 
@@ -324,8 +307,13 @@ class tPolygon extends CGFobject
             let X = Point.X;
             let Y = Point.Y;
 
+            // Up
             this.vertices.push(X, Y, 0);
             this.normals.push(0, 0, 1);
+
+            // Down
+            this.vertices.push(X, Y, 0);
+            this.normals.push(0, 0, -1);
 
             if (X < b.minX) b.minX = X;
             if (X > b.maxX) b.maxX = X;
@@ -334,8 +322,8 @@ class tPolygon extends CGFobject
         }
 
         for (let i = 0; i <= samples; ++i) {
-            let X = this.vertices[3 * i];
-            let Y = this.vertices[3 * i + 1];
+            let X = this.vertices[6 * i];
+            let Y = this.vertices[6 * i + 1];
 
             let stexUnit = (X - b.minX) / (b.maxX - b.minX);
             let ttexUnit = (Y - b.minY) / (b.maxY - b.minY);
@@ -343,11 +331,25 @@ class tPolygon extends CGFobject
             let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
 
             this.texCoords.push(stex, ttex);
+            this.texCoords.push(stex, ttex);
         }
 
         for (let i = 1; i < samples; ++i) {
-            this.indices.push(0, i, i + 1);
-            this.indices.push(0, i + 1, i);
+            let next = 2, right = 2;
+
+            let current = next * i;
+
+            // ... v1U v1D      v2U v2D ... --- around the unit circle
+            let v0U = 0;
+            let v1U = current;
+            let v2U = current + right;
+            let v0D = 1 + v0U;
+            let v1D = 1 + v1U;
+            let v2D = 1 + v2U;
+
+            this.indices.push(v0U, v1U, v2U);
+
+            this.indices.push(v0D, v2D, v1D);
         }
 
         this.primitiveType = this.scene.gl.TRIANGLES;
@@ -392,7 +394,11 @@ class rPolygon extends CGFobject
         this.normals = [];
         this.texCoords = [];
 
-        // Center vertex
+        // Center vertex Up
+        this.vertices.push(0, 0, 0);
+        this.normals.push(0, 0, 1);
+
+        // Center vertex Down
         this.vertices.push(0, 0, 0);
         this.normals.push(0, 0, 1);
 
@@ -403,8 +409,13 @@ class rPolygon extends CGFobject
             let X = r * cos(theta);
             let Y = r * sin(theta);
 
+            // Up
             this.vertices.push(X, Y, 0);
             this.normals.push(0, 0, 1);
+
+            // Down
+            this.vertices.push(X, Y, 0);
+            this.normals.push(0, 0, -1);
 
             if (X < b.minX) b.minX = X;
             if (X > b.maxX) b.maxX = X;
@@ -413,8 +424,8 @@ class rPolygon extends CGFobject
         }
 
         for (let i = 0; i <= samples + 1; ++i) {
-            let X = this.vertices[3 * i];
-            let Y = this.vertices[3 * i + 1];
+            let X = this.vertices[6 * i];
+            let Y = this.vertices[6 * i + 1];
 
             let stexUnit = (X - b.minX) / (b.maxX - b.minX);
             let ttexUnit = (Y - b.minY) / (b.maxY - b.minY);
@@ -422,11 +433,25 @@ class rPolygon extends CGFobject
             let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
 
             this.texCoords.push(stex, ttex);
+            this.texCoords.push(stex, ttex);
         }
 
         for (let i = 1; i <= samples; ++i) {
-            this.indices.push(0, i, i + 1);
-            this.indices.push(0, i + 1, i);
+            let next = 2, right = 2;
+
+            let current = next * i;
+
+            // ... v1U v1D      v2U v2D ... --- around the unit circle
+            let v0U = 0;
+            let v1U = current;
+            let v2U = current + right;
+            let v0D = 1 + v0U;
+            let v1D = 1 + v1U;
+            let v2D = 1 + v2U;
+
+            this.indices.push(v0U, v1U, v2U);
+
+            this.indices.push(v0D, v2D, v1D);
         }
 
         this.primitiveType = this.scene.gl.TRIANGLES;
