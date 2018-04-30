@@ -21,6 +21,7 @@ serialInclude([
 	'build/CutCone.js',
 	'build/CutPyramid.js',
 	'build/Surface.js',
+	'complex/Car.js',
 
 	main=function() {
 		var app = new CGFapplication(document.body);

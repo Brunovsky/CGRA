@@ -81,7 +81,7 @@ class LightingScene extends CGFscene
         this.menn = new zSurface(this, mennSurface, [-1, 1, -1, 1]);
         this.roman = new uvSurface(this, romanSurface,  [-PI, PI, -PI / 2, PI / 2]);
 
-        //this.car = new zSurface(this, carFunction, carProportions, carSlices);
+        this.car = new Car(this);
 
         // Materials
         this.materialDefault = new CGFappearance(this);
@@ -183,11 +183,12 @@ class LightingScene extends CGFscene
 
         // ---- BEGIN Scene drawing section
 
-        this.materialDefault.apply();
+            this.materialDefault.apply();
 
         this.pushMatrix();
 
             this.tableTex.apply();
+
         this.octagon.display();
         this.translate(3, 0, 0);
         this.square.display();
@@ -336,9 +337,13 @@ class LightingScene extends CGFscene
         this.roman.display();
         this.translate(4, 0, 0);
 
-        //this.translate(0, -30, 0);
+        this.popMatrix();
+        this.pushMatrix();
+        this.translate(-35, 0, 0);
 
-        //this.car.display();
+            this.materialDefault.apply();
+
+        this.car.display();
 
         // ---- END Scene drawing section
     };
