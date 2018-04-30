@@ -18,6 +18,7 @@ class LightingScene extends CGFscene
         this.axis = new CGFaxis(this, 10);
 
         // Scene elements
+        let PI = Math.PI;
         this.octagon = new Regular(this, 8);
         this.square = new Square(this, 2);
         this.triangle = new Triangle(this, 2);
@@ -38,7 +39,7 @@ class LightingScene extends CGFscene
         this.closedcylinder = new ClosedCylinder(this, 1, 3);
         this.prism = new Prism(this, 5, 1, 3);
         this.closedprism = new ClosedPrism(this, 7, 1, 2);
-        this.revcylinder = new revSurface(this, (Z) => 1, [0, 2, -Math.PI, Math.PI]);
+        this.revcylinder = new revSurface(this, (Z) => 1, [0, 2, -PI, PI]);
 
         this.cone = new Cone(this, 1, 2);
         this.closedcone = new ClosedCone(this, 1.5, 3);
@@ -54,22 +55,31 @@ class LightingScene extends CGFscene
         this.closedcutpyramid = new ClosedCutPyramid(this, 6, 1.5, 2, 4);
         this.doublecutpyramid = new DoubleCutPyramid(this, 4, 1, 0.5, 1.5);
 
-        this.heart = new tPolygon(this, heart, [0, 2 * Math.PI]);
-        this.butterfly = new tPolygon(this, butterfly, [0, 2 * Math.PI]);
+        this.heart = new tPolygon(this, heart, [0, 2 * PI]);
+        this.butterfly = new tPolygon(this, butterfly, [0, 2 * PI]);
         this.trifolium = new rPolygon(this, protoFolium.bind(null, 2, 2));
 
         this.sqXYsurface = new zSurface(this, (X,Y) => X*X + Y*Y, [-1, 1, -1.5, 2]);
         this.cubesurface = new zSurface(this, (X,Y) => 1 + X*X - Y);
-        this.torus = new uvSurface(this, protoTorus.bind(null, 2, 0.75), [0, 2 * Math.PI, 0, 2 * Math.PI]);
-        this.eight = new uvSurface(this, eightSurface, [0, 2 * Math.PI, -Math.PI / 2, Math.PI / 2]);
-        this.astroidal = new uvSurface(this, astroidalEllipsoid, [-Math.PI / 2, Math.PI / 2, -Math.PI, Math.PI]);
-        this.kiss = new uvSurface(this, kissSurface, [-Math.PI, Math.PI, -1, 1]);
-        this.bohemianDome = new uvSurface(this, bohemianDome, [-Math.PI, Math.PI, -Math.PI, Math.PI], 64);
+        this.torus = new uvSurface(this, protoTorus.bind(null, 2, 0.75), [0, 2 * PI, 0, 2 * PI]);
+        this.eight = new uvSurface(this, eightSurface, [0, 2 * PI, -PI / 2, PI / 2]);
+        this.astroidal = new uvSurface(this, astroidalEllipsoid, [-PI / 2, PI / 2, -PI, PI]);
+        this.kiss = new uvSurface(this, kissSurface, [-PI, PI, -1, 1]);
+        this.bohemianDome = new uvSurface(this, bohemianDome, [-PI, PI, -PI, PI], 64);
         this.crossedTrough = new zSurface(this, (X,Y) => X*X*Y*Y);
-        this.sineSurface = new uvSurface(this, sineSurface, [-Math.PI, Math.PI, -Math.PI, Math.PI], 64);
+        this.sineSurface = new uvSurface(this, sineSurface, [-PI, PI, -PI, PI], 64);
         this.cayleySurface = new zSurface(this, cayleySurface);
-        this.vase = new revSurface(this, (Z) => 1 + 0.5 * Math.cos(2*Z), [-Math.PI / 2, 0.65 * Math.PI, -Math.PI, Math.PI]);
-        this.mobius = new uvSurface(this, mobiusStrip, [-Math.PI, Math.PI, -0.5, 0.5]);
+        this.vase = new revSurface(this, (Z) => 1 + 0.5 * Math.cos(2*Z), [-PI / 2, 0.65 * PI, -PI, PI]);
+        this.mobius = new uvSurface(this, mobiusStrip, [-PI, PI, -0.5, 0.5]);
+
+        this.ellipticHyperboloid = new uvSurface(this, ellipticHyperboloid, [-1, 1, -PI, PI]);
+        this.monkeySaddle = new zSurface(this, monkeySaddle, [-1, 1, -1, 1]);
+        this.crossCap = new uvSurface(this, crossCap, [-PI, PI, 0, PI / 2]);
+        this.crossCap2 = new uvSurface(this, crossCap2, [-PI, PI, 0, PI / 2]);
+        this.cornucopia = new uvSurface(this, cornucopia, [-PI, PI, -2, 0.5]);
+        this.henneberg = new uvSurface(this, hennebergMinimal,  [-PI / 8, PI / 8, -PI, PI]);
+        this.menn = new zSurface(this, mennSurface, [-1, 1, -1, 1]);
+        this.roman = new uvSurface(this, romanSurface,  [-PI, PI, -PI / 2, PI / 2]);
 
         //this.car = new zSurface(this, carFunction, carProportions, carSlices);
 
@@ -85,7 +95,7 @@ class LightingScene extends CGFscene
         this.tableTex.setAmbient(0.5, 0.5, 0.5, 1);
         this.tableTex.setDiffuse(0.7, 0.7, 0.7, 1);
         this.tableTex.setShininess(150);
-        this.tableTex.loadTexture("tex/board.png");
+        this.tableTex.loadTexture("tex/table.png");
     };
 
     initCameras() 
@@ -122,6 +132,13 @@ class LightingScene extends CGFscene
 
         this.lights[i].setPosition(3, 0, -4, 1);
         this.lights[i].setDiffuse(0.25, 1.0, 1.0, 1.0);
+        this.lights[i].setVisible(true);
+        this.lights[i].enable();
+        i++;
+
+        this.lights[i].setPosition(5, -35, 8, 1);
+        this.lights[i].setDiffuse(0.25, 1.0, 1.0, 1.0);
+        this.lights[i].setConstantAttenuation(0.5);
         this.lights[i].setVisible(true);
         this.lights[i].enable();
         i++;
@@ -297,6 +314,27 @@ class LightingScene extends CGFscene
         this.translate(5, 0, 0);
         this.mobius.display();
         this.translate(3, 0, 0);
+
+        this.popMatrix();
+        this.pushMatrix();
+        this.translate(0, -28, 0), // -28
+
+        this.ellipticHyperboloid.display();
+        this.translate(4, 0, 0);
+        this.monkeySaddle.display();
+        this.translate(4, 0, 0);
+        this.crossCap.display();
+        this.translate(4, 0, 0);
+        this.crossCap2.display();
+        this.translate(3, 0, 0);
+        this.cornucopia.display();
+        this.translate(5, 0, 0);
+        this.henneberg.display();
+        this.translate(4, 0, 0);
+        this.menn.display();
+        this.translate(4, 0, 0);
+        this.roman.display();
+        this.translate(4, 0, 0);
 
         //this.translate(0, -30, 0);
 

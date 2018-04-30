@@ -109,8 +109,8 @@ function crossCap2(u, v) {
     const sin = Math.sin, cos = Math.cos;
     return {
         X: sin(u) * sin(2*v),
-        Y: sin(2*u) * sin(v) * sin(v),
-        Z: cos(2*u) * sin(v) * sin(v)
+        Y: 2 * sin(2*u) * sin(v) * sin(v),
+        Z: 2 * cos(2*u) * sin(v) * sin(v)
     }
 }
 
