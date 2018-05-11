@@ -15,7 +15,7 @@ class CutPyramid extends CGFobject
             maxS: coords[1],
             minT: coords[2],
             maxT: coords[3]
-        }
+        };
         this.initBuffers();
     };
 
