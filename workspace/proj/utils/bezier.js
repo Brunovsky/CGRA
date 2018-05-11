@@ -7,6 +7,8 @@
  *
  * The function protoBezierSurface(...points) takes a (n+1)(m+1) matrix argument
  * and returns a function that computes the uvSurface.
+ *
+ * Both use De Casteljau's algorithm for the calculation.
  */
 
 function binomial(n, k) {

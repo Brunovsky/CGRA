@@ -28,7 +28,20 @@ function polyDerivative(X, ...coefs) {
     return val;
 }
 
+function protoPolynomial(...coefs) {
+    let poly = function(X) {
+        return polynomial(X, ...coefs);
+    }
+
+    poly.derivative = function(X) {
+        return polyDerivative(X, ...coefs);
+    }
+
+    return poly;
+}
+
 polynomial.derivative = polyDerivative;
+
 
 /**
  * Compute the 4th degree polynomial starting at I = (I.X, I.Y) and ending at F = (F.X, F.Y)
@@ -76,9 +89,7 @@ function hermitePolynomial(w, I, F) {
     u0 += 3 * F.X * I.X * (F.X * I.Y - I.X * F.Y) + (F.Y * I.X ** 3) - (I.Y * F.X ** 3);
     u0 = u0 / det;
 
-    let poly = function(X) {
-        return polynomial(X, u4, u3, u2, u1, u0);
-    }
+    let poly = protoPolynomial(u4, u3, u2, u1, u0);
 
     console.log(u4, u3, u2, u1, u0);
     return poly;
