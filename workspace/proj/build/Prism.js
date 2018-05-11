@@ -118,6 +118,18 @@ class Prism extends CGFobject
         this.primitiveType = this.scene.gl.TRIANGLES;
         this.initGLBuffers();
     };
+
+    display()
+    {
+        this.scene.pushTexture(this.texture);
+        super.display();
+        this.scene.popTexture();
+    };
+
+    bindTexture(prismTexture)
+    {
+        this.texture = prismTexture;
+    };
 };
 
 
@@ -144,5 +156,11 @@ class ClosedPrism extends CGFobject
                 this.scene.translate(0, 0, this.height);
                 this.base.display();
         this.scene.popMatrix();
+    };
+
+    bindTexture(prismTexture, baseTexture)
+    {
+        this.prism.bindTexture(prismTexture);
+        this.base.bindTexture(baseTexture);
     };
 };

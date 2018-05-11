@@ -121,6 +121,18 @@ class Pyramid extends CGFobject
         this.primitiveType = this.scene.gl.TRIANGLES;
         this.initGLBuffers();
     };
+
+    display()
+    {
+        this.scene.pushTexture(this.texture);
+        super.display();
+        this.scene.popTexture();
+    };
+
+    bindTexture(pyramidTexture)
+    {
+        this.texture = pyramidTexture;
+    };
 };
 
 
@@ -143,6 +155,12 @@ class ClosedPyramid extends CGFobject
             this.base.display();
         this.scene.popMatrix();
     };
+
+    bindTexture(pyramidTexture, baseTexture)
+    {
+        this.pyramid.bindTexture(pyramidTexture);
+        this.base.bindTexture(baseTexture);
+    };
 };
 
 
@@ -163,5 +181,10 @@ class DoublePyramid extends CGFobject
             this.scene.rotate(Math.PI, 1, 0, 0);
             this.pyramid.display();
         this.scene.popMatrix();
+    };
+
+    bindTexture(pyramidTexture)
+    {
+        this.pyramid.bindTexture(pyramidTexture);
     };
 };

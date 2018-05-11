@@ -12,6 +12,7 @@ serialInclude([
 	'utils/vectors.js',
 	'utils/bezier.js',
 	'utils/functions.js',
+	'utils/stack.js',
 
 	'build/Polygon.js',
 	'build/Prism.js',

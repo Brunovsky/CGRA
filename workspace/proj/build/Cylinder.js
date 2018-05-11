@@ -94,8 +94,15 @@ class Cylinder extends CGFobject
 
     display()
     {
+        this.scene.pushTexture(this.texture);
         super.display();
-    }
+        this.scene.popTexture();
+    };
+
+    bindTexture(cylinderTexture)
+    {
+        this.texture = cylinderTexture;
+    };
 };
 
 
@@ -122,5 +129,11 @@ class ClosedCylinder extends CGFobject
                 this.scene.translate(0, 0, this.height);
                 this.base.display();
         this.scene.popMatrix();
+    };
+
+    bindTexture(cylinderTexture, circleTexture)
+    {
+        this.cylinder.bindTexture(cylinderTexture);
+        this.base.bindTexture(circleTexture);
     };
 };

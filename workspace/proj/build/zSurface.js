@@ -156,4 +156,16 @@ class zSurface extends CGFobject
         this.primitiveType = this.scene.gl.TRIANGLES;
         this.initGLBuffers();
     };
+
+    display()
+    {
+        this.scene.pushTexture(this.texture);
+        super.display();
+        this.scene.popTexture();
+    };
+
+    bindTexture(zSurfaceTexture)
+    {
+        this.texture = zSurfaceTexture;
+    };
 };

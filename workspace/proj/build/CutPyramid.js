@@ -127,6 +127,18 @@ class CutPyramid extends CGFobject
         this.primitiveType = this.scene.gl.TRIANGLES;
         this.initGLBuffers();
     };
+
+    display()
+    {
+        this.scene.pushTexture(this.texture);
+        super.display();
+        this.scene.popTexture();
+    };
+
+    bindTexture(cutPyramidTexture)
+    {
+        this.texture = cutPyramidTexture;
+    };
 };
 
 
@@ -154,6 +166,13 @@ class ClosedCutPyramid extends CGFobject
                 this.scene.translate(0, 0, this.height);
                 this.top.display();
         this.scene.popMatrix();
+    };
+
+    bindTexture(cutPyramidTexture, baseTexture, topTexture)
+    {
+        this.cutPyramid.bindTexture(cutPyramidTexture);
+        this.base.bindTexture(baseTexture);
+        this.top.bindTexture(topTexture);
     };
 };
 
@@ -183,5 +202,11 @@ class DoubleCutPyramid extends CGFobject
                 this.scene.translate(0, 0, this.height);
                 this.top.display();
         this.scene.popMatrix();
+    };
+
+    bindTexture(cutPyramidTexture, topTexture)
+    {
+        this.cutPyramid.bindTexture(cutPyramidTexture);
+        this.top.bindTexture(topTexture);
     };
 };

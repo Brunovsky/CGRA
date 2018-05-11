@@ -83,6 +83,18 @@ class Regular extends CGFobject
         this.primitiveType = this.scene.gl.TRIANGLES;
         this.initGLBuffers();
     };
+
+    display()
+    {
+        this.scene.pushTexture(this.texture);
+        super.display();
+        this.scene.popTexture();
+    };
+
+    bindTexture(regularTexture)
+    {
+        this.texture = regularTexture;
+    };
 };
 
 
@@ -178,6 +190,18 @@ class Polygon extends CGFobject
         this.primitiveType = this.scene.gl.TRIANGLES;
         this.initGLBuffers();
     };
+
+    display()
+    {
+        this.scene.pushTexture(this.texture);
+        super.display();
+        this.scene.popTexture();
+    };
+
+    bindTexture(polygonTexture)
+    {
+        this.texture = polygonTexture;
+    };
 };
 
 
@@ -201,6 +225,11 @@ class Square extends CGFobject
     {
         this.square.display();
     };
+
+    bindTexture(squareTexture)
+    {
+        this.square.bindTexture(squareTexture);
+    };
 };
 
 
@@ -218,6 +247,11 @@ class Circle extends CGFobject
     {
         this.circle.display();
     };
+
+    bindTexture(circleTexture)
+    {
+        this.circle.bindTexture(circleTexture);
+    };
 };
 
 
@@ -234,6 +268,11 @@ class Triangle extends CGFobject
     display()
     {
         this.triangle.display();
+    };
+
+    bindTexture(triangleTexture)
+    {
+        this.triangle.bindTexture(triangleTexture);
     };
 };
 
@@ -257,6 +296,11 @@ class Rectangle extends CGFobject
             this.square.display();
         this.scene.popMatrix();
     };
+
+    bindTexture(rectangleTexture)
+    {
+        this.rectangle.bindTexture(rectangleTexture);
+    };
 };
 
 
@@ -272,13 +316,18 @@ class Trapezium extends CGFobject
             [  top / 2,  height / 2],
             [ -top / 2,  height / 2]
         ];
-        this.polygon = new Polygon(scene, V, coords);
+        this.trapezium = new Polygon(scene, V, coords);
         this.initBuffers();
     };
 
     display()
     {
-        this.polygon.display();
+        this.trapezium.display();
+    };
+
+    bindTexture(trapeziumTexture)
+    {
+        this.trapezium.bindTexture(trapeziumTexture);
     };
 };
 
@@ -385,6 +434,18 @@ class tPolygon extends CGFobject
 
         this.primitiveType = this.scene.gl.TRIANGLES;
         this.initGLBuffers();
+    };
+
+    display()
+    {
+        this.scene.pushTexture(this.texture);
+        super.display();
+        this.scene.popTexture();
+    };
+
+    bindTexture(tpolygonTexture)
+    {
+        this.texture = tpolygonTexture;
     };
 };
 
@@ -506,5 +567,17 @@ class rPolygon extends CGFobject
 
         this.primitiveType = this.scene.gl.TRIANGLES;
         this.initGLBuffers();
+    };
+
+    display()
+    {
+        this.scene.pushTexture(this.texture);
+        super.display();
+        this.scene.popTexture();
+    };
+
+    bindTexture(rpolygonTexture)
+    {
+        this.texture = rpolygonTexture;
     };
 };

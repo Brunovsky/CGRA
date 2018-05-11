@@ -1,1 +1,4 @@
-class Wheel
+class Wheel extends CGFobject
+{
+    
+}

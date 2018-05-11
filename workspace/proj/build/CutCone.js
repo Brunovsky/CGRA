@@ -15,7 +15,7 @@ class CutCone extends CGFobject
             maxS: coords[1],
             minT: coords[2],
             maxT: coords[3]
-        }
+        };
         this.initBuffers();
     };
 
@@ -97,6 +97,18 @@ class CutCone extends CGFobject
         this.primitiveType = this.scene.gl.TRIANGLES;
         this.initGLBuffers();
     };
+
+    display()
+    {
+        this.scene.pushTexture(this.texture);
+        super.display();
+        this.scene.popTexture();
+    };
+
+    bindTexture(cutConeTexture)
+    {
+        this.texture = cutConeTexture;
+    };
 };
 
 
@@ -124,6 +136,13 @@ class ClosedCutCone extends CGFobject
                 this.scene.translate(0, 0, this.height);
                 this.top.display();
         this.scene.popMatrix();
+    };
+
+    bindTexture(cutConeTexture, baseTexture, topTexture)
+    {
+        this.cone.bindTexture(cutConeTexture);
+        this.base.bindTexture(baseTexture);
+        this.top.bindTexture(topTexture);
     };
 };
 
@@ -153,5 +172,11 @@ class DoubleCutCone extends CGFobject
                 this.scene.translate(0, 0, this.height);
                 this.top.display();
         this.scene.popMatrix();
-    }
-}
+    };
+
+    bindTexture(cutConeTexture, topTexture)
+    {
+        this.cone.bindTexture(cutConeTexture);
+        this.top.bindTexture(topTexture);
+    };
+};

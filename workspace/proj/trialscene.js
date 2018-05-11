@@ -17,7 +17,33 @@ class LightingScene extends CGFscene
 
         this.axis = new CGFaxis(this, 10);
 
-        // Scene elements
+        this.texStack = new Stack();
+        this.texStack.undef = 0;
+
+        /**
+         * Scene textures
+         */
+        this.materialDefault = new CGFappearance(this);
+        this.materialDefault.setAmbient(0.10, 0.45, 0.7, 1);
+        this.materialDefault.setDiffuse(0.2, 0.4, 0.6, 1);
+        this.materialDefault.setSpecular(0.7, 0.6, 0.9, 1);
+        this.materialDefault.setShininess(20);
+
+        this.tableTex = new CGFappearance(this);
+        this.tableTex.setAmbient(0.5, 0.5, 0.5, 1);
+        this.tableTex.setDiffuse(0.7, 0.7, 0.7, 1);
+        this.tableTex.setShininess(150);
+        this.tableTex.loadTexture("tex/table.png");
+
+        this.boardTex = new CGFappearance(this);
+        this.boardTex.setAmbient(0.5, 0.5, 0.5, 1);
+        this.boardTex.setDiffuse(0.7, 0.7, 0.7, 1);
+        this.boardTex.setShininess(150);
+        this.boardTex.loadTexture("tex/board.png");
+
+        /**
+         * Scene elements
+         */
         let PI = Math.PI;
         this.octagon = new Regular(this, 8);
         this.square = new Square(this, 2);
@@ -82,25 +108,16 @@ class LightingScene extends CGFscene
         this.roman = new uvSurface(this, romanSurface,  [-PI, PI, -PI / 2, PI / 2]);
         this.corkScrew = new uvSurface(this, corkScrew,  [-PI, PI, -PI, PI]);
         this.kleinBottle = new uvSurface(this, kleinBottle2,  [-PI, PI, -PI, PI]);
-
-        this.car = new Car(this);
+        this.bezier = new uvSurface(this, sampleBezier, [0, 1, 0, 1]);
         this.myTorus = new uvSurface(this, torus, [0, 2 * PI, PI, 2 * PI], 128);
 
-        this.bezier = new uvSurface(this, sampleBezier, [0, 1, 0, 1]);
+        this.car = new Car(this);
 
-        // Materials
-        this.materialDefault = new CGFappearance(this);
-        this.materialDefault.setAmbient(0.10, 0.45, 0.7, 1);
-        this.materialDefault.setDiffuse(0.2, 0.4, 0.6, 1);
-        this.materialDefault.setSpecular(0.7, 0.6, 0.9, 1);
-        this.materialDefault.setShininess(20);
-
-        // Table
-        this.tableTex = new CGFappearance(this);
-        this.tableTex.setAmbient(0.5, 0.5, 0.5, 1);
-        this.tableTex.setDiffuse(0.7, 0.7, 0.7, 1);
-        this.tableTex.setShininess(150);
-        this.tableTex.loadTexture("tex/table.png");
+        /**
+         * Bind textures to elements
+         */
+        this.cylinder.bindTexture(this.boardTex);
+        this.closedcylinder.bindTexture(this.materialDefault, this.tableTex);
     };
 
     initCameras() 
@@ -163,6 +180,11 @@ class LightingScene extends CGFscene
         this.setShininess(10.0);    
     };
 
+    reset()
+    {
+        this.tableTex.apply();
+    };
+
     display() 
     {
         // ---- BEGIN Background, camera and axis setup
@@ -188,11 +210,11 @@ class LightingScene extends CGFscene
 
         // ---- BEGIN Scene drawing section
 
-            this.materialDefault.apply();
+        this.clearTextures();
+        this.pushTexture(this.materialDefault);
+        this.pushTexture(this.tableTex);
 
         this.pushMatrix();
-
-            this.tableTex.apply();
 
         this.octagon.display();
         this.translate(3, 0, 0);
@@ -354,10 +376,38 @@ class LightingScene extends CGFscene
         this.pushMatrix();
         this.translate(-10, 0, 0);
 
-            this.materialDefault.apply();
+            this.popTexture();
 
         this.car.display();
 
         // ---- END Scene drawing section
+    };
+
+    currentTexture()
+    {
+        return this.texStack.top();
+    };
+
+    pushTexture(T)
+    {
+        if (T) {
+            this.texStack.push(T).apply();
+        } else {
+            this.texStack.undef++;
+        }
+    };
+
+    popTexture()
+    {
+        if (this.texStack.undef == 0) {
+            this.texStack.pop().apply();
+        } else {
+            this.texStack.undef--;
+        }
+    };
+
+    clearTextures()
+    {
+        this.texStack.clear();
     };
 };
