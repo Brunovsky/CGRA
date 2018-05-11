@@ -7,10 +7,12 @@ var myScene;
 serialInclude([
 	'../lib/CGF.js',
 	'globals.js',
-	'utils.js',
-	'functions.js',
-	//'scene.js',
-	'trialscene.js',
+
+	'utils/poly.js',
+	'utils/vectors.js',
+	'utils/bezier.js',
+	'utils/functions.js',
+
 	'build/Polygon.js',
 	'build/Prism.js',
 	'build/Cylinder.js',
@@ -20,8 +22,14 @@ serialInclude([
 	'build/Pyramid.js',
 	'build/CutCone.js',
 	'build/CutPyramid.js',
-	'build/Surface.js',
+	'build/zSurface.js',
+	'build/uvSurface.js',
+	'build/revSurface.js',
+
 	'complex/Car.js',
+
+	//'scene.js',
+	'trialscene.js',
 
 	main=function() {
 		var app = new CGFapplication(document.body);

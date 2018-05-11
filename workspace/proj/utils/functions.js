@@ -145,8 +145,54 @@ function romanSurface(u, v) {
     }
 }
 
+function corkScrew(u, v) {
+    const sin = Math.sin, cos = Math.cos;
+    return {
+        X: cos(u) * cos(v),
+        Y: sin(u) * cos(v),
+        Z: sin(v) + u
+    }
+}
 
+function kleinBottle(u, v) {
+    const sin = Math.sin, cos = Math.cos, sqrt = Math.sqrt;
+    const sqv = sqrt(2) + cos(v);
+    const factor = cos(u/2) * sqv + sin(u/2) * sin(v) * cos(v)
+    return {
+        X: cos(u) * factor,
+        Y: sin(u) * factor,
+        Z: -sin(u/2) * sqv + cos(u/2) * sin(v) * cos(v)
+    }
+}
 
+function kleinBottle2(u, v) {
+    const sin = Math.sin, cos = Math.cos, PI = Math.PI, sqrt = Math.sqrt;
+    const r = 4 * (1 - cos(u) / 2);
+    const c = 1/6;
+    if ((u % (2 * PI)) < PI) {
+        return scaleVector({
+            X: 6 * cos(u) * (1 + sin(u)) + r * cos(u) * cos(v),
+            Y: 16 * sin(u) + r * sin(u) * cos(v),
+            Z: r * sin(v)
+        }, c);
+    } else {
+        return scaleVector({
+            X: 6 * cos(u) * (1 + sin(u)) + r * cos(v + PI),
+            Y: 16 * sin(u),
+            Z: r * sin(v)
+        }, c);
+    }
+}
+
+function torus(u, v) {
+    const a = 1, c = 2;
+    const sin = Math.sin, cos = Math.cos;
+    return {
+        X: (c + a * cos(v)) * cos(u),
+        Y: (c + a * cos(v)) * sin(u),
+        Z: a * sin(v)
+    };
+}
 
 
 
@@ -177,3 +223,30 @@ function protoBohemianDome(a, b, c, u, v) {
         Z: c * sin(v)
     };
 }
+
+function protoCorkScrew(a, b, u, v) {
+    const sin = Math.sin, cos = Math.cos;
+    return {
+        X: a * cos(u) * cos(v),
+        Y: a * sin(u) * cos(v),
+        Z: a * sin(v) + b * u
+    }
+}
+
+let sampleBezier = protoBezierSurface(
+    [
+        {X: -1, Y:  1, Z:  0},
+        {X:  0, Y:  1, Z: -2},
+        {X:  1, Y:  1, Z:  0}
+    ],
+    [
+        {X: -1, Y:  0, Z:  0},
+        {X:  0, Y:  0, Z: -4},
+        {X:  1, Y:  0, Z:  0}
+    ],
+    [
+        {X: -1, Y: -1, Z:  0},
+        {X:  0, Y: -1, Z: -1},
+        {X:  1, Y: -1, Z:  0}
+    ]
+);

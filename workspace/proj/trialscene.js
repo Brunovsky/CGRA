@@ -80,8 +80,13 @@ class LightingScene extends CGFscene
         this.henneberg = new uvSurface(this, hennebergMinimal,  [-PI / 8, PI / 8, -PI, PI]);
         this.menn = new zSurface(this, mennSurface, [-1, 1, -1, 1]);
         this.roman = new uvSurface(this, romanSurface,  [-PI, PI, -PI / 2, PI / 2]);
+        this.corkScrew = new uvSurface(this, corkScrew,  [-PI, PI, -PI, PI]);
+        this.kleinBottle = new uvSurface(this, kleinBottle2,  [-PI, PI, -PI, PI]);
 
         this.car = new Car(this);
+        this.myTorus = new uvSurface(this, torus, [0, 2 * PI, PI, 2 * PI], 128);
+
+        this.bezier = new uvSurface(this, sampleBezier, [0, 1, 0, 1]);
 
         // Materials
         this.materialDefault = new CGFappearance(this);
@@ -284,6 +289,8 @@ class LightingScene extends CGFscene
         this.eight.display();
         this.translate(3, 0, 0);
         this.astroidal.display();
+        this.translate(6, 0, 0);
+        this.myTorus.display();
         this.translate(3, 0, 0);
 
         this.popMatrix();
@@ -300,6 +307,8 @@ class LightingScene extends CGFscene
         this.translate(3, 0, 0);
         this.cayleySurface.display();
         this.translate(3, 0, 0);
+        this.bezier.display();
+        this.translate(3, 0, 0);
 
         this.popMatrix();
         this.pushMatrix();
@@ -314,7 +323,11 @@ class LightingScene extends CGFscene
         this.vase.display();
         this.translate(5, 0, 0);
         this.mobius.display();
-        this.translate(3, 0, 0);
+        this.translate(4, 0, 0);
+        this.corkScrew.display();
+        this.translate(4, 0, 0);
+        this.kleinBottle.display();
+        this.translate(4, 0, 0);
 
         this.popMatrix();
         this.pushMatrix();

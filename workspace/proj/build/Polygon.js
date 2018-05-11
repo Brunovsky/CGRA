@@ -154,7 +154,7 @@ class Polygon extends CGFobject
 
             let current = next * i;
 
-            // ... v1U v1D      v2U v2D ... --- around the unit circle
+            // ... v1U v1D      v2U v2D ... --- along the curve
             let v0U = 0;
             let v1U = current;
             let v2U = current + right;

@@ -19,6 +19,32 @@ function anyToXYZ(P) {
     }
 }
 
+
+
+function scaleVector(a, k) {
+    return {
+        X: k * a.X,
+        Y: k * a.Y,
+        Z: k * a.Z
+    };
+}
+
+function flipVector(a) {
+    return {
+        X: -a.X,
+        Y: -a.Y,
+        Z: -a.Z
+    }
+}
+
+function multVectors(a, b, k) {
+    return {
+        X: a.X + k * b.X,
+        Y: a.Y + k * b.Y,
+        Z: a.Z + k * b.Z
+    };
+}
+
 function addVectors(a, b) {
     return {
         X: a.X + b.X,
@@ -62,22 +88,6 @@ function normalize(a) {
         Y: a.Y / N,
         Z: a.Z / N
     };
-}
-
-function scaleVector(a, k) {
-    return {
-        X: k * a.X,
-        Y: k * a.Y,
-        Z: k * a.Z
-    };
-}
-
-function flipVector(a) {
-    return {
-        X: -a.X,
-        Y: -a.Y,
-        Z: -a.Z
-    }
 }
 
 let rightHandOrientation = true, leftHandOrientation = false;
