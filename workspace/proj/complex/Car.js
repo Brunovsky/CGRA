@@ -148,9 +148,9 @@ class Car extends CGFobject
 	{
 		super(scene);
 		this.car = new zSurface(scene,
-			carHoodSurface,
-			carHoodSurface.proportions,
-			carHoodSurface.slices);
+			carHoodPolygonal,
+			carHoodPolygonal.proportions,
+			carHoodPolygonal.slices);
 	};
 
 	display()
