@@ -81,7 +81,7 @@ class CutPyramid extends CGFobject
                 X = baseRadius * xUnit * (1 - s / stacks)
                     + topRadius * xUnit * (s / stacks);
                 Y = baseRadius * yUnit * (1 - s / stacks)
-                    + topRadius * yUnit * (s / stacks);
+                    + topRadius * yUnit * (s / stack s);
                 Z = s * stackHeight;
                 this.vertices.push(X, Y, Z); // v2U
                 this.vertices.push(X, Y, Z); // v2D
