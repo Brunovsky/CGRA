@@ -35,7 +35,7 @@ serialInclude([
 	main=function() {
 		var app = new CGFapplication(document.body);
 		myScene = new LightingScene();
-		var myInterface = new CGFinterface();
+		var myInterface = new MyInterface();
 
 		app.init();
 
