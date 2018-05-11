@@ -40,8 +40,15 @@ function protoPolynomial(...coefs) {
     return poly;
 }
 
-polynomial.derivative = polyDerivative;
+function protoInterpolate(I, F) {
+    if (I.X == F.X) {
+        console.log("Bad arguments to protoInterpolate");
+        return null;
+    }
+    return protoPolynomial((I.Y - F.Y) / (I.X - F.X), (I.X * F.Y - F.X * I.Y) / (I.X - F.X));
+}
 
+polynomial.derivative = polyDerivative;
 
 /**
  * Compute the 4th degree polynomial starting at I = (I.X, I.Y) and ending at F = (F.X, F.Y)
@@ -56,7 +63,7 @@ polynomial.derivative = polyDerivative;
  * [4Ix^3   3Ix^2   2Ix^1     1       0  ] [ u1 ]   [ dI ]
  * [4Fx^3   3Fx^2   2Fx^1     1       0  ] [ u0 ]   [ dF ]
  */
-function hermitePolynomial(w, I, F) {
+function protoHermitePolynomial(w, I, F) {
     let det = (I.X - F.X) ** 3;
 
     // u4 X**4
