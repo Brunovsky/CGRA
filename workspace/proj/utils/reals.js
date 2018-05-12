@@ -42,19 +42,13 @@ function interpolate(X, I, F) {
     return ((I.Y - F.Y) / (I.X - F.X)) * X
         + (I.X * F.Y - F.X * I.Y) / (I.X - F.X);
 }
-
-function protoInterpolate(I, F) {
-    return X => interpolate(X, I, F);
-}
+// X => interpolate(X, I, F)
 
 function linearMap(X, I, F) {
     return (F[0] - F[1]) / (I[0] - I[1]) * X
         + (I[0] * F[1] - F[0] * I[1]) / (I[0] - I[1]);
 }
-
-function protoLinearMap(I, F) {
-    return X => linearMap(X, I, F);
-}
+// X => linearMap(X,I,F)
 
 /**
  * Say we have functions f : R --> R and g : R --> R, and an interval I [x1, x2].
@@ -68,10 +62,7 @@ function areaMap(u, v, f, g, I) {
     let Y = linearMap(v, [0, 1], [f(X), g(X)]);
     return {X: X, Y: Y};
 }
-
-function protoAreaMap(f, g, I) {
-    return (u, v) => areaMap(u, v, f, g, I);
-}
+// (u,v) => areaMap(u,v,f,g,I)
 
 /**
  * Compute the 4th degree polynomial starting at I = (I.X, I.Y) and ending at F = (F.X, F.Y)

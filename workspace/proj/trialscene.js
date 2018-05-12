@@ -111,7 +111,8 @@ class LightingScene extends CGFscene
         this.bezier = new uvSurface(this, sampleBezier, [0, 1, 0, 1]);
         this.myTorus = new uvSurface(this, torus, [0, 2 * PI, PI, 2 * PI], 128);
 
-        this.car = new Car(this);
+        this.carPolygonal = new Car(this, carPolygonal);
+        this.carSmooth = new Car(this, carSmooth);
 
         /**
          * Bind textures to elements
@@ -373,13 +374,15 @@ class LightingScene extends CGFscene
         this.translate(4, 0, 0);
 
         this.popMatrix();
+        this.popTexture();
         this.pushMatrix();
+
         this.translate(-20, 0, 0);
         this.scale(3, 3, 3);
 
-        this.popTexture();
-
-        this.car.display();
+        this.carPolygonal.display();
+        this.translate(0, 5, 0);
+        this.carSmooth.display();
 
         // ---- END Scene drawing section
     };

@@ -75,9 +75,7 @@ let carSmooth = (function() {
     const P99 =  {X:X99, Y:Y99, d:d99};
     // ----> End of variables
 
-    /**
-     * Polynomials of the spline
-     */
+    // Polynomials of the spline
     let f10 = protoHermitePolynomial(w10, P10,  P20);
     let f20 = protoHermitePolynomial(w20, P20,  P30l);
     let f30 = protoHermitePolynomial(w30, P30r, P40);
@@ -86,7 +84,10 @@ let carSmooth = (function() {
     let f60 = protoHermitePolynomial(w60, P60,  P70);
     let f70 = protoHermitePolynomial(w70, P70,  P80);
 
-    let hood = function(X) {
+    /**
+     * The hood as seen through the side of the car.
+     */
+    let hoodContour = function(X) {
         if (X < X20) return f10(X);
         if (X < X30) return f20(X);
         if (X < X40) return f30(X);
@@ -96,79 +97,60 @@ let carSmooth = (function() {
                      return f70(X);
     }
 
-    hood.derivate = function(X) {
-        if (X < X20) return f10.derivative(X);
-        if (X < X30) return f20.derivative(X);
-        if (X < X40) return f30.derivative(X);
-        if (X < X50) return f40.derivative(X);
-        if (X < X60) return f50.derivative(X);
-        if (X < X70) return f60.derivative(X);
-                     return f70.derivative(X);
-    }
-
-    let under = function(X) {
+    /**
+     * The base as seen through the side of the car.
+     */
+    let baseContour = function(X) {
         const abs = Math.abs, sqrt = Math.sqrt;
 
+        // Close to wheel 1
         let dist1 = abs(X - xWheel1);
         if (dist1 <= rOut) {
             return sqrt(rOut * rOut - dist1 * dist1) + rWheel;
         }
 
+        // Close to wheel 2
         let dist2 = abs(X - xWheel2);
         if (dist2 <= rOut) {
             return sqrt(rOut * rOut - dist2 * dist2) + rWheel;
         }
 
+        // Not close enough to either wheel
         return hCar * bCar;
     }
 
-    let side = protoAreaMap(under, hood, [0, dCar]);
-
-    //  _________________
-    // |    |       |    |   u
-    // |    |   .   |    |   |
-    // |    |   .   |    |   |
-    // |    |   .   |    |   +--->v
-    //   ...   ...   ...
-    // |____|_______|____|
-    // 0   0.25   0.75   1
-    //   A      B      C
-    
-    let S1 = 0, S2 = 0.25, S3 = 0.75, S4 = 1;
-
-    let vMapA = protoLinearMap([S1, S2], [0, 1]); // left
-    let vMapB = protoLinearMap([S2, S3], [0, 1]); // hood
-    let vMapC = protoLinearMap([S3, S4], [1, 0]); // right
-
-    let uMap = protoLinearMap([0, 1], [0, dCar]);
-    let vMap = protoLinearMap([0, 1], [-lCar / 2, lCar / 2]);
-
-    let main = function(u, v) {
-        if (v <= S2) { // left
-            let p = side(u, vMapA(v));
-            return {
-                X: p.X,
-                Y: -lCar / 2,
-                Z: p.Y
-            };
-        } else if (v <= S3) { // hood
-            let X = uMap(u);
-            return {
-                X: X,
-                Y: vMap(vMapB(v)),
-                Z: hood(X)
-            };
-        } else { // right
-            let p = side(u, vMapC(v));
-            return {
-                X: p.X,
-                Y: lCar / 2,
-                Z: p.Y
-            };
-        }
+    /**
+     *  ________       ______
+     * |        | 1   |      |
+     * |        |     |      |
+     * |  Hood  | u   |      |
+     * |        |     |      |
+     * |________| 0   |______|
+     * 1    v   0
+     *    front
+     */
+    function hood(u, v) {
+        let X = linearMap(u, [0, 1], [0, dCar]);
+        let Y = linearMap(v, [0, 1], [-lCar / 2, lCar / 2]);
+        let Z = hoodContour(X);
+        return {X: X, Y: Y, Z: Z};
     }
 
-    let smooth = {
+    function leftSide(u, v) {
+        let X = linearMap(u, [0, 1], [0, dCar]);
+        let Y = -lCar / 2;
+        let Z = linearMap(v, [0, 1], [baseContour(X), hoodContour(X)]);
+        return {X: X, Y: Y, Z: Z};
+    }
+
+    function rightSide(u, v) {
+        let X = linearMap(u, [0, 1], [0, dCar]);
+        let Y = lCar / 2;
+        let Z = linearMap(v, [0, 1], [baseContour(X), hoodContour(X)]);
+        return {X: X, Y: Y, Z: Z};
+    }
+
+    let car = {
         dCar: dCar,
         lCar: lCar,
         hCar: hCar,
@@ -179,22 +161,25 @@ let carSmooth = (function() {
         rOut: rOut,
         dWheel: dWheel,
 
-        main: main,
-        hood: hood,
-        under: under,
-        side: side,
+        hoodContour: hoodContour,
+        baseContour: baseContour,
 
-        S1: S1, S2: S2, S3: S3, S4: S4,
-        boundaries: [0, 1, 0, 1],
+        hood: hood,
+        left: leftSide,
+        right: rightSide,
+
+        hoodBoundaries: [0, 1, 0, 1],
+        leftBoundaries: [0, 1, 0, 1],
+        rightBoundaries: [0, 1, 0, 1],
         slices: 128
     };
 
-    return smooth;
+    return car;
 })();
 
 let carPolygonal = (function() {
     'use strict';
-    // meta
+    // <!--- Start of variables
     const dCar = 5.00;
     const lCar = 2.00;
     const hCar = 1.80;
@@ -209,13 +194,13 @@ let carPolygonal = (function() {
     const X00 = 0.00;
     const X10 = dCar * 0.00;
     const X15 = dCar * 0.02;
-    const X20 = dCar * 0.10;
-    const X30 = dCar * 0.28;
-    const X40 = dCar * 0.40;
-    const X50 = dCar * 0.68;
-    const X60 = dCar * 0.78;
-    const X70 = dCar * 0.92;
-    const X75 = dCar * 0.98;
+    const X20 = dCar * 0.09375;
+    const X30 = dCar * 0.265625;
+    const X40 = dCar * 0.421875;
+    const X50 = dCar * 0.71875;
+    const X60 = dCar * 0.84375;
+    const X70 = dCar * 0.953125;
+    const X75 = dCar * 0.985;
     const X80 = dCar * 1.00;
     const X90 = dCar;
     const X99 = dCar;
@@ -248,18 +233,23 @@ let carPolygonal = (function() {
     const P80 = {X:X80, Y:Y80};
     const P90 = {X:X90, Y:Y90};
     const P99 = {X:X99, Y:Y99};
+    // ----> End of variables
 
-    const r10 = protoInterpolate(P10, P15);
-    const r15 = protoInterpolate(P15, P20);
-    const r20 = protoInterpolate(P20, P30);
-    const r30 = protoInterpolate(P30, P40);
-    const r40 = protoInterpolate(P40, P50);
-    const r50 = protoInterpolate(P50, P60);
-    const r60 = protoInterpolate(P60, P70);
-    const r70 = protoInterpolate(P70, P75);
-    const r75 = protoInterpolate(P75, P80);
+    // Rectangles of the polygonal line
+    const r10 = X => interpolate(X, P10, P15);
+    const r15 = X => interpolate(X, P15, P20);
+    const r20 = X => interpolate(X, P20, P30);
+    const r30 = X => interpolate(X, P30, P40);
+    const r40 = X => interpolate(X, P40, P50);
+    const r50 = X => interpolate(X, P50, P60);
+    const r60 = X => interpolate(X, P60, P70);
+    const r70 = X => interpolate(X, P70, P75);
+    const r75 = X => interpolate(X, P75, P80);
 
-    let hood = function(X) {
+    /**
+     * The hood as seen through the side of the car.
+     */
+    let hoodContour = function(X) {
         if (X < X15) return r10(X);
         if (X < X20) return r15(X);
         if (X < X30) return r20(X);
@@ -271,69 +261,60 @@ let carPolygonal = (function() {
                      return r75(X);
     }
 
-    let under = function(X) {
+    /**
+     * The base as seen through the side of the car.
+     */
+    let baseContour = function(X) {
         const abs = Math.abs, sqrt = Math.sqrt;
 
+        // Close to wheel 1
         let dist1 = abs(X - xWheel1);
         if (dist1 <= rOut) {
             return sqrt(rOut * rOut - dist1 * dist1) + rWheel;
         }
 
+        // Close to wheel 2
         let dist2 = abs(X - xWheel2);
         if (dist2 <= rOut) {
             return sqrt(rOut * rOut - dist2 * dist2) + rWheel;
         }
 
+        // Not close enough to either wheel
         return hCar * bCar;
     }
 
-    let side = protoAreaMap(under, hood, [0, dCar]);
-
-    //  _________________
-    // |    |       |    |   u
-    // |    |       |    |   |
-    // |    |       |    |   |
-    // |    |       |    |   +--->v
-    //   ...   ...   ...
-    // |____|_______|____|
-    // 0   0.25   0.75   1
-    //   A      B      C
-    
-    let S1 = 0, S2 = 0.25, S3 = 0.75, S4 = 1;
-
-    let vMapA = protoLinearMap([S1, S2], [0, 1]);
-    let vMapB = protoLinearMap([S2, S3], [0, 1]);
-    let vMapC = protoLinearMap([S3, S4], [1, 0]);
-
-    let uMap = protoLinearMap([0, 1], [0, dCar]);
-    let vMap = protoLinearMap([0, 1], [-lCar / 2, lCar / 2]);
-
-    let main = function(u, v) {
-        if (v <= S2) {
-            let p = side(u, vMapA(v));
-            return {
-                X: p.X,
-                Y: -lCar / 2,
-                Z: p.Y
-            };
-        } else if (v <= S3) {
-            let X = uMap(u);
-            return {
-                X: X,
-                Y: vMap(vMapB(v)),
-                Z: hood(X)
-            };
-        } else {
-            let p = side(u, vMapC(v));
-            return {
-                X: p.X,
-                Y: lCar / 2,
-                Z: p.Y
-            };
-        }
+    /**
+     *  ________       ______
+     * |        | 1   |      |
+     * |        |     |      |
+     * |  Hood  | u   |      |
+     * |        |     |      |
+     * |________| 0   |______|
+     * 1    v   0
+     *    front
+     */
+    function hood(u, v) {
+        let X = linearMap(u, [0, 1], [0, dCar]);
+        let Y = linearMap(v, [0, 1], [-lCar / 2, lCar / 2]);
+        let Z = hoodContour(X);
+        return {X: X, Y: Y, Z: Z};
     }
 
-    let polygonal = {
+    function leftSide(u, v) {
+        let X = linearMap(u, [0, 1], [0, dCar]);
+        let Y = -lCar / 2;
+        let Z = linearMap(v, [0, 1], [baseContour(X), hoodContour(X)]);
+        return {X: X, Y: Y, Z: Z};
+    }
+
+    function rightSide(u, v) {
+        let X = linearMap(u, [0, 1], [0, dCar]);
+        let Y = lCar / 2;
+        let Z = linearMap(v, [0, 1], [baseContour(X), hoodContour(X)]);
+        return {X: X, Y: Y, Z: Z};
+    }
+
+    let car = {
         dCar: dCar,
         lCar: lCar,
         hCar: hCar,
@@ -344,15 +325,18 @@ let carPolygonal = (function() {
         rOut: rOut,
         dWheel: dWheel,
 
-        main: main,
-        hood: hood,
-        under: under,
-        side: side,
+        hoodContour: hoodContour,
+        baseContour: baseContour,
 
-        S1: S1, S2: S2, S3: S3, S4: S4,
-        boundaries: [0, 1, 0, 1],
+        hood: hood,
+        left: leftSide,
+        right: rightSide,
+
+        hoodBoundaries: [0, 1, 0, 1],
+        leftBoundaries: [0, 1, 0, 1],
+        rightBoundaries: [0, 1, 0, 1],
         slices: 128
     };
 
-    return polygonal;
+    return car;
 })();
