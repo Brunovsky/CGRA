@@ -42,7 +42,7 @@ function interpolate(X, I, F) {
     return ((I.Y - F.Y) / (I.X - F.X)) * X
         + (I.X * F.Y - F.X * I.Y) / (I.X - F.X);
 }
-// X => interpolate(X, I, F)
+// X => interpolate(X,I,F)
 
 function linearMap(X, I, F) {
     return (F[0] - F[1]) / (I[0] - I[1]) * X

@@ -6,10 +6,11 @@ let carSmooth = (function() {
     const hCar = 2.00;
     const bCar = 0.32 / hCar;
     const rWheel = 0.45;
+    const lWheel = (lCar / 2) * 0.40;
     const rOut = 0.50;
-    const xWheel1 = dCar * 0.20;
-    const xWheel2 = dCar * 0.78;
-    const dWheel = xWheel2 - xWheel1;
+    const xWheelFront = dCar * 0.20;
+    const xWheelBack = dCar * 0.78;
+    const dWheel = xWheelBack - xWheelFront;
 
     // Knots X00 ... X99 of the spline
     const X00 = 0.00;
@@ -35,7 +36,7 @@ let carSmooth = (function() {
     const Y70 = hCar * 0.65;
     const Y80 = hCar * bCar;
     const Y90 = hCar * bCar;
-    const Y99 = hCar;
+    const Y99 = 0.00;
 
     // Derivatives of the spline at the knots
     const d00  =  0.00;
@@ -104,13 +105,13 @@ let carSmooth = (function() {
         const abs = Math.abs, sqrt = Math.sqrt;
 
         // Close to wheel 1
-        let dist1 = abs(X - xWheel1);
+        let dist1 = abs(X - xWheelFront);
         if (dist1 <= rOut) {
             return sqrt(rOut * rOut - dist1 * dist1) + rWheel;
         }
 
         // Close to wheel 2
-        let dist2 = abs(X - xWheel2);
+        let dist2 = abs(X - xWheelBack);
         if (dist2 <= rOut) {
             return sqrt(rOut * rOut - dist2 * dist2) + rWheel;
         }
@@ -155,9 +156,10 @@ let carSmooth = (function() {
         lCar: lCar,
         hCar: hCar,
         bCar: bCar,
-        xWheel1: xWheel1,
-        xWheel2: xWheel2,
+        xWheelFront: xWheelFront,
+        xWheelBack: xWheelBack,
         rWheel: rWheel,
+        lWheel: lWheel,
         rOut: rOut,
         dWheel: dWheel,
 
@@ -185,10 +187,11 @@ let carPolygonal = (function() {
     const hCar = 1.80;
     const bCar = 0.16;
     const rWheel = 0.45;
+    const lWheel = (lCar / 2) * 0.40;
     const rOut = 0.50;
-    const xWheel1 = dCar * 0.19;
-    const xWheel2 = dCar * 0.78;
-    const dWheel = xWheel2 - xWheel1;
+    const xWheelFront = dCar * 0.19;
+    const xWheelBack = dCar * 0.78;
+    const dWheel = xWheelBack - xWheelFront;
 
     // Knots X00 ... X99 of the polygonal line
     const X00 = 0.00;
@@ -217,8 +220,8 @@ let carPolygonal = (function() {
     const Y70 = hCar * 0.65;
     const Y75 = hCar * 0.60;
     const Y80 = hCar * bCar;
-    const Y90 = hCar;
-    const Y99 = hCar;
+    const Y90 = 0.00;
+    const Y99 = 0.00;
 
     const P00 = {X:X00, Y:Y00};
     const P10 = {X:X10, Y:Y10};
@@ -268,13 +271,13 @@ let carPolygonal = (function() {
         const abs = Math.abs, sqrt = Math.sqrt;
 
         // Close to wheel 1
-        let dist1 = abs(X - xWheel1);
+        let dist1 = abs(X - xWheelFront);
         if (dist1 <= rOut) {
             return sqrt(rOut * rOut - dist1 * dist1) + rWheel;
         }
 
         // Close to wheel 2
-        let dist2 = abs(X - xWheel2);
+        let dist2 = abs(X - xWheelBack);
         if (dist2 <= rOut) {
             return sqrt(rOut * rOut - dist2 * dist2) + rWheel;
         }
@@ -297,20 +300,23 @@ let carPolygonal = (function() {
         let X = linearMap(u, [0, 1], [0, dCar]);
         let Y = linearMap(v, [0, 1], [-lCar / 2, lCar / 2]);
         let Z = hoodContour(X);
+        // modify
         return {X: X, Y: Y, Z: Z};
     }
 
     function leftSide(u, v) {
         let X = linearMap(u, [0, 1], [0, dCar]);
-        let Y = -lCar / 2;
+        let Y = -lCar / 2; // modify
         let Z = linearMap(v, [0, 1], [baseContour(X), hoodContour(X)]);
+        // modify
         return {X: X, Y: Y, Z: Z};
     }
 
     function rightSide(u, v) {
         let X = linearMap(u, [0, 1], [0, dCar]);
-        let Y = lCar / 2;
+        let Y = lCar / 2; // modify
         let Z = linearMap(v, [0, 1], [baseContour(X), hoodContour(X)]);
+        // modify
         return {X: X, Y: Y, Z: Z};
     }
 
@@ -319,9 +325,10 @@ let carPolygonal = (function() {
         lCar: lCar,
         hCar: hCar,
         bCar: bCar,
-        xWheel1: xWheel1,
-        xWheel2: xWheel2,
+        xWheelFront: xWheelFront,
+        xWheelBack: xWheelBack,
         rWheel: rWheel,
+        lWheel: lWheel,
         rOut: rOut,
         dWheel: dWheel,
 

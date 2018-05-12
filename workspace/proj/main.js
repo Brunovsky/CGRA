@@ -29,6 +29,7 @@ serialInclude([
 	'build/revSurface.js',
 
 	'complex/Car.js',
+	'complex/Wheel.js',
 
 	//'scene.js',
 	'trialscene.js',

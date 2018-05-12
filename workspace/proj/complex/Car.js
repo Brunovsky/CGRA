@@ -3,7 +3,8 @@ class Car extends CGFobject
 	constructor(scene, car)
 	{
 		super(scene);
-		this.car = new uvSurface(scene,
+		this.car = car;
+		this.hood = new uvSurface(scene,
 			car.hood,
 			car.hoodBoundaries,
 			car.slices);
@@ -15,12 +16,33 @@ class Car extends CGFobject
 			car.right,
 			car.rightBoundaries,
 			car.slices);
+		this.wheelLeftFront = new Wheel(scene, car.rWheel, car.lWheel);
+		this.wheelRightFront = new Wheel(scene, car.rWheel, car.lWheel);
+		this.wheelLeftBack = new Wheel(scene, car.rWheel, car.lWheel);
+		this.wheelRightBack = new Wheel(scene, car.rWheel, car.lWheel);
 	};
 
 	display()
 	{
-		this.car.display();
+		const car = this.car;
+		this.hood.display();
 		this.left.display();
 		this.right.display();
+		this.scene.pushMatrix();
+			this.scene.translate(car.xWheelFront,  car.lCar / 2, 0);
+			this.wheelLeftFront.display();
+		this.scene.popMatrix();
+		this.scene.pushMatrix();
+			this.scene.translate(car.xWheelFront, -car.lCar / 2, 0);
+			this.wheelRightFront.display();
+		this.scene.popMatrix();
+		this.scene.pushMatrix();
+			this.scene.translate(car.xWheelBack,  car.lCar / 2, 0);
+			this.wheelLeftBack.display();
+		this.scene.popMatrix();
+		this.scene.pushMatrix();
+			this.scene.translate(car.xWheelBack, -car.lCar / 2, 0);
+			this.wheelRightBack.display();
+		this.scene.popMatrix();
 	};
 };
