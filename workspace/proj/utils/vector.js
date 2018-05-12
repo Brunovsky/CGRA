@@ -1,18 +1,30 @@
-// Converts [X, Y, Z] to {X: X, Y: Y, Z: Z}
-function arrayToXYZ(P) {
-    return {
-        X: P[0],
-        Y: P[1],
-        Z: P[2]
-    };
-}
-
+// Skip this ugliness
 // Detects if P is written as [X, Y, Z] or {X: X, Y: Y, Z: Z}, returns later.
-function anyToXYZ(P) {
-    if (Array.isArray(P) && P.length >= 3) {
-        return arrayToXYZ(P);
+function makeVector(P) {
+    if (Array.isArray(P) && P.length === 3) {
+        return {
+            X: P[0],
+            Y: P[1],
+            Z: P[2]
+        };
+    } else if (Array.isArray(P) && P.length === 2) {
+        return {
+            X: P[0],
+            Y: P[1],
+            Z: 0
+        };
     } else if (P.X != null && P.Y != null && P.Z != null) {
-        return P;
+        return {
+            X: P.X,
+            Y: P.Y,
+            Z: P.Z
+        };
+    } else if (P.X != null && P.Y != null) {
+        return {
+            X: P.X,
+            Y: P.Y,
+            Z: 0
+        };
     } else {
         console.log("Error (anyToXYZ): Invalid P");
         return null; // let it crash
@@ -90,13 +102,25 @@ function normalize(a) {
     };
 }
 
+function cosVectors(a, b) {
+    return dotProduct(a, b) / (norm(a) * norm(b));
+}
+
+function sinVectors(a, b) {
+    return crossProduct(a, b) / (norm(a) * norm(b));
+}
+
+function angleVectors(a, b) {
+    return Math.acos(cosVectors(a,b));
+}
+
 let rightHandOrientation = true, leftHandOrientation = false;
 
 // Return the orientation of triangle given by vertices A, B, C in this order
 // @return rightHandOrientation if the Z component of (B-A)x(C-B) is >= 0
 // @return leftHandOrientation  if the Z component of (B-A)x(C-B) is < 0
 function orientationRule(A, B, C) {
-    let vA = anyToXYZ(A), vB = anyToXYZ(B), vC = anyToXYZ(C);
+    let vA = makeVector(A), vB = makeVector(B), vC = makeVector(C);
     let N = crossProduct(subVectors(vA, vB), subVectors(vB, vC));
 
     if (N.Z >= 0) {
@@ -104,4 +128,16 @@ function orientationRule(A, B, C) {
     } else {
         return leftHandOrientation;
     }
+}
+
+// Consider a function f : R --> AB, where f(0) = A and f(1) = B.
+// Then compute f(t).
+function interpolateVectors(t, A, B) {
+    let vA = makeVector(A), vB = makeVector(B);
+    return addVectors(scaleVector(vA, 1 - t), scaleVector(vB, t));
+}
+
+function protoInterpolateVectors(A, B) {
+    let vA = makeVector(A), vB = makeVector(B);
+    return t => addVectors(scaleVector(vA, 1 - t), scaleVector(vB, t));
 }

@@ -8,11 +8,12 @@ serialInclude([
 	'../lib/CGF.js',
 	'globals.js',
 
-	'utils/poly.js',
-	'utils/vectors.js',
+	'utils/reals.js',
+	'utils/vector.js',
 	'utils/bezier.js',
 	'utils/functions.js',
 	'utils/stack.js',
+	'utils/carFunctions.js',
 
 	'build/Polygon.js',
 	'build/Prism.js',
@@ -36,7 +37,7 @@ serialInclude([
 	main=function() {
 		var app = new CGFapplication(document.body);
 		myScene = new LightingScene();
-		var myInterface = new MyInterface();
+		var myInterface = new CGFinterface();
 
 		app.init();
 

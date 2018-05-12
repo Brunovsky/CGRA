@@ -9,8 +9,11 @@
  * The function hermitePolynomial(w, I, F) is used for the car hood. It is used to
  * implement a 4th degree spline of polynomials in the xOy plane following
  * the hermite fashion (of specifying derivatives at the end points).
+ *
+ * ...
  */
 
+// Value of polynomial with coefficients ...coefs at X.
 function polynomial(X, ...coefs) {
     let val = 0;
     for (let i = 0; i < coefs.length; ++i) {
@@ -19,7 +22,8 @@ function polynomial(X, ...coefs) {
     return val;
 }
 
-function polyDerivative(X, ...coefs) {
+// Value of derivative of said polynomial at X.
+function polynomialDerivative(X, ...coefs) {
     let val = 0;
     let k = coefs.length;
     for (let i = 0; i < coefs.length - 1; ++i) {
@@ -29,26 +33,45 @@ function polyDerivative(X, ...coefs) {
 }
 
 function protoPolynomial(...coefs) {
-    let poly = function(X) {
-        return polynomial(X, ...coefs);
-    }
-
-    poly.derivative = function(X) {
-        return polyDerivative(X, ...coefs);
-    }
-
+    let poly = X => polynomial(X, ...coefs);
+    poly.derivative = X => polynomialDerivative(X, ...coefs);
     return poly;
 }
 
-function protoInterpolate(I, F) {
-    if (I.X == F.X) {
-        console.log("Bad arguments to protoInterpolate");
-        return null;
-    }
-    return protoPolynomial((I.Y - F.Y) / (I.X - F.X), (I.X * F.Y - F.X * I.Y) / (I.X - F.X));
+function interpolate(X, I, F) {
+    return ((I.Y - F.Y) / (I.X - F.X)) * X
+        + (I.X * F.Y - F.X * I.Y) / (I.X - F.X);
 }
 
-polynomial.derivative = polyDerivative;
+function protoInterpolate(I, F) {
+    return X => interpolate(X, I, F);
+}
+
+function linearMap(X, I, F) {
+    return (F[0] - F[1]) / (I[0] - I[1]) * X
+        + (I[0] * F[1] - F[0] * I[1]) / (I[0] - I[1]);
+}
+
+function protoLinearMap(I, F) {
+    return X => linearMap(X, I, F);
+}
+
+/**
+ * Say we have functions f : R --> R and g : R --> R, and an interval I [x1, x2].
+ *
+ * Assume f(x) <= g(x).
+ * The area lying between f(I) and g(I) may be parametrized as
+ * a uv surface where u lies in [0, 1] and v lies in [0, 1].
+ */
+function areaMap(u, v, f, g, I) {
+    let X = linearMap(u, [0, 1], I);
+    let Y = linearMap(v, [0, 1], [f(X), g(X)]);
+    return {X: X, Y: Y};
+}
+
+function protoAreaMap(f, g, I) {
+    return (u, v) => areaMap(u, v, f, g, I);
+}
 
 /**
  * Compute the 4th degree polynomial starting at I = (I.X, I.Y) and ending at F = (F.X, F.Y)

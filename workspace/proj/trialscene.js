@@ -374,9 +374,10 @@ class LightingScene extends CGFscene
 
         this.popMatrix();
         this.pushMatrix();
-        this.translate(-10, 0, 0);
+        this.translate(-20, 0, 0);
+        this.scale(3, 3, 3);
 
-            this.popTexture();
+        this.popTexture();
 
         this.car.display();
 
@@ -395,6 +396,7 @@ class LightingScene extends CGFscene
         } else {
             this.texStack.undef++;
         }
+        return this;
     };
 
     popTexture()
@@ -404,10 +406,13 @@ class LightingScene extends CGFscene
         } else {
             this.texStack.undef--;
         }
+        return this;
     };
 
     clearTextures()
     {
         this.texStack.clear();
+        this.texStack.undef = 0;
+        return this;
     };
 };
