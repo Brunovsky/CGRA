@@ -14,37 +14,37 @@ class Cube extends CGFobject
         const move = this.side / 2;
 
         this.scene.pushMatrix(); // +X
-            this.scene.rotate(Math.PI / 2, 0, 1, 0);
-            this.scene.translate(0, 0, move);
-            this.square.display();
-        this.scene.popMatrix();
-
-        this.scene.pushMatrix(); // -X
             this.scene.rotate(-Math.PI / 2, 0, 1, 0);
             this.scene.translate(0, 0, move);
             this.square.display();
         this.scene.popMatrix();
 
-
-        this.scene.pushMatrix(); // +Y
-            this.scene.rotate(-Math.PI / 2, 1, 0, 0);
-            this.scene.translate(0, 0, move);
-            this.square.display();
-        this.scene.popMatrix();
-
-        this.scene.pushMatrix(); // -Y
-            this.scene.rotate(Math.PI / 2, 1, 0, 0);
+        this.scene.pushMatrix(); // -X
+            this.scene.rotate(Math.PI / 2, 0, 1, 0);
             this.scene.translate(0, 0, move);
             this.square.display();
         this.scene.popMatrix();
 
 
         this.scene.pushMatrix(); // +Z
+            this.scene.rotate(Math.PI / 2, 1, 0, 0);
             this.scene.translate(0, 0, move);
             this.square.display();
         this.scene.popMatrix();
 
         this.scene.pushMatrix(); // -Z
+            this.scene.rotate(-Math.PI / 2, 1, 0, 0);
+            this.scene.translate(0, 0, move);
+            this.square.display();
+        this.scene.popMatrix();
+
+
+        this.scene.pushMatrix(); // +Y
+            this.scene.translate(0, 0, move);
+            this.square.display();
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix(); // -Y
             this.scene.rotate(Math.PI, 1, 0, 0);
             this.scene.translate(0, 0, move);
             this.square.display();
