@@ -41,6 +41,12 @@ class LightingScene extends CGFscene
         this.boardTex.setShininess(150);
         this.boardTex.loadTexture("tex/board.png");
 
+        this.slidesTex = new CGFappearance(this);
+        this.slidesTex.setAmbient(0.5, 0.5, 0.5, 1);
+        this.slidesTex.setDiffuse(0.7, 0.7, 0.7, 1);
+        this.slidesTex.setShininess(150);
+        this.slidesTex.loadTexture("tex/slides.png");
+
         /**
          * Scene elements
          */
@@ -119,6 +125,8 @@ class LightingScene extends CGFscene
          */
         this.cylinder.bindTexture(this.boardTex);
         this.closedcylinder.bindTexture(this.materialDefault, this.tableTex);
+        this.carPolygonal.bindTexture(this.boardTex, this.tableTex, this.slidesTex, this.slidesTex);
+        this.carSmooth.bindTexture(this.boardTex, this.tableTex, this.slidesTex, this.slidesTex);
     };
 
     initCameras() 

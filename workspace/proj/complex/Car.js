@@ -45,4 +45,15 @@ class Car extends CGFobject
 			this.wheelRightBack.display();
 		this.scene.popMatrix();
 	};
+
+	bindTexture(hoodTexture, sideTexture, wheelCylinderTexture, wheelSideTexture)
+	{
+		this.hood.bindTexture(hoodTexture);
+		this.left.bindTexture(sideTexture);
+		this.right.bindTexture(sideTexture);
+		this.wheelLeftFront.bindTexture(wheelCylinderTexture, wheelSideTexture);
+		this.wheelRightFront.bindTexture(wheelCylinderTexture, wheelSideTexture);
+		this.wheelLeftBack.bindTexture(wheelCylinderTexture, wheelSideTexture);
+		this.wheelRightBack.bindTexture(wheelCylinderTexture, wheelSideTexture);
+	};
 };

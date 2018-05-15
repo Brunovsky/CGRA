@@ -31,8 +31,8 @@ serialInclude([
 	'complex/Car.js',
 	'complex/Wheel.js',
 
-	//'scene.js',
-	'trialscene.js',
+	'scene.js',
+	//'trialscene.js',
 	'MyTerrain.js',
 
 	main=function() {
