@@ -29,34 +29,34 @@ class Regular extends CGFobject
 
         // Center vertex Up
         this.vertices.push(0, 0, 0);
-        this.normals.push(0, 0, 1);
+        this.normals.push(0, 1, 0);
         this.texCoords.push((coords.minS + coords.maxS) / 2);
         this.texCoords.push((coords.minT + coords.maxT) / 2);
 
         // Center vertex Down
         this.vertices.push(0, 0, 0);
-        this.normals.push(0, 0, -1);
+        this.normals.push(0, -1, 0);
         this.texCoords.push((coords.minS + coords.maxS) / 2);
         this.texCoords.push((coords.minT + coords.maxT) / 2);
         
         for (let i = 0; i <= sides; ++i) {
             let theta = thetaInc * (i + 0.5);
             let xUnit = cos(theta);
-            let yUnit = sin(theta);
+            let zUnit = sin(theta);
             let X = radius * xUnit;
-            let Y = radius * yUnit;
+            let Z = radius * zUnit;
 
             // Up
-            this.vertices.push(X, Y, 0); // vU
-            this.normals.push(0, 0, 1);
+            this.vertices.push(X, 0, Z); // vU
+            this.normals.push(0, 1, 0);
 
             // Down
-            this.vertices.push(X, Y, 0); // vD
-            this.normals.push(0, 0, -1);
+            this.vertices.push(X, 0, Z); // vD
+            this.normals.push(0, -1, 0);
 
             // Texture Up, Down
             let stexUnit = 0.5 * (xUnit + 1);
-            let ttexUnit = 0.5 * (1 - yUnit);
+            let ttexUnit = 0.5 * (zUnit + 1);
             let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
             let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
             this.texCoords.push(stex, ttex); // Up
@@ -119,10 +119,10 @@ class Polygon extends CGFobject
         const V = this.V, coords = this.coords;
 
         let b = {
-            minX: Infinity,
+            minX:  Infinity,
             maxX: -Infinity,
-            minY: Infinity,
-            maxY: -Infinity
+            minZ:  Infinity,
+            maxZ: -Infinity
         };
 
         this.vertices = [];
@@ -132,29 +132,29 @@ class Polygon extends CGFobject
         
         for (let i = 0; i < V.length; ++i) {
             let X = V[i][0];
-            let Y = V[i][1];
+            let Z = V[i][1];
 
             // Up
-            this.vertices.push(X, Y, 0);
-            this.normals.push(0, 0, 1);
+            this.vertices.push(X, 0, Z);
+            this.normals.push(0, 1, 0);
 
             // Down
-            this.vertices.push(X, Y, 0);
-            this.normals.push(0, 0, -1);
+            this.vertices.push(X, 0, Z);
+            this.normals.push(0, -1, 0);
 
             if (X < b.minX) b.minX = X;
             if (X > b.maxX) b.maxX = X;
-            if (Y < b.minY) b.minY = Y;
-            if (Y > b.maxY) b.maxY = Y;
+            if (Z < b.minZ) b.minZ = Z;
+            if (Z > b.maxZ) b.maxZ = Z;
         }
 
         for (let i = 0; i < V.length; ++i) {
             const inc = 6;
             let X = this.vertices[inc * i];
-            let Y = this.vertices[inc * i + 1];
+            let Z = this.vertices[inc * i + 2];
 
             let stexUnit = (X - b.minX) / (b.maxX - b.minX);
-            let ttexUnit = (b.maxY - Y) / (b.maxY - b.minY);
+            let ttexUnit = (Z - b.minZ) / (b.maxZ - b.minZ);
             let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
             let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
             this.texCoords.push(stex, ttex); // Up
@@ -178,7 +178,7 @@ class Polygon extends CGFobject
             let p1 = this.vertices.slice(3 * v1U, 3 * v1U + 3);
             let p2 = this.vertices.slice(3 * v2U, 3 * v2U + 3);
 
-            if (orientationRule(p0, p1, p2) === rightHandOrientation) {
+            if (triangleOrientation(p0, p1, p2).Y > 0) {
                 this.indices.push(v0U, v1U, v2U);
                 this.indices.push(v0D, v2D, v1D);
             } else {
@@ -361,10 +361,10 @@ class tPolygon extends CGFobject
         const tInc = (l.maxT - l.minT) / samples;
 
         let b = {
-            minX: Infinity,
+            minX:  Infinity,
             maxX: -Infinity,
-            minY: Infinity,
-            maxY: -Infinity
+            minZ:  Infinity,
+            maxZ: -Infinity
         };
 
         this.vertices = [];
@@ -377,29 +377,29 @@ class tPolygon extends CGFobject
             let Point = tfunction(t);
 
             let X = Point.X;
-            let Y = Point.Y;
+            let Z = Point.Z;
 
             // Up
-            this.vertices.push(X, Y, 0);
-            this.normals.push(0, 0, 1);
+            this.vertices.push(X, 0, Z);
+            this.normals.push(0, 1, 0);
 
             // Down
-            this.vertices.push(X, Y, 0);
-            this.normals.push(0, 0, -1);
+            this.vertices.push(X, 0, Z);
+            this.normals.push(0, -1, 0);
 
             if (X < b.minX) b.minX = X;
             if (X > b.maxX) b.maxX = X;
-            if (Y < b.minY) b.minY = Y;
-            if (Y > b.maxY) b.maxY = Y;
+            if (Z < b.minZ) b.minZ = Z;
+            if (Z > b.maxZ) b.maxZ = Z;
         }
 
         for (let i = 0; i <= samples; ++i) {
             const inc = 6;
             let X = this.vertices[inc * i];
-            let Y = this.vertices[inc * i + 1];
+            let Z = this.vertices[inc * i + 2];
 
             let stexUnit = (X - b.minX) / (b.maxX - b.minX);
-            let ttexUnit = (b.maxY - Y) / (b.maxY - b.minY);
+            let ttexUnit = (Z - b.minZ) / (b.maxZ - b.minZ);
             let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
             let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
             this.texCoords.push(stex, ttex); // Up
@@ -423,7 +423,7 @@ class tPolygon extends CGFobject
             let p1 = this.vertices.slice(3 * v1U, 3 * v1U + 3);
             let p2 = this.vertices.slice(3 * v2U, 3 * v2U + 3);
 
-            if (orientationRule(p0, p1, p2) === rightHandOrientation) {
+            if (triangleOrientation(p0, p1, p2).Y > 0) {
                 this.indices.push(v0U, v1U, v2U);
                 this.indices.push(v0D, v2D, v1D);
             } else {
@@ -486,10 +486,10 @@ class rPolygon extends CGFobject
         const thetaInc = (l.maxTheta - l.minTheta) / samples;
 
         let b = {
-            minX: Infinity,
+            minX:  Infinity,
             maxX: -Infinity,
-            minY: Infinity,
-            maxY: -Infinity
+            minZ:  Infinity,
+            maxZ: -Infinity
         };
 
         this.vertices = [];
@@ -510,29 +510,29 @@ class rPolygon extends CGFobject
             let r = rfunction(theta);
 
             let X = r * cos(theta);
-            let Y = r * sin(theta);
+            let Z = r * sin(theta);
 
             // Up
-            this.vertices.push(X, Y, 0);
-            this.normals.push(0, 0, 1);
+            this.vertices.push(X, 0, Z);
+            this.normals.push(0, 1, 0);
 
             // Down
-            this.vertices.push(X, Y, 0);
-            this.normals.push(0, 0, -1);
+            this.vertices.push(X, 0, Z);
+            this.normals.push(0, -1, 0);
 
             if (X < b.minX) b.minX = X;
             if (X > b.maxX) b.maxX = X;
-            if (Y < b.minY) b.minY = Y;
-            if (Y > b.maxY) b.maxY = Y;
+            if (Z < b.minZ) b.minZ = Z;
+            if (Z > b.maxZ) b.maxZ = Z;
         }
 
         for (let i = 0; i <= samples + 1; ++i) {
             const inc = 6;
             let X = this.vertices[inc * i];
-            let Y = this.vertices[inc * i + 1];
+            let Z = this.vertices[inc * i + 2];
 
             let stexUnit = (X - b.minX) / (b.maxX - b.minX);
-            let ttexUnit = (b.maxY - Y) / (b.maxY - b.minY);
+            let ttexUnit = (Z - b.minZ) / (b.maxZ - b.minZ);
             let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
             let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
             this.texCoords.push(stex, ttex); // Up
@@ -556,7 +556,7 @@ class rPolygon extends CGFobject
             let p1 = this.vertices.slice(3 * v1U, 3 * v1U + 3);
             let p2 = this.vertices.slice(3 * v2U, 3 * v2U + 3);
 
-            if (orientationRule(p0, p1, p2) === rightHandOrientation) {
+            if (triangleOrientation(p0, p1, p2).Y > 0) {
                 this.indices.push(v0U, v1U, v2U);
                 this.indices.push(v0D, v2D, v1D);
             } else {

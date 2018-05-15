@@ -36,8 +36,8 @@ class HalfSphere extends CGFobject
                 let theta = thetaInc * (i + 0.5);
                 let phi = s * phiInc;
                 let xUnit = cos(phi) * cos(theta);
-                let yUnit = cos(phi) * sin(theta);
-                let zUnit = sin(phi);
+                let yUnit = sin(phi);
+                let zUnit = cos(phi) * sin(theta);
                 let X = radius * xUnit;
                 let Y = radius * yUnit;
                 let Z = radius * zUnit;
@@ -52,7 +52,7 @@ class HalfSphere extends CGFobject
 
                 // Texture Up, Down
                 let stexUnit = 0.5 * (xUnit + 1);
-                let ttexUnit = 0.5 * (1 - yUnit);
+                let ttexUnit = 0.5 * (yUnit + 1);
                 let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
                 let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
 

@@ -37,22 +37,22 @@ class Prism extends CGFobject
             for (let i = 0; i < sides; ++i) { // side
                 // ... ][v1U v1D   M   v2U v2D][ ...  -- stack s
 
-                let theta, xUnit, yUnit, X, Y, Z;
+                let theta, xUnit, zUnit, X, Y, Z;
                 let stexUnit, ttexUnit, stex, ttex;
 
                 // v1
                 theta = thetaInc * (i - 0.5);
                 xUnit = cos(theta);
-                yUnit = sin(theta);
+                zUnit = sin(theta);
                 X = radius * xUnit;
-                Y = radius * yUnit;
-                Z = s * stackHeight;
+                Y = s * stackHeight;
+                Z = radius * zUnit;
                 this.vertices.push(X, Y, Z); // v1U
                 this.vertices.push(X, Y, Z); // v1D
 
                 // Texture v1
                 stexUnit = theta / (2 * PI);
-                ttexUnit = 1 - Z / height;
+                ttexUnit = Y / height;
                 stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
                 ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
                 this.texCoords.push(stex, ttex); // v1U's texcoords
@@ -61,25 +61,25 @@ class Prism extends CGFobject
                 // M
                 theta = thetaInc * i;
                 xUnit = cos(theta);
-                yUnit = sin(theta);
-                this.normals.push(xUnit, yUnit, 0); // v1U's normals
-                this.normals.push(-xUnit, -yUnit, 0); // v1D's normals
-                this.normals.push(xUnit, yUnit, 0); // v2U's normals
-                this.normals.push(-xUnit, -yUnit, 0); // v2D's normals
+                zUnit = sin(theta);
+                this.normals.push(xUnit, 0, zUnit); // v1U's normals
+                this.normals.push(-xUnit, 0, -zUnit); // v1D's normals
+                this.normals.push(xUnit, 0, zUnit); // v2U's normals
+                this.normals.push(-xUnit, 0, -zUnit); // v2D's normals
 
                 // v2
                 theta = thetaInc * (i + 0.5);
                 xUnit = cos(theta);
-                yUnit = sin(theta);
+                zUnit = sin(theta);
                 X = radius * xUnit;
-                Y = radius * yUnit;
-                Z = s * stackHeight;
+                Y = s * stackHeight;
+                Z = radius * zUnit;
                 this.vertices.push(X, Y, Z); // v2U
                 this.vertices.push(X, Y, Z); // v2D
 
                 // Texture v2
                 stexUnit = theta / (2 * PI);
-                ttexUnit = 1 - Z / height;
+                ttexUnit = Y / height;
                 stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
                 ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
                 this.texCoords.push(stex, ttex); // v2U's texcoords

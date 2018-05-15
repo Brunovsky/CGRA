@@ -37,22 +37,22 @@ class Cylinder extends CGFobject
             for (let i = 0; i <= slices; ++i) { // virtual side
                 let theta = thetaInc * (i + 0.5);
                 let xUnit = cos(theta);
-                let yUnit = sin(theta);
+                let zUnit = sin(theta);
                 let X = radius * xUnit;
-                let Y = radius * yUnit;
-                let Z = s * stackHeight;
+                let Y = s * stackHeight;
+                let Z = radius * zUnit;
 
                 // Up (out)
                 this.vertices.push(X, Y, Z);
-                this.normals.push(xUnit, yUnit, 0);
+                this.normals.push(xUnit, 0, zUnit);
 
                 // Down (in)
                 this.vertices.push(X, Y, Z);
-                this.normals.push(-xUnit, -yUnit, 0);
+                this.normals.push(-xUnit, 0, -zUnit);
 
                 // Texture Up, Down
                 let stexUnit = theta / (2 * PI);
-                let ttexUnit = 1 - Z / height;
+                let ttexUnit = Y / height;
                 let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
                 let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
                 this.texCoords.push(stex, ttex); // Up

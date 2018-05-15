@@ -31,7 +31,7 @@ class CutPyramid extends CGFobject
         const radius = baseRadius - topRadius;
         const apotema = cos(PI / sides) * radius; // signed
         const hypotenuse = sqrt(apotema * apotema + height * height);
-        const dXY = height / hypotenuse, dZ = apotema / hypotenuse;
+        const dXZ = height / hypotenuse, dY = apotema / hypotenuse;
 
         this.vertices = [];
         this.indices = [];
@@ -42,24 +42,24 @@ class CutPyramid extends CGFobject
             for (let i = 0; i < sides; ++i) { // side
                 // ... ][v1U v1D   M   v2U v2D][ ...  -- stack s
 
-                let theta, xUnit, yUnit, X, Y, Z;
+                let theta, xUnit, zUnit, X, Y, Z;
                 let stexUnit, ttexUnit, stex, ttex;
 
                 // v1
                 theta = thetaInc * (i - 0.5);
                 xUnit = cos(theta);
-                yUnit = sin(theta);
+                zUnit = sin(theta);
                 X = baseRadius * xUnit * (1 - s / stacks)
                     + topRadius * xUnit * (s / stacks);
-                Y = baseRadius * yUnit * (1 - s / stacks)
-                    + topRadius * yUnit * (s / stacks);
-                Z = s * stackHeight;
+                Y = s * stackHeight;
+                Z = baseRadius * zUnit * (1 - s / stacks)
+                    + topRadius * zUnit * (s / stacks);
                 this.vertices.push(X, Y, Z); // v1U
                 this.vertices.push(X, Y, Z); // v1D
 
                 // Texture v1
                 stexUnit = theta / (2 * PI);
-                ttexUnit = 1 - Z / height;
+                ttexUnit = 1 - Y / height;
                 stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
                 ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
                 this.texCoords.push(stex, ttex); // v1U's texcoords
@@ -68,27 +68,27 @@ class CutPyramid extends CGFobject
                 // M
                 theta = thetaInc * i;
                 xUnit = cos(theta);
-                yUnit = sin(theta);
-                this.normals.push(xUnit * dXY, yUnit * dXY, dZ); // v1U's normals
-                this.normals.push(-xUnit * dXY, -yUnit * dXY, -dZ); // v1D's normals
-                this.normals.push(xUnit * dXY, yUnit * dXY, dZ); // v2U's normals
-                this.normals.push(-xUnit * dXY, -yUnit * dXY, -dZ); // v2D's normals
+                zUnit = sin(theta);
+                this.normals.push(xUnit * dXZ, dY, zUnit * dXZ); // v1U's normals
+                this.normals.push(-xUnit * dXZ, -dY, -zUnit * dXZ); // v1D's normals
+                this.normals.push(xUnit * dXZ, dY, zUnit * dXZ); // v2U's normals
+                this.normals.push(-xUnit * dXZ, -dY, -zUnit * dXZ); // v2D's normals
 
                 // v2
                 theta = thetaInc * (i + 0.5);
                 xUnit = cos(theta);
-                yUnit = sin(theta);
+                zUnit = sin(theta);
                 X = baseRadius * xUnit * (1 - s / stacks)
                     + topRadius * xUnit * (s / stacks);
-                Y = baseRadius * yUnit * (1 - s / stacks)
-                    + topRadius * yUnit * (s / stacks);
-                Z = s * stackHeight;
+                Y = s * stackHeight;
+                Z = baseRadius * zUnit * (1 - s / stacks)
+                    + topRadius * zUnit * (s / stacks);
                 this.vertices.push(X, Y, Z); // v2U
                 this.vertices.push(X, Y, Z); // v2D
 
                 // Texture v2
                 stexUnit = theta / (2 * PI);
-                ttexUnit = 1 - Z / height;
+                ttexUnit = 1 - Y / height;
                 stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
                 ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
                 this.texCoords.push(stex, ttex); // v2U's texcoords

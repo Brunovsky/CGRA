@@ -30,7 +30,7 @@ class CutCone extends CGFobject
         const stackHeight = height / stacks;
         const radius = baseRadius - topRadius;
         const hypotenuse = sqrt(radius * radius + height * height);
-        const dXY = height / hypotenuse, dZ = radius / hypotenuse;
+        const dXZ = height / hypotenuse, dY = radius / hypotenuse;
 
         this.vertices = [];
         this.indices = [];
@@ -41,24 +41,24 @@ class CutCone extends CGFobject
             for (let i = 0; i <= slices; ++i) { // virtual side
                 let theta = thetaInc * (i + 0.5);
                 let xUnit = cos(theta);
-                let yUnit = sin(theta);
+                let zUnit = sin(theta);
                 let X = baseRadius * xUnit * (1 - s / stacks)
                     + topRadius * xUnit * (s / stacks);
-                let Y = baseRadius * yUnit * (1 - s / stacks)
-                    + topRadius * yUnit * (s / stacks);
-                let Z = s * stackHeight;
+                let Y = s * stackHeight;
+                let Z = baseRadius * zUnit * (1 - s / stacks)
+                    + topRadius * zUnit * (s / stacks);
 
                 // Up (out)
                 this.vertices.push(X, Y, Z);
-                this.normals.push(xUnit * dXY, yUnit * dXY, dZ);
+                this.normals.push(xUnit * dXZ, dY, zUnit * dXZ);
 
                 // Down (in)
                 this.vertices.push(X, Y, Z);
-                this.normals.push(-xUnit * dXY, -yUnit * dXY, -dZ);
+                this.normals.push(-xUnit * dXZ, -dY, -zUnit * dXZ);
 
                 // Texture Up, Down
                 let stexUnit = theta / (2 * PI);
-                let ttexUnit = 1 - Z / height;
+                let ttexUnit = 1 - Y / height;
                 let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
                 let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
                 this.texCoords.push(stex, ttex); // Up
