@@ -20,6 +20,18 @@ class Car extends CGFobject
 		this.wheelRightFront = new Wheel(scene, car.rWheel, car.lWheel);
 		this.wheelLeftBack = new Wheel(scene, car.rWheel, car.lWheel);
 		this.wheelRightBack = new Wheel(scene, car.rWheel, car.lWheel);
+
+		this.initVariables();
+	};
+
+	initVariables()
+	{
+
+	};
+
+	update(currTime)
+	{
+
 	};
 
 	display()
@@ -37,11 +49,11 @@ class Car extends CGFobject
 			this.wheelRightFront.display();
 		this.scene.popMatrix();
 		this.scene.pushMatrix();
-			this.scene.translate(car.xWheelBack,  car.lCar / 2, 0);
+			this.scene.translate(car.xWheelBack,   car.lCar / 2, 0);
 			this.wheelLeftBack.display();
 		this.scene.popMatrix();
 		this.scene.pushMatrix();
-			this.scene.translate(car.xWheelBack, -car.lCar / 2, 0);
+			this.scene.translate(car.xWheelBack,  -car.lCar / 2, 0);
 			this.wheelRightBack.display();
 		this.scene.popMatrix();
 	};

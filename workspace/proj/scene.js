@@ -17,9 +17,12 @@ class LightingScene extends CGFscene
 
         this.axis = new CGFaxis(this, 10);
 
-		this.option1=true; 
-		this.option2=false; 
-		this.speed=3;
+        this.setUpdatePeriod(1000);
+
+        this.texStack = new Stack();
+        this.texStack.undef = 0;
+
+        this.updatable = [];
 
         // ***** Materials
         this.materialDefault = new CGFappearance(this);
@@ -58,9 +61,39 @@ class LightingScene extends CGFscene
         this.carPolygonal = new Car(this, carPolygonal);
         this.carSmooth = new Car(this, carSmooth);
 
+        // ***** Updatables
+        this.updatable.push(carPolygonal);
+        this.updatable.push(carSmooth);
+
         // ***** Bind textures
         this.carPolygonal.bindTexture(this.tableTex, this.floorTex, this.slidesTex, this.boardTex);
         this.carSmooth.bindTexture(this.tableTex, this.floorTex, this.slidesTex, this.boardTex);
+    };
+
+    initControls()
+    {
+        this.map = {
+            ArrowDown: "Down",
+            ArrowUp: "Up",
+            ArrowLeft: "Left",
+            ArrowRight: "Right"
+        };
+
+        this.keys = {
+            Down: false,
+            Up: false,
+            Left: false,
+            Right: false
+        };
+
+        this["Light 1"] = true;
+        this["Light 2"] = true;
+        this["Light 3"] = true;
+        this["Light 4"] = true;
+        this["Light 5"] = true;
+        this["Show axis"] = true;
+        this["Textures"] =  "board";
+        this["Speed"] = 1;
     };
 
     initCameras() 
@@ -134,9 +167,14 @@ class LightingScene extends CGFscene
         // Initialize Model-View matrix as identity (no transformation)
         this.updateProjectionMatrix();
         this.loadIdentity();
+        this.clearTextures();
+        this.pushTexture(this.materialDefault);
 
         // Apply transformations corresponding to the camera position relative to the origin
         this.applyViewMatrix();
+
+        // check keys
+        this.checkKeys();
 
         // Update all lights used
         this.updateLights();
@@ -145,39 +183,68 @@ class LightingScene extends CGFscene
         this.axis.display();
 
         // ---- END Background, camera and axis setup
-
-		this.checkKeys();
 		
         // ---- BEGIN Scene drawing section
 
+        this.pushTexture(this.tableTex);
+        
         this.tableTex.apply();
 
         this.carSmooth.display();
         this.carPolygonal.display();
 
+        this.popTexture();
+
         // ---- END Scene drawing section
     };
-	
-	doSomething(){ 
-		console.log("Doing something..."); 
-	};
+
+    update(currTime)
+    {
+        this.checkKeys();
+        
+        for (let obj in this.updatable) {
+            obj.update(currTime);
+        }
+    };
 	
 	checkKeys()
 	{
-		var text="Keys pressed: ";
-		var keysPressed=false;
-		if (this.gui.isKeyPressed("KeyW")){
-			text+=" W ";
-			keysPressed=true;
-		}
-
-		if (this.gui.isKeyPressed("KeyS")){
-			text+=" S ";
-			keysPressed=true;
-		}
+        for (const key in this.map) {
+            this.keys[this.map[key]] = this.gui.isKeyPressed(key);
+        }
 		
-		if (keysPressed)
-			console.log(text);
-	}
+        console.log(this.keys);
+	};
 
+    currentTexture()
+    {
+        return this.texStack.top();
+    };
+
+    pushTexture(T)
+    {
+        if (T) {
+            this.texStack.push(T).apply();
+        } else {
+            this.texStack.undef++;
+        }
+        return this;
+    };
+
+    popTexture()
+    {
+        if (this.texStack.undef == 0) {
+            this.texStack.pop().apply();
+        } else {
+            this.texStack.undef--;
+        }
+        return this;
+    };
+
+    clearTextures()
+    {
+        this.texStack.clear();
+        this.texStack.undef = 0;
+        return this;
+    };
 };

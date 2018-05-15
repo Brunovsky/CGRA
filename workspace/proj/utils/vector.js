@@ -119,6 +119,7 @@ let rightHandOrientation = true, leftHandOrientation = false;
 // Return the orientation of triangle given by vertices A, B, C in this order
 // @return rightHandOrientation if the Z component of (B-A)x(C-B) is >= 0
 // @return leftHandOrientation  if the Z component of (B-A)x(C-B) is < 0
+// The triangle is in plane xOy.
 function orientationRule(A, B, C) {
     let vA = makeVector(A), vB = makeVector(B), vC = makeVector(C);
     let N = crossProduct(subVectors(vA, vB), subVectors(vB, vC));
