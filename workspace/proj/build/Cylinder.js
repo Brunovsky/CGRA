@@ -35,7 +35,7 @@ class Cylinder extends CGFobject
 
         for (let s = 0; s <= stacks; ++s) { // stack
             for (let i = 0; i <= slices; ++i) { // virtual side
-                let theta = thetaInc * (i + 0.5);
+                let theta = -thetaInc * (i + 0.5);
                 let xUnit = cos(theta);
                 let zUnit = sin(theta);
                 let X = radius * xUnit;
@@ -126,7 +126,7 @@ class ClosedCylinder extends CGFobject
                 this.scene.rotate(Math.PI, 1, 0, 0);
                 this.base.display();
             this.scene.popMatrix();
-                this.scene.translate(0, 0, this.height);
+                this.scene.translate(0, this.height, 0);
                 this.base.display();
         this.scene.popMatrix();
     };

@@ -46,7 +46,7 @@ class CutPyramid extends CGFobject
                 let stexUnit, ttexUnit, stex, ttex;
 
                 // v1
-                theta = thetaInc * (i - 0.5);
+                theta = -thetaInc * (i - 0.5);
                 xUnit = cos(theta);
                 zUnit = sin(theta);
                 X = baseRadius * xUnit * (1 - s / stacks)
@@ -66,7 +66,7 @@ class CutPyramid extends CGFobject
                 this.texCoords.push(stex, ttex); // v1D's texcoords
 
                 // M
-                theta = thetaInc * i;
+                theta = -thetaInc * i;
                 xUnit = cos(theta);
                 zUnit = sin(theta);
                 this.normals.push(xUnit * dXZ, dY, zUnit * dXZ); // v1U's normals
@@ -75,7 +75,7 @@ class CutPyramid extends CGFobject
                 this.normals.push(-xUnit * dXZ, -dY, -zUnit * dXZ); // v2D's normals
 
                 // v2
-                theta = thetaInc * (i + 0.5);
+                theta = -thetaInc * (i + 0.5);
                 xUnit = cos(theta);
                 zUnit = sin(theta);
                 X = baseRadius * xUnit * (1 - s / stacks)
@@ -163,7 +163,7 @@ class ClosedCutPyramid extends CGFobject
                 this.scene.rotate(Math.PI, 1, 0, 0);
                 this.base.display();
             this.scene.popMatrix();
-                this.scene.translate(0, 0, this.height);
+                this.scene.translate(0, this.height, 0);
                 this.top.display();
         this.scene.popMatrix();
     };
@@ -194,12 +194,12 @@ class DoubleCutPyramid extends CGFobject
         this.scene.pushMatrix();
             this.scene.pushMatrix();
                 this.cutPyramid.display();
-                this.scene.translate(0, 0, this.height);
+                this.scene.translate(0, this.height, 0);
                 this.top.display();
             this.scene.popMatrix();
                 this.scene.rotate(Math.PI, 1, 0, 0);
                 this.cutPyramid.display();
-                this.scene.translate(0, 0, this.height);
+                this.scene.translate(0, this.height, 0);
                 this.top.display();
         this.scene.popMatrix();
     };

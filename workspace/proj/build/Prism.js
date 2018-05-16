@@ -41,7 +41,7 @@ class Prism extends CGFobject
                 let stexUnit, ttexUnit, stex, ttex;
 
                 // v1
-                theta = thetaInc * (i - 0.5);
+                theta = -thetaInc * (i - 0.5);
                 xUnit = cos(theta);
                 zUnit = sin(theta);
                 X = radius * xUnit;
@@ -59,7 +59,7 @@ class Prism extends CGFobject
                 this.texCoords.push(stex, ttex); // v1D's texcoords
 
                 // M
-                theta = thetaInc * i;
+                theta = -thetaInc * i;
                 xUnit = cos(theta);
                 zUnit = sin(theta);
                 this.normals.push(xUnit, 0, zUnit); // v1U's normals
@@ -68,7 +68,7 @@ class Prism extends CGFobject
                 this.normals.push(-xUnit, 0, -zUnit); // v2D's normals
 
                 // v2
-                theta = thetaInc * (i + 0.5);
+                theta = -thetaInc * (i + 0.5);
                 xUnit = cos(theta);
                 zUnit = sin(theta);
                 X = radius * xUnit;
@@ -153,7 +153,7 @@ class ClosedPrism extends CGFobject
                 this.scene.rotate(Math.PI, 1, 0, 0);
                 this.base.display();
             this.scene.popMatrix();
-                this.scene.translate(0, 0, this.height);
+                this.scene.translate(0, this.height, 0);
                 this.base.display();
         this.scene.popMatrix();
     };

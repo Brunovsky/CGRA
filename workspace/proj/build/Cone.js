@@ -37,7 +37,7 @@ class Cone extends CGFobject
 
         for (let s = 0; s <= stacks; ++s) { // stack
             for (let i = 0; i <= slices; ++i) { // virtual side
-                let theta = thetaInc * (i + 0.5);
+                let theta = -thetaInc * (i + 0.5);
                 let xUnit = cos(theta);
                 let zUnit = sin(theta);
                 let X = radius * xUnit * (1 - s / stacks);

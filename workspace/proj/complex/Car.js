@@ -37,24 +37,27 @@ class Car extends CGFobject
 	display()
 	{
 		const car = this.car;
-		this.hood.display();
-		this.left.display();
-		this.right.display();
 		this.scene.pushMatrix();
-			this.scene.translate(car.xWheelFront,  car.lCar / 2, 0);
-			this.wheelLeftFront.display();
-		this.scene.popMatrix();
-		this.scene.pushMatrix();
-			this.scene.translate(car.xWheelFront, -car.lCar / 2, 0);
-			this.wheelRightFront.display();
-		this.scene.popMatrix();
-		this.scene.pushMatrix();
-			this.scene.translate(car.xWheelBack,   car.lCar / 2, 0);
-			this.wheelLeftBack.display();
-		this.scene.popMatrix();
-		this.scene.pushMatrix();
-			this.scene.translate(car.xWheelBack,  -car.lCar / 2, 0);
-			this.wheelRightBack.display();
+			this.scene.rotate(Math.PI, 0, 1, 0);
+			this.hood.display();
+			this.left.display();
+			this.right.display();
+			this.scene.pushMatrix();
+				this.scene.translate(car.xWheelFront, 0,  car.lCar / 2);
+				this.wheelLeftFront.display();
+			this.scene.popMatrix();
+			this.scene.pushMatrix();
+				this.scene.translate(car.xWheelFront, 0, -car.lCar / 2);
+				this.wheelRightFront.display();
+			this.scene.popMatrix();
+			this.scene.pushMatrix();
+				this.scene.translate(car.xWheelBack,  0,  car.lCar / 2);
+				this.wheelLeftBack.display();
+			this.scene.popMatrix();
+			this.scene.pushMatrix();
+				this.scene.translate(car.xWheelBack,  0, -car.lCar / 2);
+				this.wheelRightBack.display();
+			this.scene.popMatrix();
 		this.scene.popMatrix();
 	};
 

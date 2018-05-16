@@ -40,7 +40,7 @@ class Regular extends CGFobject
         this.texCoords.push((coords.minT + coords.maxT) / 2);
         
         for (let i = 0; i <= sides; ++i) {
-            let theta = thetaInc * (i + 0.5);
+            let theta = -thetaInc * (i + 0.5);
             let xUnit = cos(theta);
             let zUnit = sin(theta);
             let X = radius * xUnit;
@@ -280,19 +280,19 @@ class Triangle extends CGFobject
 
 class Rectangle extends CGFobject
 {
-    constructor(scene, sideX, sideY, coords = [0, 1, 0, 1])
+    constructor(scene, sideX, sideZ, coords = [0, 1, 0, 1])
     {
         super(scene);
         this.square = new Square(scene, 1, coords);
         this.sideX = sideX;
-        this.sideY = sideY;
+        this.sideZ = sideZ;
         this.initBuffers();
     };
 
     display()
     {
         this.scene.pushMatrix();
-            this.scene.scale(this.sideX, this.sideY, 1);
+            this.scene.scale(this.sideX, 1, this.sideZ);
             this.square.display();
         this.scene.popMatrix();
     };
@@ -377,7 +377,7 @@ class tPolygon extends CGFobject
             let Point = tfunction(t);
 
             let X = Point.X;
-            let Z = Point.Z;
+            let Z = Point.Y || Point.Z;
 
             // Up
             this.vertices.push(X, 0, Z);
@@ -471,12 +471,6 @@ class rPolygon extends CGFobject
         this.initBuffers();
     };
 
-    orientate(v0, v1, v2) {
-        const rh = true, lh = false;
-
-
-    }
-
     initBuffers()
     {
         const sin = Math.sin, cos = Math.cos, PI = Math.PI;
@@ -506,7 +500,7 @@ class rPolygon extends CGFobject
         this.normals.push(0, 0, 1);
 
         for (let i = 0; i <= samples; ++i) {
-            let theta = l.minTheta + thetaInc * i;
+            let theta = -l.minTheta + thetaInc * i;
             let r = rfunction(theta);
 
             let X = r * cos(theta);

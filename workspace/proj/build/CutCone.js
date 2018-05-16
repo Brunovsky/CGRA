@@ -39,7 +39,7 @@ class CutCone extends CGFobject
 
         for (let s = 0; s <= stacks; ++s) { // stack
             for (let i = 0; i <= slices; ++i) { // virtual side
-                let theta = thetaInc * (i + 0.5);
+                let theta = -thetaInc * (i + 0.5);
                 let xUnit = cos(theta);
                 let zUnit = sin(theta);
                 let X = baseRadius * xUnit * (1 - s / stacks)
@@ -133,7 +133,7 @@ class ClosedCutCone extends CGFobject
                 this.scene.rotate(Math.PI, 1, 0, 0);
                 this.base.display();
             this.scene.popMatrix();
-                this.scene.translate(0, 0, this.height);
+                this.scene.translate(0, this.height, 0);
                 this.top.display();
         this.scene.popMatrix();
     };
@@ -164,12 +164,12 @@ class DoubleCutCone extends CGFobject
         this.scene.pushMatrix();
             this.scene.pushMatrix();
                 this.cone.display();
-                this.scene.translate(0, 0, this.height);
+                this.scene.translate(0, this.height, 0);
                 this.top.display();
             this.scene.popMatrix();
                 this.scene.rotate(Math.PI, 1, 0, 0);
                 this.cone.display();
-                this.scene.translate(0, 0, this.height);
+                this.scene.translate(0, this.height, 0);
                 this.top.display();
         this.scene.popMatrix();
     };

@@ -73,14 +73,6 @@ function subVectors(a, b) {
     };
 }
 
-function dotProduct(a, b) {
-    return {
-        X: a.X * b.X,
-        Y: a.Y * b.Y,
-        Z: a.Z * b.Z
-    };
-}
-
 function crossProduct(a, b) {
     return {
         X: a.Y * b.Z - a.Z * b.Y,
@@ -89,8 +81,12 @@ function crossProduct(a, b) {
     };
 }
 
+function dotProduct(a, b) {
+    return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
+}
+
 function norm(a) {
-    return Math.sqrt(a.X * a.X + a.Y * a.Y + a.Z * a.Z);
+    return Math.sqrt(dotProduct(a, a));
 }
 
 function normalize(a) {
@@ -107,17 +103,14 @@ function cosVectors(a, b) {
 }
 
 function sinVectors(a, b) {
-    return crossProduct(a, b) / (norm(a) * norm(b));
-}
-
-function angleVectors(a, b) {
-    return Math.acos(cosVectors(a,b));
+    return norm(crossProduct(a, b)) / (norm(a) * norm(b));
 }
 
 let rightHandOrientation = true, leftHandOrientation = false;
 
 // Return the orientation of triangle given by vertices A, B, C in this order,
-// aka (B-A)x(C-B).
+// aka (B-A)x(C-B). The caller should make sense of the result by accessing .X, .Y, .Z
+// in its own context.
 function triangleOrientation(A, B, C) {
     let vA = makeVector(A), vB = makeVector(B), vC = makeVector(C);
     return crossProduct(subVectors(vA, vB), subVectors(vB, vC));

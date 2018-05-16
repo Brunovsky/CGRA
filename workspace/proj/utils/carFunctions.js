@@ -127,27 +127,27 @@ let carSmooth = (function() {
      * |  Hood  | u   |      |
      * |        |     |      |
      * |________| 0   |______|
-     * 1    v   0
+     * 0    v   1
      *    front
      */
     function hood(u, v) {
         let X = linearMap(u, [0, 1], [0, dCar]);
-        let Y = linearMap(v, [0, 1], [-lCar / 2, lCar / 2]);
-        let Z = hoodContour(X);
+        let Y = hoodContour(X);
+        let Z = linearMap(v, [0, 1], [-lCar / 2, lCar / 2]);
         return {X: X, Y: Y, Z: Z};
     }
 
     function leftSide(u, v) {
         let X = linearMap(u, [0, 1], [0, dCar]);
-        let Y = -lCar / 2;
-        let Z = linearMap(v, [0, 1], [baseContour(X), hoodContour(X)]);
+        let Y = linearMap(v, [1, 0], [baseContour(X), hoodContour(X)]);
+        let Z = lCar / 2;
         return {X: X, Y: Y, Z: Z};
     }
 
     function rightSide(u, v) {
         let X = linearMap(u, [0, 1], [0, dCar]);
-        let Y = lCar / 2;
-        let Z = linearMap(v, [0, 1], [baseContour(X), hoodContour(X)]);
+        let Y = linearMap(v, [1, 0], [baseContour(X), hoodContour(X)]);
+        let Z = -lCar / 2;
         return {X: X, Y: Y, Z: Z};
     }
 
@@ -298,25 +298,22 @@ let carPolygonal = (function() {
      */
     function hood(u, v) {
         let X = linearMap(u, [0, 1], [0, dCar]);
-        let Y = linearMap(v, [0, 1], [-lCar / 2, lCar / 2]);
-        let Z = hoodContour(X);
-        // modify
+        let Y = hoodContour(X);
+        let Z = linearMap(v, [0, 1], [-lCar / 2, lCar / 2]);
         return {X: X, Y: Y, Z: Z};
     }
 
     function leftSide(u, v) {
         let X = linearMap(u, [0, 1], [0, dCar]);
-        let Y = -lCar / 2; // modify
-        let Z = linearMap(v, [0, 1], [baseContour(X), hoodContour(X)]);
-        // modify
+        let Y = linearMap(v, [1, 0], [baseContour(X), hoodContour(X)]);
+        let Z = lCar / 2;
         return {X: X, Y: Y, Z: Z};
     }
 
     function rightSide(u, v) {
         let X = linearMap(u, [0, 1], [0, dCar]);
-        let Y = lCar / 2; // modify
-        let Z = linearMap(v, [0, 1], [baseContour(X), hoodContour(X)]);
-        // modify
+        let Y = linearMap(v, [1, 0], [baseContour(X), hoodContour(X)]);
+        let Z = -lCar / 2;
         return {X: X, Y: Y, Z: Z};
     }
 

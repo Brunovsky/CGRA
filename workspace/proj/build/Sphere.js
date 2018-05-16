@@ -33,7 +33,7 @@ class HalfSphere extends CGFobject
 
         for (let s = 0; s <= stacks; ++s) { // stack
             for (let i = 0; i <= slices; ++i) { // virtual slice
-                let theta = thetaInc * (i + 0.5);
+                let theta = -thetaInc * (i + 0.5);
                 let phi = s * phiInc;
                 let xUnit = cos(phi) * cos(theta);
                 let yUnit = sin(phi);

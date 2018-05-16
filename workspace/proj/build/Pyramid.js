@@ -44,7 +44,7 @@ class Pyramid extends CGFobject
                 let stexUnit, ttexUnit, stex, ttex;
 
                 // v1
-                theta = thetaInc * (i - 0.5); 
+                theta = -thetaInc * (i - 0.5); 
                 xUnit = cos(theta);
                 zUnit = sin(theta);
                 X = radius * xUnit * (1 - s / stacks);
@@ -62,7 +62,7 @@ class Pyramid extends CGFobject
                 this.texCoords.push(stex, ttex); // v1D's texcoords
 
                 // M
-                theta = thetaInc * i;
+                theta = -thetaInc * i;
                 xUnit = cos(theta);
                 zUnit = sin(theta);
                 this.normals.push(xUnit * dXZ, dY, zUnit * dXZ); // v1U's normals
@@ -71,7 +71,7 @@ class Pyramid extends CGFobject
                 this.normals.push(-xUnit * dXZ, -dY, -zUnit * dXZ); // v2D's normals
 
                 // v2
-                theta = thetaInc * (i + 0.5);
+                theta = -thetaInc * (i + 0.5);
                 xUnit = cos(theta);
                 zUnit = sin(theta);
                 X = radius * xUnit * (1 - s / stacks);

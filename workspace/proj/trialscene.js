@@ -91,8 +91,8 @@ class LightingScene extends CGFscene
         this.butterfly = new tPolygon(this, butterfly, [0, 2 * PI]);
         this.trifolium = new rPolygon(this, protoFolium.bind(null, 2, 2));
 
-        this.sqXYsurface = new zSurface(this, (X,Y) => X*X + Y*Y, [-1, 1, -1.5, 2]);
-        this.cubesurface = new zSurface(this, (X,Y) => 1 + X*X - Y);
+        this.sqXYsurface = new ySurface(this, (X,Y) => X*X + Y*Y, [-1, 1, -1.5, 2]);
+        this.cubesurface = new ySurface(this, (X,Y) => 1 + X*X - Y);
         this.torus = new uvSurface(this, protoTorus.bind(null, 2, 0.75), [0, 2 * PI, 0, 2 * PI]);
         this.eight = new uvSurface(this, eightSurface, [0, 2 * PI, -PI / 2, PI / 2]);
         this.astroidal = new uvSurface(this, astroidalEllipsoid, [-PI / 2, PI / 2, -PI, PI]);
@@ -225,6 +225,12 @@ class LightingScene extends CGFscene
 
         this.pushMatrix();
 
+        this.hexagon.display();
+        this.translate(3, 0, 0);
+        this.trapezium.display();
+        this.translate(5, 0, 0);
+        this.quadrangle.display();
+        this.translate(3, 0, 0);
         this.octagon.display();
         this.translate(3, 0, 0);
         this.square.display();
@@ -234,12 +240,6 @@ class LightingScene extends CGFscene
         this.rectangle.display();
         this.translate(3, 0, 0);
         this.circle.display();
-        this.translate(3, 0, 0);
-        this.hexagon.display();
-        this.translate(3, 0, 0);
-        this.trapezium.display();
-        this.translate(5, 0, 0);
-        this.quadrangle.display();
 
         this.popMatrix();
         this.pushMatrix();
@@ -385,11 +385,15 @@ class LightingScene extends CGFscene
         this.popTexture();
         this.pushMatrix();
 
-        this.translate(-20, 0, 0);
         this.scale(3, 3, 3);
-
+        this.translate(-6, 0, 4);
         this.carPolygonal.display();
-        this.translate(0, 5, 0);
+
+        this.popMatrix();
+        this.pushMatrix();
+
+        this.scale(3, 3, 3);
+        this.translate(-6, 0, 0);
         this.carSmooth.display();
 
         // ---- END Scene drawing section

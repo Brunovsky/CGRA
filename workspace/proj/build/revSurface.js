@@ -119,16 +119,16 @@ class revSurface extends CGFobject
         for (let j = 0; j <= stacks; ++j) { // iterate Z
             for (let i = 0; i <= slices; ++i) { // iterate Theta
                 let Z = b.minZ + zDelta * j;
-                let theta = b.minTheta + thetaDelta * i;
+                let theta = b.maxTheta - thetaDelta * i;
                 let Point = sampleREVfunction(revfunction, Z, theta, zDelta);
 
                 // Up
-                this.vertices.push(Point.X, Point.Y, Point.Z);
-                this.normals.push(Point.N.X, Point.N.Y, Point.N.Z);
+                this.vertices.push(Point.X, Point.Z, Point.Y);
+                this.normals.push(Point.N.X, Point.N.Z, Point.N.Y);
 
                 // Down
-                this.vertices.push(Point.X, Point.Y, Point.Z);
-                this.normals.push(-Point.N.X, -Point.N.Y, -Point.N.Z);
+                this.vertices.push(Point.X, Point.Z, Point.Y);
+                this.normals.push(-Point.N.X, -Point.N.Z, -Point.N.Y);
 
                 // Texture Up, Down
                 let stexUnit = i / slices;

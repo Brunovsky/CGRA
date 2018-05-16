@@ -25,6 +25,7 @@ serialInclude([
 	'build/CutCone.js',
 	'build/CutPyramid.js',
 	'build/zSurface.js',
+	'build/ySurface.js',
 	'build/uvSurface.js',
 	'build/revSurface.js',
 

@@ -11,9 +11,12 @@ class Wheel extends CGFobject
     display()
     {
         this.scene.pushMatrix();
-            this.scene.translate(0, 0, this.radius);
-            this.scene.rotate(-Math.PI / 2, 1, 0, 0);
-            this.scene.translate(0, 0, -this.width / 2);
+            // 3. Bring it up on the xz plane.
+            this.scene.translate(0, this.radius, 0);
+            // 2. Rotate it so it stands like a wheel. 
+            this.scene.rotate(Math.PI / 2, 1, 0, 0);
+            // 1. Put the center of the cylinder in the origin:
+            this.scene.translate(0, -this.width / 2, 0);
             this.wheel.display();
         this.scene.popMatrix();
     };
