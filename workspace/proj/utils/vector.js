@@ -10,8 +10,8 @@ function makeVector(P) {
     } else if (Array.isArray(P) && P.length === 2) {
         return {
             X: P[0],
-            Y: P[1],
-            Z: 0
+            Y: 0,
+            Z: P[1]
         };
     } else if (P.X != null && P.Y != null && P.Z != null) {
         return {
@@ -19,15 +19,15 @@ function makeVector(P) {
             Y: P.Y,
             Z: P.Z
         };
-    } else if (P.X != null && P.Y != null) {
+    } else if (P.X != null || P.Y != null || P.Z != null) {
         return {
-            X: P.X,
-            Y: P.Y,
-            Z: 0
+            X: P.X || 0,
+            Y: P.Y || 0,
+            Z: P.Z || 0
         };
     } else {
-        console.log("Error (anyToXYZ): Invalid P");
-        return null; // let it crash
+        console.log("Invalid makeVector for ", P);
+        return null;
     }
 }
 
@@ -90,12 +90,7 @@ function norm(a) {
 }
 
 function normalize(a) {
-    let N = norm(a);
-    return {
-        X: a.X / N,
-        Y: a.Y / N,
-        Z: a.Z / N
-    };
+    return scaleVector(a, 1 / norm(a));
 }
 
 function cosVectors(a, b) {
@@ -105,8 +100,6 @@ function cosVectors(a, b) {
 function sinVectors(a, b) {
     return norm(crossProduct(a, b)) / (norm(a) * norm(b));
 }
-
-let rightHandOrientation = true, leftHandOrientation = false;
 
 // Return the orientation of triangle given by vertices A, B, C in this order,
 // aka (B-A)x(C-B). The caller should make sense of the result by accessing .X, .Y, .Z
@@ -121,9 +114,4 @@ function triangleOrientation(A, B, C) {
 function interpolateVectors(t, A, B) {
     let vA = makeVector(A), vB = makeVector(B);
     return addVectors(scaleVector(vA, 1 - t), scaleVector(vB, t));
-}
-
-function protoInterpolateVectors(A, B) {
-    let vA = makeVector(A), vB = makeVector(B);
-    return t => addVectors(scaleVector(vA, 1 - t), scaleVector(vB, t));
 }

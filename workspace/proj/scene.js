@@ -17,7 +17,7 @@ class LightingScene extends CGFscene
 
         this.axis = new CGFaxis(this, 10);
 
-        this.setUpdatePeriod(1000);
+        this.setUpdatePeriod(10);
 
         this.texStack = new Stack();
         this.texStack.undef = 0;
@@ -58,12 +58,12 @@ class LightingScene extends CGFscene
         // ***** Scene elements
         let PI = Math.PI;
 
-        this.carPolygonal = new Car(this, carPolygonal);
-        this.carSmooth = new Car(this, carSmooth);
+        this.carPolygonal = new Car(this, carFunctionPolygonal);
+        this.carSmooth = new Car(this, carFunctionSmooth);
 
         // ***** Updatables
-        this.updatable.push(carPolygonal);
-        this.updatable.push(carSmooth);
+        this.updatable.carPolygonal = this.carPolygonal;
+        this.updatable.carSmooth = this.carSmooth;
 
         // ***** Bind textures
         this.carPolygonal.bindTexture(this.tableTex, this.floorTex, this.slidesTex, this.boardTex);
@@ -73,17 +73,19 @@ class LightingScene extends CGFscene
     initControls()
     {
         this.map = {
-            ArrowDown: "Down",
-            ArrowUp: "Up",
-            ArrowLeft: "Left",
-            ArrowRight: "Right"
+            ArrowDown: "down",
+            ArrowUp: "up",
+            ArrowLeft: "left",
+            ArrowRight: "right",
+            Space: "space"
         };
 
         this.keys = {
-            Down: false,
-            Up: false,
-            Left: false,
-            Right: false
+            down: false,
+            up: false,
+            left: false,
+            right: false,
+            space: false
         };
 
         this["Light 1"] = true;
@@ -187,12 +189,14 @@ class LightingScene extends CGFscene
         // ---- BEGIN Scene drawing section
 
         this.pushTexture(this.tableTex);
-        
-        this.tableTex.apply();
+        this.pushMatrix();
 
         this.carSmooth.display();
+
+        this.translate(0, 0, 6);
         this.carPolygonal.display();
 
+        this.popMatrix();
         this.popTexture();
 
         // ---- END Scene drawing section
@@ -202,8 +206,8 @@ class LightingScene extends CGFscene
     {
         this.checkKeys();
         
-        for (let obj in this.updatable) {
-            obj.update(currTime);
+        for (const obj in this.updatable) {
+            this.updatable[obj].update(currTime);
         }
     };
 	
@@ -212,8 +216,6 @@ class LightingScene extends CGFscene
         for (const key in this.map) {
             this.keys[this.map[key]] = this.gui.isKeyPressed(key);
         }
-		
-        console.log(this.keys);
 	};
 
     currentTexture()

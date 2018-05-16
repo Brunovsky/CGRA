@@ -1,4 +1,4 @@
-let carSmooth = (function() {
+let carFunctionSmooth = (function() {
     'use strict';
     // <!--- Start of variables
     const dCar = 5.00;
@@ -179,7 +179,7 @@ let carSmooth = (function() {
     return car;
 })();
 
-let carPolygonal = (function() {
+let carFunctionPolygonal = (function() {
     'use strict';
     // <!--- Start of variables
     const dCar = 5.00;
