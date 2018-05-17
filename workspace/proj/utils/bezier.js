@@ -38,7 +38,7 @@ function protoBezierCurve(...points) {
     let bezier = function(t) {
         let Point = {X: 0, Y: 0, Z: 0};
         for (let i = 0; i <= n; ++i) {
-            Point = mult(Point, points[i], bern(n, i, t));
+            Point = mult(Point, bern(n, i, t), points[i]);
         }
         return Point;
     }
@@ -57,7 +57,7 @@ function protoBezierSurface(...points) {
         let Point = {X: 0, Y: 0, Z: 0};
         for (let i = 0; i <= n; ++i) {
             for (let j = 0; j <= m; ++j) {
-                Point = mult(Point, points[i][j], bern(n, i, u) * bern(m, j, v));
+                Point = mult(Point, bern(n, i, u) * bern(m, j, v), points[i][j]);
             }
         }
         return Point;

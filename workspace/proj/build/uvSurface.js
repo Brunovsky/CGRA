@@ -24,7 +24,7 @@ function uvComputeSurfaceNormal(uvfunction, U, V, uDelta, vDelta) {
 
 
 
-function sampleUVfunction(uvfunction, U, V, uDelta, vDelta) {
+function uvSampleFunction(uvfunction, U, V, uDelta, vDelta) {
     const Point = uvfunction(U, V);
     if (uvfunction.normal) {
         Point.N = uvfunction.normal(U, V);
@@ -36,9 +36,19 @@ function sampleUVfunction(uvfunction, U, V, uDelta, vDelta) {
 
 
 
+// Default uv coords map
+function uvComputeCoords(u, v, boundary) {
+    return {
+        U: linearMap(u, [boundary.minU, boundary.maxU], [0, 1]),
+        V: linearMap(v, [boundary.minV, boundary.maxV], [0, 1])
+    };
+}
+
+
+
 class uvSurface extends CGFobject
 {
-    constructor(scene, uvfunction, boundary = [0, 1, 0, 1], slices = 32, coords = [0, 1, 0, 1])
+    constructor(scene, uvfunction, boundary = [0, 1, 0, 1], slices = 32, coordsMap = uvComputeCoords)
     {
         super(scene);
         this.uvfunction = uvfunction;
@@ -49,19 +59,14 @@ class uvSurface extends CGFobject
             maxV: boundary[3]
         };
         this.slices = slices;
-        this.coords = {
-            minS: coords[0],
-            maxS: coords[1],
-            minT: coords[2],
-            maxT: coords[3]
-        };
+        this.coordsMap = coordsMap;
         this.initBuffers();
     };
 
     initBuffers()
     {
         const uvfunction = this.uvfunction, b = this.boundary,
-            slices = this.slices, coords = this.coords;
+            slices = this.slices, coordsMap = this.coordsMap;
 
         const uDelta = (b.maxU - b.minU) / slices;
         const vDelta = (b.maxV - b.minV) / slices;
@@ -79,11 +84,12 @@ class uvSurface extends CGFobject
         // j = 0  . . . . . .   ---> U
         //    i = 0 1 2 3 4 5
 
+                console.log(coordsMap);
         for (let j = 0; j <= slices; ++j) { // iterate V
             for (let i = 0; i <= slices; ++i) { // iterate U
                 let U = b.minU + uDelta * i;
                 let V = b.minV + vDelta * j;
-                let Point = sampleUVfunction(uvfunction, U, V, uDelta, vDelta);
+                let Point = uvSampleFunction(uvfunction, U, V, uDelta, vDelta);
 
                 // Up
                 this.vertices.push(Point.X, Point.Y, Point.Z);
@@ -94,12 +100,9 @@ class uvSurface extends CGFobject
                 this.normals.push(-Point.N.X, -Point.N.Y, -Point.N.Z);
 
                 // Texture Up, Down
-                let stexUnit = i / slices;
-                let ttexUnit = j / slices;
-                let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
-                let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
-                this.texCoords.push(stex, ttex); // Up
-                this.texCoords.push(stex, ttex); // Down
+                let tex = coordsMap(U, V, b);
+                this.texCoords.push(tex.U, tex.V); // Up
+                this.texCoords.push(tex.U, tex.V); // Down
             }
         }
 

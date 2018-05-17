@@ -1,17 +1,12 @@
-/**
- * poly.js
- *
- * The function polynomial(X, ...coefs) computes the value of the polynomial with
- * coefficients coefs (degree descending) at real X, and returns a real.
- *
- * The function polyDerivative(X, ...coefs) computes the derivative of said polynomial.
- *
- * The function hermitePolynomial(w, I, F) is used for the car hood. It is used to
- * implement a 4th degree spline of polynomials in the xOy plane following
- * the hermite fashion (of specifying derivatives at the end points).
- *
- * ...
- */
+// ln(ax + 1) / ln(b)
+Math.ulog = function(a, x, b) {
+    return Math.log1p(a * Math.abs(x)) / Math.log(b);
+}
+
+// Derivative of above
+Math.dulog = function(a, x, b) {
+    return a / ((Math.abs(x) + 1) * Math.log(b));
+}
 
 // Value of polynomial with coefficients ...coefs at X.
 function polynomial(X, ...coefs) {

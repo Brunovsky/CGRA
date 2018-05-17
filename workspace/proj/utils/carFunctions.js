@@ -151,6 +151,15 @@ let carFunctionSmooth = (function() {
         return {X: X, Y: Y, Z: Z};
     }
 
+    function sideCoordsMap(u, v) {
+        let X = linearMap(u, [0, 1], [0, dCar]);
+        let Y = linearMap(v, [1, 0], [baseContour(X), hoodContour(X)]);
+        return {
+            U: u,
+            V: linearMap(Y, [hCar, bCar], [0, 1])
+        };
+    }
+
     let car = {
         dCar: dCar,
         lCar: lCar,
@@ -169,6 +178,7 @@ let carFunctionSmooth = (function() {
         hood: hood,
         left: leftSide,
         right: rightSide,
+        sideCoordsMap: sideCoordsMap,
 
         hoodBoundaries: [0, 1, 0, 1],
         leftBoundaries: [0, 1, 0, 1],

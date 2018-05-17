@@ -170,17 +170,17 @@ function kleinBottle2(u, v) {
     const r = 4 * (1 - cos(u) / 2);
     const c = 1/6;
     if ((u % (2 * PI)) < PI) {
-        return scaleVector({
+        return scaleVector(c, {
             X: 6 * cos(u) * (1 + sin(u)) + r * cos(u) * cos(v),
             Y: 16 * sin(u) + r * sin(u) * cos(v),
             Z: r * sin(v)
-        }, c);
+        });
     } else {
-        return scaleVector({
+        return scaleVector(c, {
             X: 6 * cos(u) * (1 + sin(u)) + r * cos(v + PI),
             Y: 16 * sin(u),
             Z: r * sin(v)
-        }, c);
+        });
     }
 }
 

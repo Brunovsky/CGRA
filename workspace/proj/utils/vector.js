@@ -1,3 +1,5 @@
+'use strict';
+
 // Skip this ugliness
 // Detects if P is written as [X, Y, Z] or {X: X, Y: Y, Z: Z}, returns later.
 function makeVector(P) {
@@ -33,7 +35,39 @@ function makeVector(P) {
 
 
 
-function scaleVector(a, k) {
+function nullVector() {
+    return {
+        X: 0,
+        Y: 0,
+        Z: 0
+    };
+}
+
+function xVector() {
+    return {
+        X: 1,
+        Y: 0,
+        Z: 0
+    };
+}
+
+function yVector() {
+    return {
+        X: 0,
+        Y: 1,
+        Z: 0
+    };
+}
+
+function zVector() {
+    return {
+        X: 0,
+        Y: 0,
+        Z: 1
+    };
+}
+
+function scaleVector(k, a) {
     return {
         X: k * a.X,
         Y: k * a.Y,
@@ -49,7 +83,7 @@ function flipVector(a) {
     }
 }
 
-function multVectors(a, b, k) {
+function multVectors(a, k, b) {
     return {
         X: a.X + k * b.X,
         Y: a.Y + k * b.Y,
@@ -90,7 +124,13 @@ function norm(a) {
 }
 
 function normalize(a) {
-    return scaleVector(a, 1 / norm(a));
+    // Protect against division by zero.
+    const N = norm(a);
+    if (N === 0) {
+        return nullVector();
+    } else {
+        return scaleVector(1 / N, a);
+    }
 }
 
 function cosVectors(a, b) {
@@ -99,6 +139,56 @@ function cosVectors(a, b) {
 
 function sinVectors(a, b) {
     return norm(crossProduct(a, b)) / (norm(a) * norm(b));
+}
+
+function multMatrix(M, a) {
+    return {
+        X: M[0][0] * a.X + M[0][1] * a.Y + M[0][2] * a.Z,
+        Y: M[1][0] * a.X + M[1][1] * a.Y + M[1][2] * a.Z,
+        Z: M[2][0] * a.X + M[2][1] * a.Y + M[2][2] * a.Z
+    };
+}
+
+function rotateXaxis(theta, a) {
+    const cos = Math.cos, sin = Math.sin;
+    const M = [
+        [          1,           0,           0],
+        [          0,  cos(theta), -sin(theta)],
+        [          0,  sin(theta),  cos(theta)]
+    ];
+    return multMatrix(M, a);
+}
+
+function rotateYaxis(theta, a) {
+    const cos = Math.cos, sin = Math.sin;
+    const M = [
+        [ cos(theta),           0,  sin(theta)],
+        [          0,           1,           0],
+        [-sin(theta),           0,  cos(theta)]
+    ];
+    return multMatrix(M, a);
+}
+
+function rotateZaxis(theta, a) {
+    const cos = Math.cos, sin = Math.sin;
+    const M = [
+        [ cos(theta), -sin(theta),           0],
+        [ sin(theta),  cos(theta),           0],
+        [          0,           0,           1]
+    ];
+    return multMatrix(M, a);
+}
+
+function unrotateXaxis(theta, a) {
+    return rotateXaxis(-theta, a);
+}
+
+function unrotateYaxis(theta, a) {
+    return rotateYaxis(-theta, a);
+}
+
+function unrotateZaxis(theta, a) {
+    return rotateZaxis(-theta, a);
 }
 
 // Return the orientation of triangle given by vertices A, B, C in this order,
@@ -113,5 +203,5 @@ function triangleOrientation(A, B, C) {
 // Then compute f(t).
 function interpolateVectors(t, A, B) {
     let vA = makeVector(A), vB = makeVector(B);
-    return addVectors(scaleVector(vA, 1 - t), scaleVector(vB, t));
+    return addVectors(scaleVector(1 - t, vA), scaleVector(t, vB));
 }

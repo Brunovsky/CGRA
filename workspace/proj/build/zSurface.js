@@ -42,7 +42,7 @@ function zComputeSurfaceNormal(zfunction, X, Y, xDelta, yDelta) {
 
 
 
-function sampleZfunction(zfunction, X, Y, xDelta, yDelta) {
+function zSampleFunction(zfunction, X, Y, xDelta, yDelta) {
     const Point = {
         X: X,
         Y: Y,
@@ -105,7 +105,7 @@ class zSurface extends CGFobject
             for (let i = 0; i <= slices; ++i) { // iterate X (column)
                 let X = b.minX + xDelta * i;
                 let Y = b.minY + yDelta * j;
-                let Point = sampleZfunction(zfunction, X, Y, xDelta, yDelta);
+                let Point = zSampleFunction(zfunction, X, Y, xDelta, yDelta);
 
                 // Up
                 this.vertices.push(Point.X, Point.Y, Point.Z);

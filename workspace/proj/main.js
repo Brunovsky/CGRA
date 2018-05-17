@@ -24,8 +24,8 @@ serialInclude([
 	'build/Pyramid.js',
 	'build/CutCone.js',
 	'build/CutPyramid.js',
-	'build/zSurface.js',
 	'build/ySurface.js',
+	'build/zSurface.js',
 	'build/uvSurface.js',
 	'build/revSurface.js',
 
@@ -39,8 +39,8 @@ serialInclude([
 
 	main = function() {
 		var app = new CGFapplication(document.body);
-		myScene = new LightingScene();
-		var myInterface = new MyInterface(myScene);
+		myScene = new MyScene();
+		var myInterface = new MyInterface();
 		
 		app.init();
 

@@ -53,7 +53,7 @@ function revComputeSurfaceNormal(revfunction, Z, theta, zDelta) {
 
 
 
-function sampleREVfunction(revfunction, Z, theta, zDelta) {
+function revSampleFunction(revfunction, Z, theta, zDelta) {
     const r = revfunction(Z);
     const Point = {
         X: r * Math.cos(theta),
@@ -120,7 +120,7 @@ class revSurface extends CGFobject
             for (let i = 0; i <= slices; ++i) { // iterate Theta
                 let Z = b.minZ + zDelta * j;
                 let theta = b.maxTheta - thetaDelta * i;
-                let Point = sampleREVfunction(revfunction, Z, theta, zDelta);
+                let Point = revSampleFunction(revfunction, Z, theta, zDelta);
 
                 // Up
                 this.vertices.push(Point.X, Point.Z, Point.Y);
