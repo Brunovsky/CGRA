@@ -111,7 +111,6 @@ class MyCrane extends CGFobject
 
         this.speed = 1; // radians per second
 
-        this.animation = false;
         this.forward = false;
         this.backward = false;
     };
@@ -120,33 +119,43 @@ class MyCrane extends CGFobject
     {
         const keys = this.scene.keys;
 
-        if ((keys.forward || keys.backward) && !this.time) {
-            this.time = currTime;
-            this.animation = true;
+        if (this.forward) {
+            let dT = currTime - this.time;
+            let angle = this.speed * dT;
 
-            if (keys.forward) {
+            if (angle > Math.PI) {
+                this.forward = false;
+                this.alpha = Math.PI;
+            } else {
+                this.alpha = angle;
+            }
+        }
+
+        if (this.backward) {
+            let dT = currTime - this.time;
+            let angle = this.speed * dT;
+
+            if (angle < 0) {
+                this.backward = false;
+                this.alpha = 0;
+            } else {
+                this.alpha = Math.PI - angle;
+            }
+        }
+
+        if (keys.animation && !this.forward && !this.backward) {
+            this.time = currTime;
+
+            if (this.angle === 0) {
                 this.forward = true;
                 this.backward = false;
-            } else {
+            }
+
+            if (this.angle === Math.PI) {
                 this.forward = false;
                 this.backward = true;
             }
         }
-
-        if (keys.forward) {
-            this.forward = true;
-            let dT = currTime - this.time;
-            let angle = speed * dT;
-
-            if (angle > Math.PI) {
-                this.animation = false;
-            }
-        }
-    };
-
-    forward(angle)
-    {
-        this.alpha += angle;
     };
 
     display()
