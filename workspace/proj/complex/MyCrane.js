@@ -111,27 +111,45 @@ class MyCrane extends CGFobject
 
         this.speed = 1; // radians per second
 
-        this.forward = false;
-        this.backward = false;
+        this.moving = false;
+        this.restoring = false;
+    };
 
-        this.objects = {};
+    move(wrapper)
+    {
+        if (!this.moving) {
+            this.moving = true;
+            this.wrapper = wrapper;
+        }
     };
 
     update(currTime)
     {
         const keys = this.scene.keys;
 
-        if (this.forward) {
-            let dT = (currTime - this.time) / 1000;
-            let angle = this.speed * dT;
+        let dT = (currTime - this.time) / 1000;
+        this.time = currTime;
+        let angle = this.speed * dT;
 
-            if (angle > Math.PI) {
-                this.forward = false;
+        if (this.restoring) {
+            this.alpha -= angle;
+
+            if (this.alpha <= 0) {
+                this.alpha = 0;
+                this.restoring = false;
+            }
+        } else if (this.moving) {
+            this.alpha += angle;
+
+            if (this.alpha >= Math.PI) {
                 this.alpha = Math.PI;
-            } else {
-                this.alpha = angle;
+                this.moving = false;
             }
         }
+
+        // foda-se esta merda
+        
+        /*
 
         if (this.backward) {
             let dT = (currTime - this.time) / 1000;
@@ -145,35 +163,35 @@ class MyCrane extends CGFobject
             }
         }
 
+        if (this.forward) {
+            let dT = (currTime - this.time) / 1000;
+            let angle = this.speed * dT;
+
+            if (angle > Math.PI) {
+                this.forward = false;
+                this.backward = true;
+                this.alpha = Math.PI;
+                this.time = currTime;
+            } else {
+                this.alpha = angle;
+            }
+        }
+
         if (keys.animate && !this.forward && !this.backward) {
             this.time = currTime;
 
             if (this.alpha === 0) {
                 this.forward = true;
                 this.backward = false;
-                console.log("FORWARD");
             }
 
             if (this.alpha === Math.PI) {
                 this.forward = false;
                 this.backward = true;
-                console.log("BACKWARD");
             }
         }
-    };
 
-    expose(where)
-    {
-        const data = this.data;
-
-        let R = data.jib.height * Math.sin(this.phi);
-        let Y = data.jib.height * Math.cos(this.phi) - data.arm.height
-            - data.line.height - data.iman.height;
-
-        let vector = subVectors({X: R, Y: Y, Z: 0}, where);
-
-        this.scene.rotate(-this.alpha, 0, 1, 0);
-        this.scene.translate(vector.X, vector.Y, vector.Z);
+        */
     };
 
     display()
@@ -223,7 +241,61 @@ class MyCrane extends CGFobject
     {
         this.objects[id] = {
             object: object,
-            height: height
+            height: height,
+
         };
+    };
+};
+
+class MoverWrapper extends CGFobject
+{
+    constructor(object)
+    {
+        super(object.scene);
+        this.object = object;
+        this.stack = new Stack();
+    };
+
+    display()
+    {
+        for (let i = this.stack.length; i > 0; --i) {
+            this.scene.multMatrix(this.stack[i - 1]);
+        }
+        this.object.display();
+    };
+
+    set(object)
+    {
+        this.object = object;
+    };
+
+    get()
+    {
+        return this.object;
+    };
+
+    top()
+    {
+        return this.stack.top();
+    };
+
+    push(mat4)
+    {
+        return this.stack.push(mat4);
+    }
+
+    pop()
+    {
+        return this.stack.pop();
+    };
+
+    empty()
+    {
+        return this.stack.empty();
+    };
+
+    clear()
+    {
+        this.stack.clear();
     };
 };

@@ -37,7 +37,7 @@ class MyScene extends CGFscene
         this.car = new Car(this, carFunctionSmooth);
         this.car.bindTexture(tex.table, tex.side.silver, tex.wheeltread.gta, tex.wheelside.gold);
 
-        this.hills = new MyTerrain(this, hillsDivs, hillsAltimetry, 70, [0, 1, 0, 1]);
+        this.hills = new MyTerrain(this, hillsDivs, hillsAltimetry, 50, [0, 1, 0, 1]);
         this.hills.bindTexture(tex.terrain.hills);
 
         this.river = new MyTerrain(this, riverDivs, riverAltimetry, 50, [0, 1, 0, 1]);
