@@ -5,12 +5,15 @@ let carFunctionSmooth = (function() {
     const lCar = 2.00;
     const hCar = 2.00;
     const bCar = 0.32 / hCar;
+    const lAxis = lCar / 2;
     const rWheel = 0.45;
     const lWheel = (lCar / 2) * 0.40;
     const rOut = 0.50;
     const xWheelFront = dCar * 0.18;
     const xWheelBack = dCar * 0.81;
     const dWheel = xWheelBack - xWheelFront;
+    const ceilX = 2.82;
+    const ceilY = 1.913;
 
     // Knots X00 ... X99 of the spline
     const X00 = 0.00;
@@ -165,12 +168,16 @@ let carFunctionSmooth = (function() {
         lCar: lCar,
         hCar: hCar,
         bCar: bCar,
+        lAxis: lAxis,
         xWheelFront: xWheelFront,
         xWheelBack: xWheelBack,
         rWheel: rWheel,
         lWheel: lWheel,
         rOut: rOut,
         dWheel: dWheel,
+
+        ceilX: ceilX,
+        ceilY: ceilY,
 
         hoodContour: hoodContour,
         baseContour: baseContour,
@@ -196,12 +203,15 @@ let carFunctionPolygonal = (function() {
     const lCar = 2.00;
     const hCar = 1.80;
     const bCar = 0.16;
+    const lAxis = lCar / 2;
     const rWheel = 0.45;
     const lWheel = (lCar / 2) * 0.40;
     const rOut = 0.50;
     const xWheelFront = dCar * 0.19;
     const xWheelBack = dCar * 0.78;
     const dWheel = xWheelBack - xWheelFront;
+    const ceilX = 2.5;
+    const ceilY = 1.85;
 
     // Knots X00 ... X99 of the polygonal line
     const X00 = 0.00;
@@ -327,11 +337,21 @@ let carFunctionPolygonal = (function() {
         return {X: X, Y: Y, Z: Z};
     }
 
+    function sideCoordsMap(u, v) {
+        let X = linearMap(u, [0, 1], [0, dCar]);
+        let Y = linearMap(v, [1, 0], [baseContour(X), hoodContour(X)]);
+        return {
+            U: u,
+            V: linearMap(Y, [hCar, 0], [0, 1])
+        };
+    }
+
     let car = {
         dCar: dCar,
         lCar: lCar,
         hCar: hCar,
         bCar: bCar,
+        lAxis: lAxis,
         xWheelFront: xWheelFront,
         xWheelBack: xWheelBack,
         rWheel: rWheel,
@@ -339,12 +359,16 @@ let carFunctionPolygonal = (function() {
         rOut: rOut,
         dWheel: dWheel,
 
+        ceilX: ceilX,
+        ceilY: ceilY,
+
         hoodContour: hoodContour,
         baseContour: baseContour,
 
         hood: hood,
         left: leftSide,
         right: rightSide,
+        sideCoordsMap: sideCoordsMap,
 
         hoodBoundaries: [0, 1, 0, 1],
         leftBoundaries: [0, 1, 0, 1],

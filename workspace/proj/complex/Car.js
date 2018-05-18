@@ -79,6 +79,15 @@ class Car extends CGFobject
         this.time = -1;
     };
 
+    ceiling()
+    {
+        return {
+            X: this.position.X + this.car.xWheelBack - this.car.ceilX,
+            Y: this.position.Y + this.car.ceilY,
+            Z: this.position.Z,
+        }
+    };
+
     update(currTime)
     {
         const keys = this.scene.keys;

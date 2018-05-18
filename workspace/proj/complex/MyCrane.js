@@ -113,6 +113,8 @@ class MyCrane extends CGFobject
 
         this.forward = false;
         this.backward = false;
+
+        this.objects = {};
     };
 
     update(currTime)
@@ -120,7 +122,7 @@ class MyCrane extends CGFobject
         const keys = this.scene.keys;
 
         if (this.forward) {
-            let dT = currTime - this.time;
+            let dT = (currTime - this.time) / 1000;
             let angle = this.speed * dT;
 
             if (angle > Math.PI) {
@@ -132,10 +134,10 @@ class MyCrane extends CGFobject
         }
 
         if (this.backward) {
-            let dT = currTime - this.time;
+            let dT = (currTime - this.time) / 1000;
             let angle = this.speed * dT;
 
-            if (angle < 0) {
+            if (angle > Math.PI) {
                 this.backward = false;
                 this.alpha = 0;
             } else {
@@ -143,19 +145,35 @@ class MyCrane extends CGFobject
             }
         }
 
-        if (keys.animation && !this.forward && !this.backward) {
+        if (keys.animate && !this.forward && !this.backward) {
             this.time = currTime;
 
-            if (this.angle === 0) {
+            if (this.alpha === 0) {
                 this.forward = true;
                 this.backward = false;
+                console.log("FORWARD");
             }
 
-            if (this.angle === Math.PI) {
+            if (this.alpha === Math.PI) {
                 this.forward = false;
                 this.backward = true;
+                console.log("BACKWARD");
             }
         }
+    };
+
+    expose(where)
+    {
+        const data = this.data;
+
+        let R = data.jib.height * Math.sin(this.phi);
+        let Y = data.jib.height * Math.cos(this.phi) - data.arm.height
+            - data.line.height - data.iman.height;
+
+        let vector = subVectors({X: R, Y: Y, Z: 0}, where);
+
+        this.scene.rotate(-this.alpha, 0, 1, 0);
+        this.scene.translate(vector.X, vector.Y, vector.Z);
     };
 
     display()
@@ -190,11 +208,6 @@ class MyCrane extends CGFobject
         this.scene.popMatrix();
     };
 
-    expose()
-    {
-
-    };
-
     bindTexture(baseTexture, jibTexture, jointTexture, armTexture, imanTexture)
     {
         this.base.bindTexture(baseTexture);
@@ -205,4 +218,12 @@ class MyCrane extends CGFobject
         this.line.bindTexture(imanTexture || armTexture || jibTexture);
         this.iman.bindTexture(imanTexture || armTexture || jibTexture);
     };
-}
+
+    bindObject(id, object, height)
+    {
+        this.objects[id] = {
+            object: object,
+            height: height
+        };
+    };
+};

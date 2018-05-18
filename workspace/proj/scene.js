@@ -299,11 +299,14 @@ class MyScene extends CGFscene
         this.pushTexture(this.tableTex);
         this.pushMatrix();
 
-        this.car.display();
-
         this.river.display();
 
         this.crane.display();
+
+        this.pushMatrix();
+            if (this.crane.forward) this.crane.expose(this.car.ceiling());
+            this.car.display();
+        this.popMatrix();
 
         this.popMatrix();
         this.popTexture();
