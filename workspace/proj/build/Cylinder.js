@@ -134,6 +134,6 @@ class ClosedCylinder extends CGFobject
     bindTexture(cylinderTexture, circleTexture)
     {
         this.cylinder.bindTexture(cylinderTexture);
-        this.base.bindTexture(circleTexture);
+        this.base.bindTexture(circleTexture || cylinderTexture);
     };
 };

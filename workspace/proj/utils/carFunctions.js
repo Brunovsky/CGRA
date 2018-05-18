@@ -8,8 +8,8 @@ let carFunctionSmooth = (function() {
     const rWheel = 0.45;
     const lWheel = (lCar / 2) * 0.40;
     const rOut = 0.50;
-    const xWheelFront = dCar * 0.20;
-    const xWheelBack = dCar * 0.78;
+    const xWheelFront = dCar * 0.18;
+    const xWheelBack = dCar * 0.81;
     const dWheel = xWheelBack - xWheelFront;
 
     // Knots X00 ... X99 of the spline
@@ -156,7 +156,7 @@ let carFunctionSmooth = (function() {
         let Y = linearMap(v, [1, 0], [baseContour(X), hoodContour(X)]);
         return {
             U: u,
-            V: linearMap(Y, [hCar, bCar], [0, 1])
+            V: linearMap(Y, [hCar, 0], [0, 1])
         };
     }
 

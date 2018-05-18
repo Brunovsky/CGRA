@@ -150,22 +150,22 @@ class Car extends CGFobject
         let dP = scaleVector(dT, velocity);
         position = addVectors(position, dP);
 
-        // Rotate wheels
+        // New way
         way = dotProduct(velocity, direction) > 0 ? 1 : -1;
         let distance = way * norm(dP);
 
         if (beta != 0) {
             // Add centripetal acceleration
             let curvatureRadius = dWheel / Math.sin(beta); // signed
-            let normal = unrotateYaxis(Math.PI / 2, direction);
-            let centripetal = scaleVector(speed * speed / curvatureRadius, normal);
+            //let normal = unrotateYaxis(Math.PI / 2, direction);
+            //let centripetal = scaleVector(speed * speed / curvatureRadius, normal);
 
             // Wheel angles
             var gammaLeft = Math.asin(dWheel / (curvatureRadius + lAxis)) * way;
             var gammaRight = Math.asin(dWheel / (curvatureRadius - lAxis)) * way;
 
             // Adjusted velocity vector
-            velocity = multVectors(velocity, dT, centripetal);
+            //velocity = multVectors(velocity, dT, centripetal);
 
             // Adjusted car angle
             let dAlpha = norm(dP) / curvatureRadius;
@@ -235,14 +235,14 @@ class Car extends CGFobject
         this.scene.popMatrix();
     };
 
-    bindTexture(hoodTexture, sideTexture, wheelCylinderTexture, wheelSideTexture)
+    bindTexture(hoodTexture, sideTexture, treadTexture, wheelSideTexture)
     {
         this.hood.bindTexture(hoodTexture);
         this.left.bindTexture(sideTexture);
         this.right.bindTexture(sideTexture);
-        this.wheelLeftFront.bindTexture(wheelCylinderTexture, wheelSideTexture);
-        this.wheelRightFront.bindTexture(wheelCylinderTexture, wheelSideTexture);
-        this.wheelLeftBack.bindTexture(wheelCylinderTexture, wheelSideTexture);
-        this.wheelRightBack.bindTexture(wheelCylinderTexture, wheelSideTexture);
+        this.wheelLeftFront.bindTexture(treadTexture, wheelSideTexture);
+        this.wheelRightFront.bindTexture(treadTexture, wheelSideTexture);
+        this.wheelLeftBack.bindTexture(treadTexture, wheelSideTexture);
+        this.wheelRightBack.bindTexture(treadTexture, wheelSideTexture);
     };
 };

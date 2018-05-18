@@ -37,8 +37,8 @@ class Wheel extends CGFobject
         this.gamma = gamma;
     };
 
-    bindTexture(cylinderTexture, baseTexture)
+    bindTexture(treadTexture, sideTexture)
     {
-        this.wheel.bindTexture(cylinderTexture, baseTexture);
+        this.wheel.bindTexture(treadTexture, sideTexture);
     };
 };

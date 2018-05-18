@@ -84,7 +84,6 @@ class uvSurface extends CGFobject
         // j = 0  . . . . . .   ---> U
         //    i = 0 1 2 3 4 5
 
-                console.log(coordsMap);
         for (let j = 0; j <= slices; ++j) { // iterate V
             for (let i = 0; i <= slices; ++i) { // iterate U
                 let U = b.minU + uDelta * i;

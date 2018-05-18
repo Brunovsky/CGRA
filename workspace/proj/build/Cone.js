@@ -131,7 +131,7 @@ class ClosedCone extends CGFobject
     bindTexture(coneTexture, baseTexture)
     {
         this.cone.bindTexture(coneTexture);
-        this.base.bindTexture(baseTexture);
+        this.base.bindTexture(baseTexture || coneTexture);
     };
 };
 

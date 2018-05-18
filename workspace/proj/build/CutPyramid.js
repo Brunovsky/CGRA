@@ -171,8 +171,8 @@ class ClosedCutPyramid extends CGFobject
     bindTexture(cutPyramidTexture, baseTexture, topTexture)
     {
         this.cutPyramid.bindTexture(cutPyramidTexture);
-        this.base.bindTexture(baseTexture);
-        this.top.bindTexture(topTexture);
+        this.base.bindTexture(baseTexture || cutPyramidTexture);
+        this.top.bindTexture(topTexture || baseTexture || cutPyramidTexture);
     };
 };
 
@@ -207,6 +207,6 @@ class DoubleCutPyramid extends CGFobject
     bindTexture(cutPyramidTexture, topTexture)
     {
         this.cutPyramid.bindTexture(cutPyramidTexture);
-        this.top.bindTexture(topTexture);
+        this.top.bindTexture(topTexture || cutPyramidTexture);
     };
 };

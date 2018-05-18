@@ -159,7 +159,7 @@ class ClosedPyramid extends CGFobject
     bindTexture(pyramidTexture, baseTexture)
     {
         this.pyramid.bindTexture(pyramidTexture);
-        this.base.bindTexture(baseTexture);
+        this.base.bindTexture(baseTexture || pyramidTexture);
     };
 };
 

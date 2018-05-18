@@ -130,7 +130,7 @@ class ClosedHalfSphere extends CGFobject
     bindTexture(halfTexture, baseTexture)
     {
         this.half.bindTexture(halfTexture);
-        this.base.bindTexture(baseTexture);
+        this.base.bindTexture(baseTexture || halfTexture);
     };
 };
 

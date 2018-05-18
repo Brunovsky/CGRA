@@ -161,6 +161,6 @@ class ClosedPrism extends CGFobject
     bindTexture(prismTexture, baseTexture)
     {
         this.prism.bindTexture(prismTexture);
-        this.base.bindTexture(baseTexture);
+        this.base.bindTexture(baseTexture || prismTexture);
     };
 };

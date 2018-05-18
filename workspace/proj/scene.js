@@ -35,17 +35,40 @@ class MyScene extends CGFscene
         let tex = this.textures;
 
         this.car = new Car(this, carFunctionSmooth);
-        this.car.bindTexture(tex.table, tex.floor, tex.slides, tex.board);
+        this.car.bindTexture(tex.table, tex.side.silver, tex.wheeltread.gta, tex.wheelside.gold);
+
+        this.hills = new MyTerrain(this, hillsDivs, hillsAltimetry, 70, [0, 1, 0, 1]);
+        this.hills.bindTexture(tex.terrain.hills);
+
+        this.river = new MyTerrain(this, riverDivs, riverAltimetry, 50, [0, 1, 0, 1]);
+        this.river.bindTexture(tex.terrain.river);
+
+        this.crane = new MyCrane(this);
+        this.crane.bindTexture(tex.table, tex.terrain.floor);
     };
 
     initTextures()
     {
         let textures = {
             default: new CGFappearance(this),
-            table:   new CGFappearance(this),
-            board:   new CGFappearance(this),
-            slides:  new CGFappearance(this),
-            floor:   new CGFappearance(this)
+            table: new CGFappearance(this),
+            board: new CGFappearance(this),
+            slides: new CGFappearance(this),
+            side: {
+                silver: new CGFappearance(this)
+            },
+            wheelside: {
+                gold: new CGFappearance(this),
+                white: new CGFappearance(this)
+            },
+            wheeltread: {
+                gta: new CGFappearance(this)
+            },
+            terrain: {
+                hills: new CGFappearance(this),
+                river: new CGFappearance(this),
+                floor: new CGFappearance(this)
+            }
         };
 
         textures.default.setAmbient(0.10, 0.45, 0.7, 1);
@@ -68,17 +91,46 @@ class MyScene extends CGFscene
         textures.slides.setShininess(150);
         textures.slides.loadTexture("tex/slides.png");
 
-        textures.floor.setAmbient(0.5, 0.5, 0.5, 1);
-        textures.floor.setDiffuse(0.7, 0.7, 0.7, 1);
-        textures.floor.setShininess(150);
-        textures.floor.loadTexture("tex/floor.png");
+        textures.side.silver.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.side.silver.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.side.silver.setShininess(150);
+        textures.side.silver.loadTexture("tex/side-silver.png");
+
+        textures.wheelside.gold.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.wheelside.gold.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.wheelside.gold.setShininess(150);
+        textures.wheelside.gold.loadTexture("tex/wheelside-gold.png");
+
+        textures.wheelside.white.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.wheelside.white.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.wheelside.white.setShininess(150);
+        textures.wheelside.white.loadTexture("tex/wheelside-white.png");
+
+        textures.wheeltread.gta.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.wheeltread.gta.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.wheeltread.gta.setShininess(150);
+        textures.wheeltread.gta.loadTexture("tex/wheeltread-gta.png");
+
+        textures.terrain.floor.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.terrain.floor.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.terrain.floor.setShininess(150);
+        textures.terrain.floor.loadTexture("tex/floor.png");
+
+        textures.terrain.hills.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.terrain.hills.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.terrain.hills.setShininess(150);
+        textures.terrain.hills.loadTexture("tex/hills.png");
+
+        textures.terrain.river.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.terrain.river.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.terrain.river.setShininess(150);
+        textures.terrain.river.loadTexture("tex/river.png");
 
         this.textures = textures;
     };
 
     initControls(datgui)
     {
-        let car = this.car;
         let lights = this.lights;
         let axis = this.axis;
 
@@ -87,16 +139,8 @@ class MyScene extends CGFscene
             ArrowUp:    "up",
             ArrowLeft:  "left",
             ArrowRight: "right",
-            Space:      "space"
-        };
-
-        let physicsMap = {
-            "Engine forward": "engForward",
-            "Engine backward": "engBackward",
-            "Break constant": "break",
-            "Drag constant": "drag",
-            "Roll constant": "roll",
-            "Car mass": "mass"
+            Space:      "space",
+            KeyB:       "animate"
         };
 
         this.keys = {
@@ -104,7 +148,8 @@ class MyScene extends CGFscene
             up: false,
             left: false,
             right: false,
-            space: false
+            space: false,
+            animate: false
         };
 
         this.control = {
@@ -116,15 +161,15 @@ class MyScene extends CGFscene
                 "Light 4": true
             },
             physics: {
-                "Engine forward": car.cons.engForward,
-                "Engine backward": car.cons.engBackward,
-                "Break constant": car.cons.break,
-                "Drag constant": car.cons.drag,
-                "Roll constant": car.cons.roll,
-                "Car mass": car.cons.mass,
+                "Engine forward": this.car.cons.engForward,
+                "Engine backward": this.car.cons.engBackward,
+                "Break constant": this.car.cons.break,
+                "Drag constant": this.car.cons.drag,
+                "Roll constant": this.car.cons.roll,
+                "Car mass": this.car.cons.mass,
             },
             "Show axis": true,
-            "Texture": "wood"
+            "Car Texture": "wood"
         };
 
         function updateLight(i, value) {
@@ -152,21 +197,21 @@ class MyScene extends CGFscene
         let physGroup = datgui.addFolder("Physics");
         physGroup.open();
 
-        physGroup.add(this.control.physics, "Engine forward", 0, car.cons.engForward * 10)
-            .onFinishChange(value => { car.cons.engForward = value; });
-        physGroup.add(this.control.physics, "Engine backward", 0, car.cons.engBackward * 10)
-            .onFinishChange(value => { car.cons.engBackward = value; });
-        physGroup.add(this.control.physics, "Break constant", 0, car.cons.break * 10)
-            .onFinishChange(value => { car.cons.break = value; });
-        physGroup.add(this.control.physics, "Drag constant", 0, car.cons.drag * 10)
-            .onFinishChange(value => { car.cons.drag = value; });
-        physGroup.add(this.control.physics, "Roll constant", 0, car.cons.roll * 10)
-            .onFinishChange(value => { car.cons.roll = value; });
-        physGroup.add(this.control.physics, "Car mass", 0, car.cons.mass * 10)
-            .onFinishChange(value => { car.cons.mass = value; });
+        physGroup.add(this.control.physics, "Engine forward", 0, this.car.cons.engForward * 10)
+            .onFinishChange(value => { this.car.cons.engForward = value; });
+        physGroup.add(this.control.physics, "Engine backward", 0, this.car.cons.engBackward * 10)
+            .onFinishChange(value => { this.car.cons.engBackward = value; });
+        physGroup.add(this.control.physics, "Break constant", 0, this.car.cons.break * 10)
+            .onFinishChange(value => { this.car.cons.break = value; });
+        physGroup.add(this.control.physics, "Drag constant", 0, this.car.cons.drag * 10)
+            .onFinishChange(value => { this.car.cons.drag = value; });
+        physGroup.add(this.control.physics, "Roll constant", 0, this.car.cons.roll * 10)
+            .onFinishChange(value => { this.car.cons.roll = value; });
+        physGroup.add(this.control.physics, "Car mass", 0, this.car.cons.mass * 10)
+            .onFinishChange(value => { this.car.cons.mass = value; });
 
         datgui.add(this.control, "Show axis");
-        datgui.add(this.control, "Texture", ["red", "blue", "green", "wood"]);
+        datgui.add(this.control, "Car Texture", ["red", "blue", "green", "wood"]);
     };
 
     initCameras() 
@@ -234,14 +279,12 @@ class MyScene extends CGFscene
         // Initialize Model-View matrix as identity (no transformation)
         this.updateProjectionMatrix();
         this.loadIdentity();
+
         this.clearTextures();
         this.pushTexture(this.materialDefault);
 
         // Apply transformations corresponding to the camera position relative to the origin
         this.applyViewMatrix();
-
-        // check keys
-        this.checkKeys();
 
         // Update all lights used
         this.updateLights();
@@ -258,6 +301,10 @@ class MyScene extends CGFscene
 
         this.car.display();
 
+        this.river.display();
+
+        this.crane.display();
+
         this.popMatrix();
         this.popTexture();
 
@@ -269,6 +316,7 @@ class MyScene extends CGFscene
         this.checkKeys();
         
         this.car.update(currTime);
+        this.crane.update(currTime);
     };
 	
 	checkKeys()
@@ -310,3 +358,51 @@ class MyScene extends CGFscene
         return this;
     };
 };
+
+let hillsAltimetry = [
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ]
+], hillsDivs = 20;
+
+let riverAltimetry = [
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.2, 0.8, 2.1, 3.2, 3.2, 3.3, 3.1, 3.0, 1.2, 0.7, 0.7 ],
+    [ 0.0, 0.1, 0.2, 0.2, 0.4, 1.2, 0.8, 0.2, 0.0, 0.1, 0.2, 1.8, 3.1, 3.3, 3.1, 3.3, 3.4, 3.0, 0.7, 0.7, 1.0 ],
+    [ 0.1, 0.2, 0.3, 0.6, 3.6, 2.4, 0.8, 0.3, 0.1, 0.0, 0.1, 0.1, 1.5, 3.0, 1.3, 0.3, 1.0, 2.0, 1.1, 1.0, 1.2 ],
+    [ 0.1, 0.3, 0.4, 2.7, 3.5, 2.0, 0.6, 0.2, 0.0, 0.0, 0.0, 0.0, 0.2, 0.2, 0.0, 0.1, 0.2, 0.7, 1.3, 1.8, 1.8 ],
+    [ 0.1, 0.8, 2.6, 3.0, 2.8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 1.5, 2.0, 2.5 ],
+    [ 0.1, 0.2, 1.8, 2.4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.2, 0.6, 3.1, 3.7, 3.8 ],
+    [ 0.1, 0.3, 0.7, 1.1, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 3.0, 4.7, 4.8, 4.9 ],
+    [ 0.0, 0.1, 0.2, 0.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 3.5, 5.3, 5.2, 5.1 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.2, 0.7, 4.4, 5.4, 5.6, 5.3 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 2.5, 5.0, 5.3, 5.5, 5.4 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.4, 3.0, 5.0, 5.2, 5.4, 5.4 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 2.5, 5.1, 5.3, 5.2 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.2, 2.5, 4.0, 2.0, 4.7, 5.1, 5.1 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.2, 3.6, 4.0, 1.0, 3.8, 4.6, 4.8 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.3, 3.3, 0.6, 1.1, 4.0, 4.5 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.1, 0.1, 0.2, 0.7, 2.0, 0.0, 0.0, 0.0, 0.0, 0.3, 3.8, 4.3 ],
+    [ 0.0, 0.0, 0.0, 0.1, 0.1, 0.1, 0.0, 0.0, 0.4, 0.4, 0.5, 0.7, 3.5, 3.6, 3.5, 3.3, 2.0, 0.0, 0.3, 3.6, 4.3 ],
+    [ 0.0, 0.1, 0.2, 0.3, 0.3, 0.3, 0.1, 0.1, 3.4, 3.7, 3.8, 3.4, 3.9, 4.1, 4.0, 3.8, 0.6, 0.0, 0.4, 3.8, 4.2 ],
+    [ 0.1, 0.2, 0.5, 1.8, 1.8, 1.0, 0.5, 0.6, 3.4, 4.1, 4.2, 4.1, 4.2, 4.3, 4.2, 3.8, 0.1, 0.0, 0.9, 3.9, 4.1 ],
+    [ 0.1, 0.3, 1.9, 2.1, 2.0, 2.0, 0.4, 0.5, 1.0, 3.7, 3.9, 4.3, 4.5, 4.7, 4.4, 0.3, 0.0, 0.0, 3.0, 4.0, 4.1 ],
+    [ 0.1, 0.5, 2.0, 2.1, 2.3, 2.1, 1.4, 0.5, 0.6, 3.2, 3.7, 4.4, 4.5, 4.5, 3.9, 0.3, 0.0, 0.0, 2.5, 3.5, 4.0 ]
+], riverDivs = 20;

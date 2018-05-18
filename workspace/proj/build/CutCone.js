@@ -141,8 +141,8 @@ class ClosedCutCone extends CGFobject
     bindTexture(cutConeTexture, baseTexture, topTexture)
     {
         this.cone.bindTexture(cutConeTexture);
-        this.base.bindTexture(baseTexture);
-        this.top.bindTexture(topTexture);
+        this.base.bindTexture(baseTexture || cutConeTexture);
+        this.top.bindTexture(topTexture || baseTexture || cutConeTexture);
     };
 };
 
@@ -177,6 +177,6 @@ class DoubleCutCone extends CGFobject
     bindTexture(cutConeTexture, topTexture)
     {
         this.cone.bindTexture(cutConeTexture);
-        this.top.bindTexture(topTexture);
+        this.top.bindTexture(topTexture || cutConeTexture);
     };
 };

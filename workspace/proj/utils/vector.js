@@ -191,12 +191,17 @@ function unrotateZaxis(theta, a) {
     return rotateZaxis(-theta, a);
 }
 
+function vectorBisector(a, b) {
+    return scaleVector(norm(addVectors(a, b)),
+        normalize(addVectors(normalize(a), normalize(b))));
+}
+
 // Return the orientation of triangle given by vertices A, B, C in this order,
 // aka (B-A)x(C-B). The caller should make sense of the result by accessing .X, .Y, .Z
 // in its own context.
 function triangleOrientation(A, B, C) {
     let vA = makeVector(A), vB = makeVector(B), vC = makeVector(C);
-    return crossProduct(subVectors(vA, vB), subVectors(vB, vC));
+    return crossProduct(subVectors(vB, vA), subVectors(vC, vB));
 }
 
 // Consider a function f : R --> AB, where f(0) = A and f(1) = B.
@@ -204,4 +209,11 @@ function triangleOrientation(A, B, C) {
 function interpolateVectors(t, A, B) {
     let vA = makeVector(A), vB = makeVector(B);
     return addVectors(scaleVector(1 - t, vA), scaleVector(t, vB));
+}
+
+// Bisector of vectors ba and bc with magnitude ||ba+bc||.
+function triangleBisector(A, B, C) {
+    let vA = makeVector(A), vB = makeVector(B), vC = makeVector(C);
+    let v1 = subVectors(vA, vB), v2 = subVectors(vC, vB);
+    return vectorBisector(v1, v2);
 }
