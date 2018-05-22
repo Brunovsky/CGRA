@@ -24,7 +24,7 @@ class Stack extends Array
 
     empty()
     {
-        return this.length == 0;
+        return this.length === 0;
     };
 
     clear()

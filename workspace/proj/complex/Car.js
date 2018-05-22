@@ -40,6 +40,17 @@ class Car extends CGFobject
         this.wheelRightFront.turn(phi);
     };
 
+    stop()
+    {
+        this.forcedStop = true;
+        this.velocity = nullVector();
+    };
+
+    resume()
+    {
+        this.forcedStop = false;
+    };
+
     initVariables()
     {
         // Constants
@@ -85,7 +96,7 @@ class Car extends CGFobject
             X: this.position.X + this.car.xWheelBack - this.car.ceilX,
             Y: this.position.Y + this.car.ceilY,
             Z: this.position.Z,
-        }
+        };
     };
 
     update(currTime)
@@ -93,7 +104,7 @@ class Car extends CGFobject
         const keys = this.scene.keys;
         const cons = this.cons;
         const dWheel = this.car.dWheel;
-        const lAxis = this.car.lCar / 2;
+        const lAxis = this.car.lAxis;
 
         // First call
         if (this.time <= 0) {
@@ -105,6 +116,11 @@ class Car extends CGFobject
         const dT = (currTime - this.time) / 1000;
         this.time = currTime;
 
+        // Force stopped by crane? (bad design)
+        if (this.forcedStop) {
+            return;
+        }
+
         // Load variables
         let direction = this.direction;
         let position = this.position;
@@ -114,7 +130,6 @@ class Car extends CGFobject
 
         // Compute basis
         let speed = norm(velocity);
-        let velocityVersor = normalize(velocity);
         let way = dotProduct(direction, velocity) > 0 ? 1 : -1;
 
         // Compute beta
@@ -131,7 +146,7 @@ class Car extends CGFobject
         let forceBackward = scaleVector(-cons.engBackward, direction);
         let forceDrag = scaleVector(-cons.drag * speed, velocity);
         let forceRolling = scaleVector(-cons.roll, velocity);
-        let mod = Math.ulog(cons.breakTop, speed, cons.breakBot);
+        let mod = Math.ulog(cons.breakTop, speed, cons.breakBot); // reals.js
         let forceBreak = scaleVector(-cons.break * mod * way, direction);
 
         // Compute resulting force

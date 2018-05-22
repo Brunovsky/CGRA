@@ -43,68 +43,76 @@ let defaultCraneDescriptor = {
 
 class MyCrane extends CGFobject
 {
-    constructor(scene, data = defaultCraneDescriptor)
+    constructor(scene, given = defaultCraneDescriptor)
     {
         super(scene);
 
-        this.initVariables(data);
+        this.initData(given);
+        this.initVariables();
 
         this.base = new Sphere(scene,
-            data.base.radius,
-            data.base.slices,
-            data.base.stacks,
-            data.base.coords);
+            this.data.base.radius,
+            this.data.base.slices,
+            this.data.base.stacks,
+            this.data.base.coords);
 
         this.joint = new Sphere(scene,
-            data.joint.radius,
-            data.joint.slices,
-            data.joint.stacks,
-            data.joint.coords);
+            this.data.joint.radius,
+            this.data.joint.slices,
+            this.data.joint.stacks,
+            this.data.joint.coords);
 
         this.jib = new Cylinder(scene,
-            data.jib.radius,
-            data.jib.height,
-            data.jib.slices,
-            data.jib.stacks,
-            data.jib.coords);
+            this.data.jib.radius,
+            this.data.jib.height,
+            this.data.jib.slices,
+            this.data.jib.stacks,
+            this.data.jib.coords);
 
         this.arm = new ClosedCylinder(scene,
-            data.arm.radius,
-            data.arm.height,
-            data.arm.slices,
-            data.arm.stacks,
-            data.arm.coords);
+            this.data.arm.radius,
+            this.data.arm.height,
+            this.data.arm.slices,
+            this.data.arm.stacks,
+            this.data.arm.coords);
 
         this.line = new Cylinder(scene,
-            data.line.radius,
-            data.line.height,
-            data.line.slices,
-            data.line.stacks,
-            data.line.coords);
+            this.data.line.radius,
+            this.data.line.height,
+            this.data.line.slices,
+            this.data.line.stacks,
+            this.data.line.coords);
 
         this.iman = new ClosedCylinder(scene,
-            data.iman.radius,
-            data.iman.height,
-            data.iman.slices,
-            data.iman.stacks,
-            data.iman.coords);
+            this.data.iman.radius,
+            this.data.iman.height,
+            this.data.iman.slices,
+            this.data.iman.stacks,
+            this.data.iman.coords);
 
         this.cover = new ClosedHalfSphere(scene,
-            data.arm.radius,
-            data.arm.slices,
+            this.data.arm.radius,
+            this.data.arm.slices,
             SPHERE_DEFAULT_STACKS);
     };
 
-    initVariables(data)
+    initData(given)
     {
         this.data = {};
-        for (let item in data) {
+        for (let item in defaultCraneDescriptor) {
             this.data[item] = {};
-            for (let s in data[item]) {
-                this.data[item][s] = data[item][s] || defaultCraneDescriptor[item][s];
+            if (!given[item]) {
+                this.data[item] = defaultCraneDescriptor[item];
+                continue;
+            }
+            for (let s in defaultCraneDescriptor[item]) {
+                this.data[item][s] = given[item][s] || defaultCraneDescriptor[item][s];
             }
         }
+    };
 
+    initVariables()
+    {
         this.phi = Math.PI / 6;
         this.theta = 0;
         this.alpha = 0;
@@ -247,55 +255,29 @@ class MyCrane extends CGFobject
     };
 };
 
-class MoverWrapper extends CGFobject
+class Movable extends CGFobject
 {
-    constructor(object)
+    constructor(scene, object)
     {
-        super(object.scene);
+        super(scene);
         this.object = object;
-        this.stack = new Stack();
+        this.cumulative = 0;
     };
 
     display()
     {
-        for (let i = this.stack.length; i > 0; --i) {
-            this.scene.multMatrix(this.stack[i - 1]);
-        }
-        this.object.display();
+        this.pushMatrix();
+            this.object.display();
+        this.popMatrix();
     };
 
-    set(object)
+    getPosition()
     {
-        this.object = object;
+        return this.position;
     };
 
-    get()
+    stop()
     {
-        return this.object;
-    };
 
-    top()
-    {
-        return this.stack.top();
-    };
-
-    push(mat4)
-    {
-        return this.stack.push(mat4);
-    }
-
-    pop()
-    {
-        return this.stack.pop();
-    };
-
-    empty()
-    {
-        return this.stack.empty();
-    };
-
-    clear()
-    {
-        this.stack.clear();
     };
 };

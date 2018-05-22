@@ -62,7 +62,7 @@ function bohemianDome(u, v) {
 }
 
 function sineSurface(u, v) {
-    const sin = Math.sin, cos = Math.cos;
+    const sin = Math.sin;
     return {
         X: sin(u),
         Y: sin(v),
