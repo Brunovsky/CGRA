@@ -127,6 +127,8 @@ class Car extends CGFobject
         let velocity = this.velocity;
         let alpha = this.alpha;
         let beta = this.beta;
+        let betaMax = Math.PI / 8;
+        let betaStep = (Math.PI / 8) / 50;
 
         // Compute basis
         let speed = norm(velocity);
@@ -134,9 +136,16 @@ class Car extends CGFobject
 
         // Compute beta
         if (!keys.left && keys.right) {
-            beta =  Math.PI / 8;
+            if(Math.abs(beta) < betaMax)
+                beta +=  2*betaStep;
         } else if (keys.left && !keys.right) {
-            beta = -Math.PI / 8;
+            if(Math.abs(beta) < betaMax)
+                beta += -2*betaStep;
+        } else if (!keys.left && !keys.right && beta != 0) {
+            if(beta > 0)
+                beta += -betaStep;
+            else
+                beta += betaStep;
         } else {
             beta = 0;
         }
