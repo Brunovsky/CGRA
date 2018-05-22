@@ -98,9 +98,9 @@ class Pyramid extends CGFobject
                 let stack = s * above;
                 let current = next * i + stack;
 
-                // ... v4U v4D      v3U v3D ... --- stack s + 1
+                // ... ][v4U v4D      v3U v3D][ ... --- stack s + 1
                 // 
-                // ... v1U v1D      v2U v2D ... --- stack s
+                // ... ][v1U v1D      v2U v2D][ ... --- stack s
                 let v1U = current;
                 let v2U = current + right;
                 let v3U = current + right + above;
