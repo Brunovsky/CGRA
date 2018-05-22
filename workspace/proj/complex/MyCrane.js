@@ -170,17 +170,28 @@ class MyCrane extends CGFobject
 
     imanPosition()
     {
+        let cos = Math.cos, sin = Math.sin;
         let data = this.data;
+        let h = data.joint.height;
+        let a = data.arm.height;
+        let b = data.line.height + data.iman.height;
 
         // Auxiliary
-        return data.joint.height * Math.cos(this.phi)
-        - data.arm.height * Math.cos(this.theta)
-        - data.line.height - data.iman.height;
+        return {
+            X: h * sin(this.phi) + a * sin(this.theta),
+            Y: h * cos(this.phi) - a * cos(this.theta) - b,
+            Z: 0
+        };
     };
 
     movableDistance()
     {
-        return norm(subVectors(this.imanPosition(), this.movable.getCeil()));
+        let vecIman = this.imanPosition();
+        let vecMovable = this.movable.getPosition();
+
+        vecIman.Y = 0; vecMovable.Y = 0;
+        
+        return norm(subVectors(vecIman, vecMovable));
     };
 
     display()

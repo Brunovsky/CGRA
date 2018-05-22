@@ -61,7 +61,6 @@ class MyVehicle extends CGFobject // implements CraneBindable
             drag:        5,
             roll:        700,
             mass:        1200,
-            rot:         
             breakTop:    100,
             breakBot:    1000,
         };
@@ -186,7 +185,7 @@ class MyVehicle extends CGFobject // implements CraneBindable
 
         if (beta != 0) {
             // Add centripetal acceleration
-            let curvatureRadius = dWheel / Math.sin(beta); // signed
+            let curvatureRadius = dWheel / Math.tan(beta); // signed
             //let normal = unrotateYaxis(Math.PI / 2, direction);
             //let centripetal = scaleVector(speed * speed / curvatureRadius, normal);
 
