@@ -29,7 +29,7 @@ serialInclude([
 	'build/uvSurface.js',
 	'build/revSurface.js',
 
-	'complex/Car.js',
+	'complex/MyVehicle.js',
 	'complex/Wheel.js',
 	'complex/MyTerrain.js',
 	'complex/MyCrane.js',

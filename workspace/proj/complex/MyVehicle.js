@@ -1,4 +1,4 @@
-class Car extends CGFobject
+class MyVehicle extends CGFobject // implements CraneBindable
 {
     constructor(scene, car)
     {
@@ -34,10 +34,10 @@ class Car extends CGFobject
         this.wheelRightBack.forward(distance);
     };
 
-    turn(phi)
+    turn(phiLeft, phiRight)
     {
-        this.wheelLeftFront.turn(phi);
-        this.wheelRightFront.turn(phi);
+        this.wheelLeftFront.turn(phiLeft);
+        this.wheelRightFront.turn(phiRight);
     };
 
     stop()
@@ -58,9 +58,10 @@ class Car extends CGFobject
             engForward:  32000,
             engBackward: 25000,
             break:       50000,
-            drag:        3,
+            drag:        5,
             roll:        700,
             mass:        1200,
+            rot:         
             breakTop:    100,
             breakBot:    1000,
         };
@@ -74,10 +75,10 @@ class Car extends CGFobject
         // Velocity vector in meters/seconds
         this.velocity = {X: 0, Y: 0, Z: 0};
 
-        // Angle between Ox in radians
+        // Angle between Ox in radians. Oz+ is PI, Ox- is 2PI, Oz- is 3PI.
         this.alpha = 0;
 
-        // Angle of rotation of car in radians
+        // Angle of rotation of car in radians, with respect to alpha.
         this.beta = 0;
 
         // Angle of left wheel in radians
@@ -90,7 +91,12 @@ class Car extends CGFobject
         this.time = -1;
     };
 
-    ceiling()
+    getPosition()
+    {
+        return this.position;
+    };
+
+    getCeil()
     {
         return {
             X: this.position.X + this.car.xWheelBack - this.car.ceilX,
@@ -159,10 +165,10 @@ class Car extends CGFobject
             if (!keys.up && keys.down) {
                 force = addVectors(force, forceBackward);
             }
-        } else {
+        } else { // keys.space
             force = addVectors(force, forceBreak);
         }
-
+          
         // Acceleration
         let acceleration = scaleVector(1 / cons.mass, force);
 

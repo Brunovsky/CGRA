@@ -160,3 +160,31 @@ class DoubleCone extends CGFobject
         this.cone.bindTexture(coneTexture);
     };
 };
+
+
+
+class SpheredCone extends CGFobject
+{
+    constructor(scene, radius = 1, height = 1, slices = 64, stacks = 1, coords = [0, 1, 0, 1])
+    {
+        super(scene);
+        this.cone = new Cone(scene, radius, height, slices, stacks, coords);
+        this.sphere = new HalfSphere(scene, radius, slices);
+        this.initBuffers();
+    };
+
+    display()
+    {
+        this.scene.pushMatrix();
+            this.cone.display();
+            this.scene.rotate(Math.PI, 1, 0, 0);
+            this.sphere.display();
+        this.scene.popMatrix();
+    };
+
+    bindTexture(coneTexture, baseTexture)
+    {
+        this.cone.bindTexture(coneTexture);
+        this.sphere.bindTexture(baseTexture || coneTexture);
+    };
+}

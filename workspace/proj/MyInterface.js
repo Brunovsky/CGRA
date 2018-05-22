@@ -8,8 +8,8 @@ class MyInterface extends CGFinterface {
 
 		this.scene.gui = this;
 		
-		let datgui = new dat.GUI();
-		this.scene.initControls(datgui);
+		this.datgui = new dat.GUI();
+		this.scene.initControls(this.datgui);
 
 		this.initKeys();
 		return true;

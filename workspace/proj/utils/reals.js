@@ -1,4 +1,4 @@
-// ln(ax + 1) / ln(b)
+// ln(a|x| + 1) / ln(b)
 Math.ulog = function(a, x, b) {
     return Math.log1p(a * Math.abs(x)) / Math.log(b);
 }
