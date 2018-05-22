@@ -1,4 +1,4 @@
-class MyVehicle extends CGFobject // implements CraneBindable
+class Car extends CGFobject
 {
     constructor(scene, car)
     {
@@ -34,10 +34,10 @@ class MyVehicle extends CGFobject // implements CraneBindable
         this.wheelRightBack.forward(distance);
     };
 
-    turn(phiLeft, phiRight)
+    turn(phi)
     {
-        this.wheelLeftFront.turn(phiLeft);
-        this.wheelRightFront.turn(phiRight);
+        this.wheelLeftFront.turn(phi);
+        this.wheelRightFront.turn(phi);
     };
 
     stop()
@@ -58,7 +58,7 @@ class MyVehicle extends CGFobject // implements CraneBindable
             engForward:  32000,
             engBackward: 25000,
             break:       50000,
-            drag:        5,
+            drag:        3,
             roll:        700,
             mass:        1200,
             breakTop:    100,
@@ -74,10 +74,10 @@ class MyVehicle extends CGFobject // implements CraneBindable
         // Velocity vector in meters/seconds
         this.velocity = {X: 0, Y: 0, Z: 0};
 
-        // Angle between Ox in radians. Oz+ is PI, Ox- is 2PI, Oz- is 3PI.
+        // Angle between Ox in radians
         this.alpha = 0;
 
-        // Angle of rotation of car in radians, with respect to alpha.
+        // Angle of rotation of car in radians
         this.beta = 0;
 
         // Angle of left wheel in radians
@@ -90,12 +90,7 @@ class MyVehicle extends CGFobject // implements CraneBindable
         this.time = -1;
     };
 
-    getPosition()
-    {
-        return this.position;
-    };
-
-    getCeil()
+    ceiling()
     {
         return {
             X: this.position.X + this.car.xWheelBack - this.car.ceilX,
@@ -173,10 +168,10 @@ class MyVehicle extends CGFobject // implements CraneBindable
             if (!keys.up && keys.down) {
                 force = addVectors(force, forceBackward);
             }
-        } else { // keys.space
+        } else {
             force = addVectors(force, forceBreak);
         }
-          
+
         // Acceleration
         let acceleration = scaleVector(1 / cons.mass, force);
 
@@ -194,7 +189,7 @@ class MyVehicle extends CGFobject // implements CraneBindable
 
         if (beta != 0) {
             // Add centripetal acceleration
-            let curvatureRadius = dWheel / Math.tan(beta); // signed
+            let curvatureRadius = dWheel / Math.sin(beta); // signed
             //let normal = unrotateYaxis(Math.PI / 2, direction);
             //let centripetal = scaleVector(speed * speed / curvatureRadius, normal);
 
