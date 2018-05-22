@@ -168,32 +168,6 @@ class MyCrane extends CGFobject
         }
     };
 
-    imanPosition()
-    {
-        let cos = Math.cos, sin = Math.sin;
-        let data = this.data;
-        let h = data.joint.height;
-        let a = data.arm.height;
-        let b = data.line.height + data.iman.height;
-
-        // Auxiliary
-        return {
-            X: h * sin(this.phi) + a * sin(this.theta),
-            Y: h * cos(this.phi) - a * cos(this.theta) - b,
-            Z: 0
-        };
-    };
-
-    movableDistance()
-    {
-        let vecIman = this.imanPosition();
-        let vecMovable = this.movable.getPosition();
-
-        vecIman.Y = 0; vecMovable.Y = 0;
-        
-        return norm(subVectors(vecIman, vecMovable));
-    };
-
     display()
     {
         const data = this.data;
@@ -222,8 +196,7 @@ class MyCrane extends CGFobject
         this.scene.pushMatrix();
             this.scene.rotate(-this.cumulative, 0, 1, 0);
             if (this.moving) {
-                let ceil = this.movable.getCeil();
-                this.scene.translate(0, this.imanHeight() - ceil.Y, 0);
+                this.movableExpose();
             }
             this.movable.display();
         this.scene.popMatrix();

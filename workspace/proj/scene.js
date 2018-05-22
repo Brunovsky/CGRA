@@ -303,7 +303,6 @@ class MyScene extends CGFscene
 
         this.river.display();
 
-        this.translate(2, 0, 2);
         this.crane.display();
 
         this.popMatrix();
