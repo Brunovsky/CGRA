@@ -1,3 +1,7 @@
+let carTextureSets = {
+    // ...
+};
+
 class RearviewMirror extends CGFobject
 {
     constructor(scene, radius, height)

@@ -43,8 +43,10 @@ class MyScene extends CGFscene
         this.river = new MyTerrain(this, riverDivs, riverAltimetry, 50);
         this.river.bindTexture(tex.terrain.river);
 
+        this.terrain = this.river;
+
         this.crane = new MyCrane(this);
-        this.crane.bindTexture(tex.table, tex.terrain.floor);
+        this.crane.bindTexture(tex.other.table, tex.other.floor);
         this.crane.bindObject(this.car);
     };
 
@@ -52,9 +54,6 @@ class MyScene extends CGFscene
     {
         let textures = {
             default: new CGFappearance(this),
-            table: new CGFappearance(this),
-            board: new CGFappearance(this),
-            slides: new CGFappearance(this),
             side: {
                 silver: new CGFappearance(this),
             },
@@ -68,7 +67,6 @@ class MyScene extends CGFscene
             terrain: {
                 hills: new CGFappearance(this),
                 river: new CGFappearance(this),
-                floor: new CGFappearance(this),
             },
             car: {
                 windshield: new CGFappearance(this),
@@ -78,6 +76,10 @@ class MyScene extends CGFscene
                 backlight: new CGFappearance(this),
             },
             other: {
+                table: new CGFappearance(this),
+                board: new CGFappearance(this),
+                slides: new CGFappearance(this),
+                floor: new CGFappearance(this),
                 metalmixed: new CGFappearance(this),
                 metaldirty: new CGFappearance(this),
             },
@@ -87,21 +89,6 @@ class MyScene extends CGFscene
         textures.default.setDiffuse(0.2, 0.4, 0.6, 1);
         textures.default.setSpecular(0.7, 0.6, 0.9, 1);
         textures.default.setShininess(20);
-
-        textures.table.setAmbient(0.5, 0.5, 0.5, 1);
-        textures.table.setDiffuse(0.7, 0.7, 0.7, 1);
-        textures.table.setShininess(150);
-        textures.table.loadTexture("tex/table.png");
-
-        textures.board.setAmbient(0.5, 0.5, 0.5, 1);
-        textures.board.setDiffuse(0.7, 0.7, 0.7, 1);
-        textures.board.setShininess(150);
-        textures.board.loadTexture("tex/board.png");
-
-        textures.slides.setAmbient(0.5, 0.5, 0.5, 1);
-        textures.slides.setDiffuse(0.7, 0.7, 0.7, 1);
-        textures.slides.setShininess(150);
-        textures.slides.loadTexture("tex/slides.png");
 
         textures.side.silver.setAmbient(0.5, 0.5, 0.5, 1);
         textures.side.silver.setDiffuse(0.7, 0.7, 0.7, 1);
@@ -122,11 +109,6 @@ class MyScene extends CGFscene
         textures.wheeltread.gta.setDiffuse(0.7, 0.7, 0.7, 1);
         textures.wheeltread.gta.setShininess(150);
         textures.wheeltread.gta.loadTexture("tex/wheeltread-gta.png");
-
-        textures.terrain.floor.setAmbient(0.5, 0.5, 0.5, 1);
-        textures.terrain.floor.setDiffuse(0.7, 0.7, 0.7, 1);
-        textures.terrain.floor.setShininess(150);
-        textures.terrain.floor.loadTexture("tex/floor.png");
 
         textures.terrain.hills.setAmbient(0.5, 0.5, 0.5, 1);
         textures.terrain.hills.setDiffuse(0.7, 0.7, 0.7, 1);
@@ -163,6 +145,26 @@ class MyScene extends CGFscene
         textures.car.backlight.setDiffuse(0.7, 0.7, 0.7, 1);
         textures.car.backlight.setShininess(150);
         textures.car.backlight.loadTexture("tex/backlight.png");
+
+        textures.other.table.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.other.table.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.other.table.setShininess(150);
+        textures.other.table.loadTexture("tex/table.png");
+
+        textures.other.board.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.other.board.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.other.board.setShininess(150);
+        textures.other.board.loadTexture("tex/board.png");
+
+        textures.other.slides.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.other.slides.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.other.slides.setShininess(150);
+        textures.other.slides.loadTexture("tex/slides.png");
+
+        textures.other.floor.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.other.floor.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.other.floor.setShininess(150);
+        textures.other.floor.loadTexture("tex/floor.png");
 
         textures.other.metalmixed.setAmbient(0.5, 0.5, 0.5, 1);
         textures.other.metalmixed.setDiffuse(0.7, 0.7, 0.7, 1);
@@ -217,7 +219,8 @@ class MyScene extends CGFscene
                 "Car mass": this.car.cons.mass,
             },
             "Show axis": true,
-            "Car Texture": "wood"
+            "Car Texture": "wood",
+            "Terrain Texture": "river",
         };
 
         function updateLight(i, value) {
@@ -260,6 +263,8 @@ class MyScene extends CGFscene
 
         datgui.add(this.control, "Show axis");
         datgui.add(this.control, "Car Texture", ["red", "blue", "green", "wood"]);
+        datgui.add(this.control, "Terrain Texture", ["hills", "river"])
+            .onChange(value => { this.terrain = this[value]; });
     };
 
     initCameras() 
@@ -272,7 +277,7 @@ class MyScene extends CGFscene
     {
         this.setGlobalAmbientLight(AMBIENT[0], AMBIENT[1], AMBIENT[2], AMBIENT[3]);
 
-        this.lights[0].setPosition(6, 0, 15, 1);
+        this.lights[0].setPosition(6, -0.5, 15, 1);
         this.lights[0].setDiffuse(1.0, 1.0, 0.25, 1.0);
         this.lights[0].setConstantAttenuation(0.5);
         this.lights[0].setVisible(true);
@@ -348,7 +353,7 @@ class MyScene extends CGFscene
         this.pushTexture(this.tableTex);
         this.pushMatrix();
 
-        this.river.display();
+        this.terrain.display();
 
         this.crane.display();
 

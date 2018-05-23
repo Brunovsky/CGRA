@@ -24,19 +24,19 @@ class MyTerrain extends CGFobject
         this.normals = [];
         this.texCoords = [];
 
-        //    i = 0 1 2 3 4 5
-        // j = 0  . . . . . .
-        // j = 1  . . . . . .   ---> X
-        // j = 2  . . . . . .   |
-        // j = 3  . . . . . .   |
-        // j = 4  . . . . . .   Z
-        // j = 5  . . . . . .
+        //    j = 0 1 2 3 4 5
+        // i = 0  . . . . . .
+        // i = 1  . . . . . .   ---> X
+        // i = 2  . . . . . .   |
+        // i = 3  . . . . . .   |
+        // i = 4  . . . . . .   Z
+        // i = 5  . . . . . .
 
         for (let i = 0; i <= nrDivs; ++i) { // Z
             for (let j = 0; j <= nrDivs; ++j) { // X
-                //      p4        Z - 1
+                // q4   p4   q3   Z - 1
                 // p1   p0   p3   Z
-                //      p2        Z + 1
+                // q1   p2   q2   Z + 1
                 // X-1   X   X+1
                 let X = j, Y = altimetry[i][j], Z = i;
 
@@ -79,16 +79,31 @@ class MyTerrain extends CGFobject
                 let p4 = {X: X, Y: Y, Z: Z - 1};
 
                 // Normals
-                let bisectorX = triangleBisector(p1, p0, p3);
-                let bisectorZ = triangleBisector(p2, p0, p4);
 
+                // Method 1: Bisectors of bisectors.
+                //*//
+                let bisectorX = triangleBisector(p1, p0, p3, axisZ);
+                let bisectorZ = triangleBisector(p4, p0, p2, axisX);
                 if (bisectorX.Y < 0) bisectorX = flipVector(bisectorX);
                 if (bisectorZ.Y < 0) bisectorZ = flipVector(bisectorZ);
-                if (bisectorX.Y == 0) bisectorX = yVector();
-                if (bisectorZ.Y == 0) bisectorZ = yVector();
 
                 let bisector = vectorBisector(bisectorX, bisectorZ);
+                if (bisector == nullVector()) bisector = yVector();
+
                 let N = normalize(bisector);
+                //*//
+
+                // Method 2: Average of averages.
+                /*//
+                let q1 = triangleOrientation(p1, p0, p4);
+                let q2 = triangleOrientation(p2, p0, p1);
+                let q3 = triangleOrientation(p3, p0, p2);
+                let q4 = triangleOrientation(p4, p0, p3);
+
+                let u13 = normalize(addVectors(normalize(q1), normalize(q2)));
+                let u24 = normalize(addVectors(normalize(q3), normalize(q4)));
+                let N = normalize(addVectors(normalize(u13), normalize(u24)));
+                //*/
 
                 this.normals.push(N.X, N.Y, N.Z); // Up
                 this.normals.push(-N.X, -N.Y, -N.Z); // Down
@@ -103,21 +118,21 @@ class MyTerrain extends CGFobject
             }
         }
 
-        for (let j = 0; j < nrDivs; ++j) { // Z
-            for (let i = 0; i < nrDivs; ++i) { // X
-                let above = 2 * nrDivs + 2;
+        for (let i = 0; i < nrDivs; ++i) { // Z
+            for (let j = 0; j < nrDivs; ++j) { // X
+                let below = 2 * nrDivs + 2;
                 let next = 2, right = 2;
 
-                let stack = j * above;
-                let current = next * i + stack;
+                let stack = i * below;
+                let current = next * j + stack;
 
-                // ... v1U v1D      v2U v2D ... --- line j
+                // ... v1U v1D      v2U v2D ... --- line i
                 // 
-                // ... v4U v4D      v3U v3D ... --- line j + 1
+                // ... v4U v4D      v3U v3D ... --- line i + 1
                 let v1U = current;
                 let v2U = current + right;
-                let v3U = current + right + above;
-                let v4U = current + above;
+                let v3U = current + right + below;
+                let v4U = current + below;
                 let v1D = 1 + v1U;
                 let v2D = 1 + v2U;
                 let v3D = 1 + v3U;

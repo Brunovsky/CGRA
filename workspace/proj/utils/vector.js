@@ -1,4 +1,4 @@
-'use strict';
+let axisX = 'EIXO X', axisY = 'EIXO Y', axisZ = 'EIXO Z';
 
 // Skip this ugliness
 // Detects if P is written as [X, Y, Z] or {X: X, Y: Y, Z: Z}, returns later.
@@ -191,9 +191,24 @@ function unrotateZaxis(theta, a) {
     return rotateZaxis(-theta, a);
 }
 
-function vectorBisector(a, b) {
-    return scaleVector(norm(addVectors(a, b)),
-        normalize(addVectors(normalize(a), normalize(b))));
+function vectorBisector(a, b, axis) {
+    let bisector = normalize(addVectors(normalize(a), normalize(b)));
+
+    // Degenerate case where a is collinear with b.
+    if (norm(bisector) === 0 && axis) {
+        let PI2 = Math.PI / 2;
+
+        if (axis === axisX) {
+            bisector = rotateXaxis(PI2, b);
+        } else if (axis === axisY) {
+            bisector = rotateYaxis(PI2, b);
+        } else if (axis === axisZ) {
+            bisector = rotateZaxis(PI2, b);
+        }
+
+    }
+
+    return bisector;
 }
 
 // Return the orientation of triangle given by vertices A, B, C in this order,
@@ -212,8 +227,12 @@ function interpolateVectors(t, A, B) {
 }
 
 // Bisector of vectors ba and bc with magnitude ||ba+bc||.
-function triangleBisector(A, B, C) {
+function triangleBisector(A, B, C, axis) {
     let vA = makeVector(A), vB = makeVector(B), vC = makeVector(C);
     let v1 = subVectors(vA, vB), v2 = subVectors(vC, vB);
-    return vectorBisector(v1, v2);
+    if (axis) {
+        return vectorBisector(v1, v2, axis);
+    } else {
+        return vectorBisector(v1, v2);
+    }
 }
