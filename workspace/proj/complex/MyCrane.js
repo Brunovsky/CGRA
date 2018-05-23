@@ -114,7 +114,7 @@ class MyCrane extends CGFobject
     initVariables()
     {
         this.phi = Math.PI / 6;
-        this.theta = Math.PI / 12;
+        this.theta = Math.PI / 4;
         this.alpha = 0;
         this.cumulative = 0;
 
@@ -130,11 +130,11 @@ class MyCrane extends CGFobject
 
         let dT = (currTime - this.time) / 1000;
         this.time = currTime;
-        let angle = this.speed * dT;
+        let deltaAngle = this.speed * dT;
 
         // Step 3: Unrotate PI radians ONLY the crane.
         if (this.restoring) {
-            this.alpha -= angle;
+            this.alpha -= deltaAngle;
 
             if (this.alpha <= 0) {
                 this.alpha = 0;
@@ -144,17 +144,20 @@ class MyCrane extends CGFobject
 
         // Step 2: Rotate PI radians.
         if (this.moving) {
-            this.alpha += angle;
-            this.cumulative += angle;
+            this.alpha += deltaAngle;
+            this.cumulative += deltaAngle;
 
             if (this.alpha >= Math.PI) {
                 this.alpha = Math.PI;
                 this.cumulative -= (this.alpha - Math.PI);
+                this.movable.rotate(this.alpha, deltaAngle);
 
                 // Done, release the car
                 this.moving = false;
                 this.restoring = true;
-                this.movable.resume();
+                this.movable.endRotation();
+            } else {
+                this.movable.rotate(this.alpha, deltaAngle);
             }
         }
 
@@ -164,8 +167,29 @@ class MyCrane extends CGFobject
             console.log(currTime, "Hello");
 
             this.moving = true;
-            this.movable.stop();
+            this.movable.startRotation(this.imanPosition());
         }
+    };
+
+    imanPosition()
+    {
+        let cos = Math.cos, sin = Math.sin;
+        let h = this.data.jib.height;
+        let a = this.data.arm.height;
+        let b = this.data.line.height + this.data.iman.height;
+
+        let xIman = {
+            X: h * sin(this.phi) + a * sin(this.theta),
+            Y: h * cos(this.phi) - a * cos(this.theta) - b,
+            Z: 0
+        };
+
+        return unrotateYaxis(this.alpha, xIman);
+    };
+
+    rotateObject()
+    {
+        this.object.rotate(this.alpha);
     };
 
     display()
@@ -193,13 +217,7 @@ class MyCrane extends CGFobject
             this.iman.display();
         this.scene.popMatrix();
         
-        this.scene.pushMatrix();
-            this.scene.rotate(-this.cumulative, 0, 1, 0);
-            if (this.moving) {
-                this.movableExpose();
-            }
-            this.movable.display();
-        this.scene.popMatrix();
+        this.movable.display();
     };
 
     bindTexture(baseTexture, jibTexture, jointTexture, armTexture, imanTexture)

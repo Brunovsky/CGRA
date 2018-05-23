@@ -35,7 +35,7 @@ class MyScene extends CGFscene
         let tex = this.textures;
 
         this.car = new MyVehicle(this, carFunctionSmooth);
-        this.car.bindTexture(tex.table, tex.side.silver, tex.wheeltread.gta, tex.wheelside.gold);
+        this.car.bindTexture(tex.car.hoodsilver, tex.side.silver, tex.wheeltread.gta, tex.wheelside.gold);
 
         this.hills = new MyTerrain(this, hillsDivs, hillsAltimetry, 50);
         this.hills.bindTexture(tex.terrain.hills);
@@ -56,20 +56,31 @@ class MyScene extends CGFscene
             board: new CGFappearance(this),
             slides: new CGFappearance(this),
             side: {
-                silver: new CGFappearance(this)
+                silver: new CGFappearance(this),
             },
             wheelside: {
                 gold: new CGFappearance(this),
-                white: new CGFappearance(this)
+                white: new CGFappearance(this),
             },
             wheeltread: {
-                gta: new CGFappearance(this)
+                gta: new CGFappearance(this),
             },
             terrain: {
                 hills: new CGFappearance(this),
                 river: new CGFappearance(this),
-                floor: new CGFappearance(this)
-            }
+                floor: new CGFappearance(this),
+            },
+            car: {
+                windshield: new CGFappearance(this),
+                white: new CGFappearance(this),
+                hoodsilver: new CGFappearance(this),
+                headlight: new CGFappearance(this),
+                backlight: new CGFappearance(this),
+            },
+            other: {
+                metalmixed: new CGFappearance(this),
+                metaldirty: new CGFappearance(this),
+            },
         };
 
         textures.default.setAmbient(0.10, 0.45, 0.7, 1);
@@ -126,6 +137,42 @@ class MyScene extends CGFscene
         textures.terrain.river.setDiffuse(0.7, 0.7, 0.7, 1);
         textures.terrain.river.setShininess(150);
         textures.terrain.river.loadTexture("tex/river.png");
+
+        textures.car.windshield.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.car.windshield.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.car.windshield.setShininess(150);
+        textures.car.windshield.loadTexture("tex/windshield.png");
+
+        textures.car.white.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.car.white.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.car.white.setShininess(150);
+        textures.car.white.loadTexture("tex/white.png");
+
+        textures.car.hoodsilver.setAmbient(0.2, 0.2, 0.2, 1);
+        textures.car.hoodsilver.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.car.hoodsilver.setSpecular(0.9, 0.9, 0.9, 1);
+        textures.car.hoodsilver.setShininess(150);
+        textures.car.hoodsilver.loadTexture("tex/hoodsilver.png");
+
+        textures.car.headlight.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.car.headlight.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.car.headlight.setShininess(150);
+        textures.car.headlight.loadTexture("tex/headlight.png");
+
+        textures.car.backlight.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.car.backlight.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.car.backlight.setShininess(150);
+        textures.car.backlight.loadTexture("tex/backlight.png");
+
+        textures.other.metalmixed.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.other.metalmixed.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.other.metalmixed.setShininess(150);
+        textures.other.metalmixed.loadTexture("tex/metal-mixed.png");
+
+        textures.other.metaldirty.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.other.metaldirty.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.other.metaldirty.setShininess(150);
+        textures.other.metaldirty.loadTexture("tex/metal-dirty.png");
 
         this.textures = textures;
     };

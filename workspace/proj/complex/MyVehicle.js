@@ -1,9 +1,41 @@
-class MyVehicle extends CGFobject // implements CraneBindable
+class RearviewMirror extends CGFobject
+{
+    constructor(scene, radius, height)
+    {
+        super(scene);
+        this.cylinder = new ClosedCylinder(scene, radius / 4, height);
+        this.mirror = new HalfSpheredCylinder(scene, radius, height / 6);
+        this.radius = radius;
+        this.height = height;
+    };
+
+    display()
+    {
+        this.scene.pushMatrix();
+            this.cylinder.display();
+            this.scene.translate(-this.radius / 2, this.height, 0);
+            this.scene.rotate(-Math.PI / 2, 0, 0, 1);
+            this.mirror.display();
+        this.scene.popMatrix();
+    };
+
+    bindTexture(mirrorTexture, metalTexture)
+    {
+        this.mirror.bindTexture(metalTexture, mirrorTexture);
+        this.cylinder.bindTexture(metalTexture);
+    };
+};
+
+
+
+class MyVehicle extends CGFobject
 {
     constructor(scene, car)
     {
         super(scene);
         this.car = car;
+
+        // Main Car: Hood, sides and wheels
         this.hood = new uvSurface(scene,
             car.hood,
             car.hoodBoundaries,
@@ -18,47 +50,44 @@ class MyVehicle extends CGFobject // implements CraneBindable
             car.rightBoundaries,
             car.slices,
             car.sideCoordsMap);
-        this.wheelLeftFront = new Wheel(scene, car.rWheel, car.lWheel);
+        this.wheelLeftFront  = new Wheel(scene, car.rWheel, car.lWheel);
         this.wheelRightFront = new Wheel(scene, car.rWheel, car.lWheel);
-        this.wheelLeftBack = new Wheel(scene, car.rWheel, car.lWheel);
-        this.wheelRightBack = new Wheel(scene, car.rWheel, car.lWheel);
+        this.wheelLeftBack   = new Wheel(scene, car.rWheel, car.lWheel);
+        this.wheelRightBack  = new Wheel(scene, car.rWheel, car.lWheel);
+        this.frontWindow = new uvSurface(scene,
+            car.hood,
+            car.frontWindowBoundaries,
+            car.slices / 2);
+        this.backWindow = new uvSurface(scene,
+            car.hood,
+            car.backWindowBoundaries,
+            car.slices / 2);
+
+        // Front Headlight
+        this.frontHeadlight  = new SpheredCutCone(scene,
+            car.lAxis / 7, car.lAxis / 8, car.lAxis / 6);
+
+        // Back Headlight
+        this.backHeadlight = new ClosedCutPyramid(scene,
+            4, car.lAxis / 4, car.lAxis / 8, car.lAxis / 4);
+
+        // Outside rearview mirror
+        this.rearview = new RearviewMirror(scene, car.lAxis / 8, car.lAxis / 6);
 
         this.initVariables();
-    };
-
-    forward(distance)
-    {
-        this.wheelLeftFront.forward(distance);
-        this.wheelRightFront.forward(distance);
-        this.wheelLeftBack.forward(distance);
-        this.wheelRightBack.forward(distance);
-    };
-
-    turn(phiLeft, phiRight)
-    {
-        this.wheelLeftFront.turn(phiLeft);
-        this.wheelRightFront.turn(phiRight);
-    };
-
-    stop()
-    {
-        this.forcedStop = true;
-        this.velocity = nullVector();
-    };
-
-    resume()
-    {
-        this.forcedStop = false;
+        this.defaultTextures();
     };
 
     initVariables()
     {
+        this.forcedStop = false;
+
         // Constants
         this.cons = {
             engForward:  32000,
             engBackward: 25000,
             break:       50000,
-            drag:        5,
+            drag:        3,
             roll:        700,
             mass:        1200,
             breakTop:    100,
@@ -74,10 +103,10 @@ class MyVehicle extends CGFobject // implements CraneBindable
         // Velocity vector in meters/seconds
         this.velocity = {X: 0, Y: 0, Z: 0};
 
-        // Angle between Ox in radians. Oz+ is PI, Ox- is 2PI, Oz- is 3PI.
+        // Angle between Ox in radians
         this.alpha = 0;
 
-        // Angle of rotation of car in radians, with respect to alpha.
+        // Angle of rotation of car in radians
         this.beta = 0;
 
         // Angle of left wheel in radians
@@ -90,18 +119,61 @@ class MyVehicle extends CGFobject // implements CraneBindable
         this.time = -1;
     };
 
-    getPosition()
+    defaultTextures()
     {
-        return this.position;
+        let textures = this.scene.textures;
+        this.frontWindow.bindTexture(textures.car.white);
+        this.backWindow.bindTexture(textures.car.white);
+        this.rearview.bindTexture(textures.car.white, textures.other.metalmixed);
+        this.backHeadlight.bindTexture(textures.car.backlight);
+        this.frontHeadlight.bindTexture(textures.car.frontlight);
+    };
+
+    forward(distance)
+    {
+        this.wheelLeftFront.forward(distance);
+        this.wheelRightFront.forward(distance);
+        this.wheelLeftBack.forward(distance);
+        this.wheelRightBack.forward(distance);
+    };
+
+    turn(phi)
+    {
+        this.wheelLeftFront.turn(phi);
+        this.wheelRightFront.turn(phi);
     };
 
     getCeil()
     {
-        return {
-            X: this.position.X + this.car.xWheelBack - this.car.ceilX,
-            Y: this.position.Y + this.car.ceilY,
-            Z: this.position.Z,
+        let basic = {
+            X: this.car.xWheelBack - this.car.ceilX,
+            Y: this.car.ceilY,
+            Z: 0,
         };
+
+        return addVectors(this.position, unrotateYaxis(this.alpha, basic));
+    };
+
+    startRotation(startPosition)
+    {
+        this.deltaY = startPosition.Y - this.getCeil().Y;
+        this.startPosition = startPosition;
+        this.startPosition.Y = this.position.Y + this.deltaY;
+        this.forcedStop = true;
+        this.velocity = nullVector();
+    };
+
+    rotate(angle, deltaAngle)
+    {
+        this.alpha += deltaAngle;
+        this.direction = unrotateYaxis(this.alpha, xVector());
+        this.position = unrotateYaxis(angle, this.startPosition);
+    };
+
+    endRotation()
+    {
+        this.forcedStop = false;
+        this.position.Y = this.startPosition.Y - this.deltaY;
     };
 
     update(currTime)
@@ -146,7 +218,8 @@ class MyVehicle extends CGFobject // implements CraneBindable
         } else if (keys.left && !keys.right) {
             if(Math.abs(beta) < betaMax)
                 beta += -2*betaStep;
-        } else if (!keys.left && !keys.right && beta != 0) {
+        } else if ( (!keys.left && !keys.right && beta != 0)
+            || (keys.left && keys.right && beta != 0) ) {
             if(beta > 0)
                 beta += -betaStep;
             else
@@ -173,10 +246,10 @@ class MyVehicle extends CGFobject // implements CraneBindable
             if (!keys.up && keys.down) {
                 force = addVectors(force, forceBackward);
             }
-        } else { // keys.space
+        } else {
             force = addVectors(force, forceBreak);
         }
-          
+
         // Acceleration
         let acceleration = scaleVector(1 / cons.mass, force);
 
@@ -230,6 +303,42 @@ class MyVehicle extends CGFobject // implements CraneBindable
         this.turn(gammaLeft, gammaRight);
     };
 
+    displayFront()
+    {
+        let car = this.car;
+
+        this.scene.pushMatrix();
+            this.scene.translate(car.lAxis / 5, car.frontY, car.lAxis / 1.5);
+            this.scene.rotate(-Math.PI / 2, 0, 0, 1);
+            this.frontHeadlight.display();
+        this.scene.popMatrix();
+        
+        this.scene.pushMatrix();
+            this.scene.translate(car.lAxis / 5, car.frontY, -car.lAxis / 1.5);
+            this.scene.rotate(-Math.PI / 2, 0, 0, 1);
+            this.frontHeadlight.display();
+        this.scene.popMatrix();
+    };
+
+    displayRearview()
+    {
+        let car = this.car;
+
+        this.scene.pushMatrix();
+            this.scene.translate(car.rearX, car.rearY, -car.lAxis);
+            this.scene.rotate(Math.PI, 0, 0, 1);
+            this.scene.rotate(-Math.PI / 2, 1, 0, 0);
+            this.rearview.display();
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix();
+            this.scene.translate(car.rearX, car.rearY, car.lAxis);
+            this.scene.rotate(Math.PI, 0, 0, 1);
+            this.scene.rotate(Math.PI / 2, 1, 0, 0);
+            this.rearview.display();
+        this.scene.popMatrix();
+    };
+
     displayWheels()
     {
         const car = this.car;
@@ -270,6 +379,13 @@ class MyVehicle extends CGFobject // implements CraneBindable
             this.left.display();
             this.right.display();
             this.displayWheels();
+            this.displayRearview();
+            this.displayFront();
+            //this.displayBack();
+            
+            this.scene.translate(0, car.hCar / 400, 0);
+            this.frontWindow.display();
+            this.backWindow.display();
         this.scene.popMatrix();
     };
 

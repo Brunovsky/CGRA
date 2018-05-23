@@ -14,10 +14,13 @@ let carFunctionSmooth = (function() {
     const dWheel = xWheelBack - xWheelFront;
     const ceilX = 2.82;
     const ceilY = 1.913;
+    const rearX = 1.70;
+    const rearY = 1.36;
+    const frontY = 0.75;
 
     // Knots X00 ... X99 of the spline
     const X00 = 0.00;
-    const X10 = dCar * 0.00;
+    const X10 = dCar * 0.01;
     const X20 = dCar * 0.09375;
     const X30 = dCar * 0.265625;
     const X40 = dCar * 0.421875;
@@ -28,22 +31,28 @@ let carFunctionSmooth = (function() {
     const X90 = dCar * 1.00;
     const X99 = dCar;
 
+    const X27 = xWheelFront - rOut;
+    const X67 = xWheelBack + rOut;
+
     // Knots Y00 ... Y99 of the spline
     const Y00 = 0.00;
-    const Y10 = hCar * bCar;
+    const Y10 = hCar * 0.25;
     const Y20 = hCar * 0.55;
     const Y30 = hCar * 0.60;
     const Y40 = hCar * 0.90;
     const Y50 = hCar * 0.90;
     const Y60 = hCar * 0.70;
     const Y70 = hCar * 0.65;
-    const Y80 = hCar * bCar;
+    const Y80 = hCar * 0.30;
     const Y90 = hCar * bCar;
     const Y99 = 0.00;
 
+    const Y27 = hCar * bCar;
+    const Y67 = hCar * bCar;
+
     // Derivatives of the spline at the knots
     const d00  =  0.00;
-    const d10  =  5.80;
+    const d10  =  4.80;
     const d20  =  0.20;
     const d30l =  0.05;
     const d30r =  1.00;
@@ -51,18 +60,24 @@ let carFunctionSmooth = (function() {
     const d50  = -0.40;
     const d60  = -0.50;
     const d70  = -0.10;
-    const d80  = -15.0;
+    const d80  = -13.0;
     const d90  =  0.00;
     const d99  =  0.00;
 
+    const d27 = 0;
+    const d67 = 0;
+
     // Fourth-power coefficient of each polynomial, chosen by hand.
-    const w10 = -15.00;
+    const w10 = -20.00;
     const w20 =   0.00;
     const w30 =   0.00;
     const w40 =  -0.12;
     const w50 =   0.00;
     const w60 =   0.00;
-    const w70 = -200.0;
+    const w70 = -300.0;
+
+    const wF = 7;
+    const wB = 10;
 
     // Knots
     const P00 =  {X:X00, Y:Y00, d:d00};
@@ -77,6 +92,11 @@ let carFunctionSmooth = (function() {
     const P80 =  {X:X80, Y:Y80, d:d80};
     const P90 =  {X:X90, Y:Y90, d:d90};
     const P99 =  {X:X99, Y:Y99, d:d99};
+
+    const U10 =  {X:X10, Y:Y10, d:-d10/3};
+    const U80 =  {X:X80, Y:Y80, d:-d80/6};
+    const U27 =  {X:X27, Y:Y27, d:d27};
+    const U67 =  {X:X67, Y:Y67, d:d67};
     // ----> End of variables
 
     // Polynomials of the spline
@@ -88,10 +108,13 @@ let carFunctionSmooth = (function() {
     let f60 = protoHermitePolynomial(w60, P60,  P70);
     let f70 = protoHermitePolynomial(w70, P70,  P80);
 
+    let gF = protoHermitePolynomial(wF, U10, U27);
+    let gB = protoHermitePolynomial(wB, U67, U80);
+
     /**
      * The hood as seen through the side of the car.
      */
-    let hoodContour = function(X) {
+    let hermite = function(X) {
         if (X < X20) return f10(X);
         if (X < X30) return f20(X);
         if (X < X40) return f30(X);
@@ -99,6 +122,10 @@ let carFunctionSmooth = (function() {
         if (X < X60) return f50(X);
         if (X < X70) return f60(X);
                      return f70(X);
+    }
+
+    let hoodContour = function(X) {
+        return hermite(X);
     }
 
     /**
@@ -119,8 +146,17 @@ let carFunctionSmooth = (function() {
             return sqrt(rOut * rOut - dist2 * dist2) + rWheel;
         }
 
+        if (X < X27) return gF(X);
+
+        if (X > X67) return gB(X);
+
         // Not close enough to either wheel
         return hCar * bCar;
+    }
+
+    let cute = function(u, v) {
+        return polynomial(2 * v - 1, -0.04, 0, 1.04)
+            * polynomial(2 * u - 1, -0.03, 0, 1.03);
     }
 
     /**
@@ -134,29 +170,29 @@ let carFunctionSmooth = (function() {
      *    front
      */
     function hood(u, v) {
-        let X = linearMap(u, [0, 1], [0, dCar]);
-        let Y = hoodContour(X);
+        let X = linearMap(u, [0, 1], [X10, X80]);
+        let Y = hoodContour(X) * cute(u, v);
         let Z = linearMap(v, [0, 1], [-lCar / 2, lCar / 2]);
         return {X: X, Y: Y, Z: Z};
     }
 
     function leftSide(u, v) {
-        let X = linearMap(u, [0, 1], [0, dCar]);
-        let Y = linearMap(v, [1, 0], [baseContour(X), hoodContour(X)]);
+        let X = linearMap(u, [0, 1], [X10, X80]);
+        let Y = linearMap(v, [1, 0], [baseContour(X), hoodContour(X) * cute(u, v)]);
         let Z = lCar / 2;
         return {X: X, Y: Y, Z: Z};
     }
 
     function rightSide(u, v) {
-        let X = linearMap(u, [0, 1], [0, dCar]);
-        let Y = linearMap(v, [1, 0], [baseContour(X), hoodContour(X)]);
+        let X = linearMap(u, [0, 1], [X10, X80]);
+        let Y = linearMap(v, [1, 0], [baseContour(X), hoodContour(X) * cute(u, v)]);
         let Z = -lCar / 2;
         return {X: X, Y: Y, Z: Z};
     }
 
     function sideCoordsMap(u, v) {
-        let X = linearMap(u, [0, 1], [0, dCar]);
-        let Y = linearMap(v, [1, 0], [baseContour(X), hoodContour(X)]);
+        let X = linearMap(u, [0, 1], [X10, X80]);
+        let Y = linearMap(v, [1, 0], [baseContour(X), hoodContour(X) * cute(u, v)]);
         return {
             U: u,
             V: linearMap(Y, [hCar, 0], [0, 1])
@@ -173,11 +209,15 @@ let carFunctionSmooth = (function() {
         xWheelBack: xWheelBack,
         rWheel: rWheel,
         lWheel: lWheel,
-        rOut: rOut,
         dWheel: dWheel,
+        rOut: rOut,
 
         ceilX: ceilX,
         ceilY: ceilY,
+
+        rearX: rearX,
+        rearY: rearY,
+        frontY: frontY,
 
         hoodContour: hoodContour,
         baseContour: baseContour,
@@ -190,6 +230,8 @@ let carFunctionSmooth = (function() {
         hoodBoundaries: [0, 1, 0, 1],
         leftBoundaries: [0, 1, 0, 1],
         rightBoundaries: [0, 1, 0, 1],
+        frontWindowBoundaries: [X30 / dCar, X40 / dCar, 0.05, 0.95],
+        backWindowBoundaries: [X50 / dCar, X60 / dCar, 0.05, 0.95],
         slices: 128
     };
 
@@ -212,6 +254,9 @@ let carFunctionPolygonal = (function() {
     const dWheel = xWheelBack - xWheelFront;
     const ceilX = 2.5;
     const ceilY = 1.85;
+    const rearX = 1.70;
+    const rearY = 1.36;
+    const frontY = 0.75;
 
     // Knots X00 ... X99 of the polygonal line
     const X00 = 0.00;
@@ -317,28 +362,28 @@ let carFunctionPolygonal = (function() {
      *    front
      */
     function hood(u, v) {
-        let X = linearMap(u, [0, 1], [0, dCar]);
+        let X = linearMap(u, [0, 1], [X10, X80]);
         let Y = hoodContour(X);
         let Z = linearMap(v, [0, 1], [-lCar / 2, lCar / 2]);
         return {X: X, Y: Y, Z: Z};
     }
 
     function leftSide(u, v) {
-        let X = linearMap(u, [0, 1], [0, dCar]);
+        let X = linearMap(u, [0, 1], [X10, X80]);
         let Y = linearMap(v, [1, 0], [baseContour(X), hoodContour(X)]);
         let Z = lCar / 2;
         return {X: X, Y: Y, Z: Z};
     }
 
     function rightSide(u, v) {
-        let X = linearMap(u, [0, 1], [0, dCar]);
+        let X = linearMap(u, [0, 1], [X10, X80]);
         let Y = linearMap(v, [1, 0], [baseContour(X), hoodContour(X)]);
         let Z = -lCar / 2;
         return {X: X, Y: Y, Z: Z};
     }
 
     function sideCoordsMap(u, v) {
-        let X = linearMap(u, [0, 1], [0, dCar]);
+        let X = linearMap(u, [0, 1], [X00, X90]);
         let Y = linearMap(v, [1, 0], [baseContour(X), hoodContour(X)]);
         return {
             U: u,
@@ -356,11 +401,15 @@ let carFunctionPolygonal = (function() {
         xWheelBack: xWheelBack,
         rWheel: rWheel,
         lWheel: lWheel,
-        rOut: rOut,
         dWheel: dWheel,
+        rOut: rOut,
 
         ceilX: ceilX,
         ceilY: ceilY,
+
+        rearX: rearX,
+        rearY: rearY,
+        frontY: frontY,
 
         hoodContour: hoodContour,
         baseContour: baseContour,
@@ -373,6 +422,8 @@ let carFunctionPolygonal = (function() {
         hoodBoundaries: [0, 1, 0, 1],
         leftBoundaries: [0, 1, 0, 1],
         rightBoundaries: [0, 1, 0, 1],
+        frontWindowBoundaries: [X30 / dCar, X40 / dCar, 0.05, 0.95],
+        backWindowBoundaries: [X50 / dCar, X60 / dCar, 0.05, 0.95],
         slices: 128
     };
 

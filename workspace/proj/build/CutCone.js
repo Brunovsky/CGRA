@@ -180,3 +180,38 @@ class DoubleCutCone extends CGFobject
         this.top.bindTexture(topTexture || cutConeTexture);
     };
 };
+
+
+
+class SpheredCutCone extends CGFobject
+{
+    constructor(scene, baseRadius = 1, topRadius = 0.5, height = 1, slices = 64, stacks = 1, coords = [0, 1, 0, 1])
+    {
+        super(scene);
+        this.cone = new CutCone(scene, baseRadius, topRadius, height, slices, stacks, coords);
+        this.sphere = new HalfSphere(scene, baseRadius, slices);
+        this.top = new Circle(scene, topRadius, slices);
+        this.height = height;
+        this.initBuffers();
+    };
+
+    display()
+    {
+        this.scene.pushMatrix();
+            this.cone.display();
+            this.scene.pushMatrix();
+                this.scene.rotate(Math.PI, 1, 0, 0);
+                this.sphere.display();
+            this.scene.popMatrix();
+                this.scene.translate(0, this.height, 0);
+                this.top.display();
+        this.scene.popMatrix();
+    };
+
+    bindTexture(cutConeTexture, baseTexture, topTexture)
+    {
+        this.cone.bindTexture(cutConeTexture);
+        this.sphere.bindTexture(baseTexture || cutConeTexture);
+        this.top.bindTexture(topTexture || baseTexture || cutConeTexture);
+    };
+};

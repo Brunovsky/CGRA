@@ -52,7 +52,7 @@ class HalfSphere extends CGFobject
 
                 // Texture Up, Down
                 let stexUnit = 0.5 * (xUnit + 1);
-                let ttexUnit = 0.5 * (yUnit + 1);
+                let ttexUnit = 0.5 * (zUnit + 1);
                 let stex = (1 - stexUnit) * coords.minS + stexUnit * coords.maxS;
                 let ttex = (1 - ttexUnit) * coords.minT + ttexUnit * coords.maxT;
 
