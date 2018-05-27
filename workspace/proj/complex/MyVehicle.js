@@ -1,7 +1,3 @@
-let carTextureSets = {
-    // ...
-};
-
 class RearviewMirror extends CGFobject
 {
     constructor(scene, radius, height)
@@ -54,6 +50,10 @@ class MyVehicle extends CGFobject
             car.rightBoundaries,
             car.slices,
             car.sideCoordsMap);
+        this.base = new uvSurface(scene,
+            car.base,
+            car.hoodBoundaries,
+            car.slices);
         this.wheelLeftFront  = new Wheel(scene, car.rWheel, car.lWheel);
         this.wheelRightFront = new Wheel(scene, car.rWheel, car.lWheel);
         this.wheelLeftBack   = new Wheel(scene, car.rWheel, car.lWheel);
@@ -129,8 +129,9 @@ class MyVehicle extends CGFobject
         this.frontWindow.bindTexture(textures.car.white);
         this.backWindow.bindTexture(textures.car.white);
         this.rearview.bindTexture(textures.car.white, textures.other.metalmixed);
-        this.backHeadlight.bindTexture(textures.car.backlight);
+        this.backHeadlight.bindTexture(textures.other.metalmixed, textures.car.backlight);
         this.frontHeadlight.bindTexture(textures.car.frontlight);
+        this.base.bindTexture(textures.car.base);
     };
 
     forward(distance)
@@ -155,29 +156,36 @@ class MyVehicle extends CGFobject
             Z: 0,
         };
 
-        return addVectors(this.position, unrotateYaxis(this.alpha, basic));
+        return unrotateYaxis(this.alpha, basic);
     };
 
-    startRotation(startPosition)
+    getPosition()
     {
-        this.deltaY = startPosition.Y - this.getCeil().Y;
-        this.startPosition = startPosition;
-        this.startPosition.Y = this.position.Y + this.deltaY;
+        return {
+            X: this.position.X,
+            Y: this.position.Y,
+            Z: this.position.Z,
+        };
+    };
+
+    startRotation()
+    {
         this.forcedStop = true;
         this.velocity = nullVector();
     };
 
-    rotate(angle, deltaAngle)
+    rotate(rotPosition, angle, deltaAngle)
     {
         this.alpha += deltaAngle;
         this.direction = unrotateYaxis(this.alpha, xVector());
-        this.position = unrotateYaxis(angle, this.startPosition);
+        this.position = subVectors(rotPosition, this.getCeil());
     };
 
     endRotation()
     {
         this.forcedStop = false;
-        this.position.Y = this.startPosition.Y - this.deltaY;
+        this.rotPosition = null;
+        this.position.Y = 0;
     };
 
     update(currTime)
@@ -197,7 +205,8 @@ class MyVehicle extends CGFobject
         const dT = (currTime - this.time) / 1000;
         this.time = currTime;
 
-        // Force stopped by crane? (bad design)
+        // <!-- begin cancro
+        // Force stopped by crane?
         if (this.forcedStop) {
             return;
         }
@@ -217,23 +226,17 @@ class MyVehicle extends CGFobject
 
         // Compute beta
         if (!keys.left && keys.right) {
-            if(Math.abs(beta) < betaMax)
+            if (Math.abs(beta) < betaMax)
                 beta +=  2*betaStep;
         } else if (keys.left && !keys.right) {
-            if(Math.abs(beta) < betaMax)
+            if (Math.abs(beta) < betaMax)
                 beta += -2*betaStep;
-        } else if ( (!keys.left && !keys.right && beta != 0)
-            || (keys.left && keys.right && beta != 0) 
-            || (!keys.left && !keys.right && beta != 0 && (keys.up || keys.down))
-            || (keys.left && keys.right && beta != 0) && (keys.up || keys.down)) {
-            if(beta > 0)
-                beta += -betaStep;
-            else
-                beta += betaStep;
-        } else {
-            beta = 0;
         }
 
+        if (beta > 0)
+            beta += -betaStep;
+        else
+            beta += betaStep;
 
         // Compute each subforce
         let forceForward = scaleVector(cons.engForward, direction);
@@ -310,19 +313,36 @@ class MyVehicle extends CGFobject
         this.turn(gammaLeft, gammaRight);
     };
 
+    displayBack()
+    {
+        let car = this.car;
+
+        this.scene.pushMatrix();
+            this.scene.translate(car.dCar, car.backY,  car.lAxis / 1.5);
+            this.scene.rotate(0.55 * Math.PI, 0, 0, 1);
+            this.backHeadlight.display();
+        this.scene.popMatrix();
+        
+        this.scene.pushMatrix();
+            this.scene.translate(car.dCar, car.backY, -car.lAxis / 1.5);
+            this.scene.rotate(0.55 * Math.PI, 0, 0, 1);
+            this.backHeadlight.display();
+        this.scene.popMatrix();
+    };
+
     displayFront()
     {
         let car = this.car;
 
         this.scene.pushMatrix();
             this.scene.translate(car.lAxis / 5, car.frontY, car.lAxis / 1.5);
-            this.scene.rotate(-Math.PI / 2, 0, 0, 1);
+            this.scene.rotate(-0.60 * Math.PI, 0, 0, 1);
             this.frontHeadlight.display();
         this.scene.popMatrix();
         
         this.scene.pushMatrix();
             this.scene.translate(car.lAxis / 5, car.frontY, -car.lAxis / 1.5);
-            this.scene.rotate(-Math.PI / 2, 0, 0, 1);
+            this.scene.rotate(-0.60 * Math.PI, 0, 0, 1);
             this.frontHeadlight.display();
         this.scene.popMatrix();
     };
@@ -385,10 +405,11 @@ class MyVehicle extends CGFobject
             this.hood.display();
             this.left.display();
             this.right.display();
+            this.base.display();
             this.displayWheels();
             this.displayRearview();
             this.displayFront();
-            //this.displayBack();
+            this.displayBack();
             
             this.scene.translate(0, car.hCar / 400, 0);
             this.frontWindow.display();
@@ -406,4 +427,41 @@ class MyVehicle extends CGFobject
         this.wheelLeftBack.bindTexture(treadTexture, wheelSideTexture);
         this.wheelRightBack.bindTexture(treadTexture, wheelSideTexture);
     };
+
+    bindTextureSet(set)
+    {
+        this.bindTexture(
+            this.scene.textures.hood[carTextureSets[set].hood],
+            this.scene.textures.side[carTextureSets[set].side],
+            this.scene.textures.wheeltread[carTextureSets[set].wheeltread],
+            this.scene.textures.wheelside[carTextureSets[set].wheelside]
+        );
+    };
+};
+
+let carTextureSets = {
+    silver: {
+        hood: "silver",
+        side: "silver",
+        wheeltread: "gta",
+        wheelside: "gold",
+    },
+    police: {
+        hood: "police",
+        side: "police",
+        wheeltread: "gta",
+        wheelside: "white",
+    },
+    wood: {
+        hood: "wood",
+        side: "wood",
+        wheeltread: "table",
+        wheelside: "table"
+    },
+    red: {
+        hood: "red",
+        side: "red",
+        wheeltread: "gta",
+        wheelside: "gold",
+    },
 };

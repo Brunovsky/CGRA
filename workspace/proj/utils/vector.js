@@ -199,11 +199,11 @@ function vectorBisector(a, b, axis) {
         let PI2 = Math.PI / 2;
 
         if (axis === axisX) {
-            bisector = rotateXaxis(PI2, b);
+            bisector = normalize(rotateXaxis(PI2, b));
         } else if (axis === axisY) {
-            bisector = rotateYaxis(PI2, b);
+            bisector = normalize(rotateYaxis(PI2, b));
         } else if (axis === axisZ) {
-            bisector = rotateZaxis(PI2, b);
+            bisector = normalize(rotateZaxis(PI2, b));
         }
 
     }
@@ -236,3 +236,51 @@ function triangleBisector(A, B, C, axis) {
         return vectorBisector(v1, v2);
     }
 }
+
+// 
+// 
+//                                C
+//
+//                      B
+//                 
+//            A          
+//            
+//                               
+//            
+//            
+//            
+//            
+
+
+
+
+// 
+// --------> X
+// 
+// .     .     .     .     .     .     .     .
+// 
+// 
+// .     .     .     .     .     .     .     .
+// 
+// 
+// .     .     .     R     .     .     .     .
+// 
+// 
+// .     .     A     B     C     .     .     .    z = 3
+// 
+// 
+// .     .     .     R     .     .     .     .
+// 
+// 
+// .     .     .     .     .     .     .     .
+// 
+// 
+// .     .     .     .     .     .     .     .
+// 
+// 
+// .     .     .     .     .     .     .     .
+// 
+// 
+// |
+// |
+// Z

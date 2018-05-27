@@ -12,11 +12,16 @@ let carFunctionSmooth = (function() {
     const xWheelFront = dCar * 0.18;
     const xWheelBack = dCar * 0.81;
     const dWheel = xWheelBack - xWheelFront;
+
+    const cuteU = 1.03;
+    const cuteV = 1.04;
+
     const ceilX = 2.82;
-    const ceilY = 1.913;
+    const ceilY = 1.910 * cuteU * cuteV;
     const rearX = 1.70;
     const rearY = 1.36;
     const frontY = 0.75;
+    const backY = 0.95;
 
     // Knots X00 ... X99 of the spline
     const X00 = 0.00;
@@ -155,8 +160,9 @@ let carFunctionSmooth = (function() {
     }
 
     let cute = function(u, v) {
-        return polynomial(2 * v - 1, -0.04, 0, 1.04)
-            * polynomial(2 * u - 1, -0.03, 0, 1.03);
+        return polynomial(2 * u - 1, 1 - cuteU, 0, cuteU)
+            * polynomial(2 * v - 1, 1 - cuteV, 0, cuteV);
+        // approx 1, but larget the closer u and v are to 0.5.
     }
 
     /**
@@ -172,22 +178,28 @@ let carFunctionSmooth = (function() {
     function hood(u, v) {
         let X = linearMap(u, [0, 1], [X10, X80]);
         let Y = hoodContour(X) * cute(u, v);
-        let Z = linearMap(v, [0, 1], [-lCar / 2, lCar / 2]);
+        let Z = linearMap(v, [0, 1], [-lAxis, lAxis]);
         return {X: X, Y: Y, Z: Z};
     }
 
     function leftSide(u, v) {
         let X = linearMap(u, [0, 1], [X10, X80]);
         let Y = linearMap(v, [1, 0], [baseContour(X), hoodContour(X) * cute(u, v)]);
-        let Z = lCar / 2;
+        let Z = lAxis;
         return {X: X, Y: Y, Z: Z};
     }
 
     function rightSide(u, v) {
         let X = linearMap(u, [0, 1], [X10, X80]);
         let Y = linearMap(v, [1, 0], [baseContour(X), hoodContour(X) * cute(u, v)]);
-        let Z = -lCar / 2;
+        let Z = -lAxis;
         return {X: X, Y: Y, Z: Z};
+    }
+
+    function base(u, v) {
+        let X = linearMap(u, [0, 1], [X10, X80]);
+        let Z = linearMap(v, [0, 1], [-lAxis, lAxis]);
+        return {X: X, Y: baseContour(X), Z: Z};
     }
 
     function sideCoordsMap(u, v) {
@@ -218,6 +230,7 @@ let carFunctionSmooth = (function() {
         rearX: rearX,
         rearY: rearY,
         frontY: frontY,
+        backY: backY,
 
         hoodContour: hoodContour,
         baseContour: baseContour,
@@ -225,6 +238,7 @@ let carFunctionSmooth = (function() {
         hood: hood,
         left: leftSide,
         right: rightSide,
+        base: base,
         sideCoordsMap: sideCoordsMap,
 
         hoodBoundaries: [0, 1, 0, 1],
@@ -238,6 +252,8 @@ let carFunctionSmooth = (function() {
     return car;
 })();
 
+// Not updated...
+/**
 let carFunctionPolygonal = (function() {
     'use strict';
     // <!--- Start of variables
@@ -314,9 +330,7 @@ let carFunctionPolygonal = (function() {
     const r70 = X => interpolate(X, P70, P75);
     const r75 = X => interpolate(X, P75, P80);
 
-    /**
-     * The hood as seen through the side of the car.
-     */
+    // The hood as seen through the side of the car.
     let hoodContour = function(X) {
         if (X < X15) return r10(X);
         if (X < X20) return r15(X);
@@ -329,9 +343,7 @@ let carFunctionPolygonal = (function() {
                      return r75(X);
     }
 
-    /**
-     * The base as seen through the side of the car.
-     */
+    // The base as seen through the side of the car.
     let baseContour = function(X) {
         const abs = Math.abs, sqrt = Math.sqrt;
 
@@ -351,16 +363,16 @@ let carFunctionPolygonal = (function() {
         return hCar * bCar;
     }
 
-    /**
-     *  ________       ______
-     * |        | 1   |      |
-     * |        |     |      |
-     * |  Hood  | u   |      |
-     * |        |     |      |
-     * |________| 0   |______|
-     * 1    v   0
-     *    front
-     */
+    //
+    //  ________       ______
+    // |        | 1   |      |
+    // |        |     |      |
+    // |  Hood  | u   |      |
+    // |        |     |      |
+    // |________| 0   |______|
+    // 1    v   0
+    //    front
+    // 
     function hood(u, v) {
         let X = linearMap(u, [0, 1], [X10, X80]);
         let Y = hoodContour(X);
@@ -429,3 +441,4 @@ let carFunctionPolygonal = (function() {
 
     return car;
 })();
+*/

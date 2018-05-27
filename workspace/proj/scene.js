@@ -35,7 +35,7 @@ class MyScene extends CGFscene
         let tex = this.textures;
 
         this.car = new MyVehicle(this, carFunctionSmooth);
-        this.car.bindTexture(tex.car.hoodsilver, tex.side.silver, tex.wheeltread.gta, tex.wheelside.gold);
+        this.car.bindTextureSet("silver");
 
         this.hills = new MyTerrain(this, hillsDivs, hillsAltimetry, 50);
         this.hills.bindTexture(tex.terrain.hills);
@@ -54,16 +54,6 @@ class MyScene extends CGFscene
     {
         let textures = {
             default: new CGFappearance(this),
-            side: {
-                silver: new CGFappearance(this),
-            },
-            wheelside: {
-                gold: new CGFappearance(this),
-                white: new CGFappearance(this),
-            },
-            wheeltread: {
-                gta: new CGFappearance(this),
-            },
             terrain: {
                 hills: new CGFappearance(this),
                 river: new CGFappearance(this),
@@ -71,9 +61,9 @@ class MyScene extends CGFscene
             car: {
                 windshield: new CGFappearance(this),
                 white: new CGFappearance(this),
-                hoodsilver: new CGFappearance(this),
-                headlight: new CGFappearance(this),
+                frontlight: new CGFappearance(this),
                 backlight: new CGFappearance(this),
+                base: new CGFappearance(this),
             },
             other: {
                 table: new CGFappearance(this),
@@ -83,32 +73,33 @@ class MyScene extends CGFscene
                 metalmixed: new CGFappearance(this),
                 metaldirty: new CGFappearance(this),
             },
+            hood: {
+                silver: new CGFappearance(this),
+                police: new CGFappearance(this),
+                wood: new CGFappearance(this),
+                red: new CGFappearance(this),
+            },
+            side: {
+                silver: new CGFappearance(this),
+                police: new CGFappearance(this),
+                wood: new CGFappearance(this),
+                red: new CGFappearance(this),
+            },
+            wheeltread: {
+                gta: new CGFappearance(this),
+                table: new CGFappearance(this),
+            },
+            wheelside: {
+                gold: new CGFappearance(this),
+                white: new CGFappearance(this),
+                table: new CGFappearance(this),
+            },
         };
 
         textures.default.setAmbient(0.10, 0.45, 0.7, 1);
         textures.default.setDiffuse(0.2, 0.4, 0.6, 1);
         textures.default.setSpecular(0.7, 0.6, 0.9, 1);
         textures.default.setShininess(20);
-
-        textures.side.silver.setAmbient(0.5, 0.5, 0.5, 1);
-        textures.side.silver.setDiffuse(0.7, 0.7, 0.7, 1);
-        textures.side.silver.setShininess(150);
-        textures.side.silver.loadTexture("tex/side-silver.png");
-
-        textures.wheelside.gold.setAmbient(0.5, 0.5, 0.5, 1);
-        textures.wheelside.gold.setDiffuse(0.7, 0.7, 0.7, 1);
-        textures.wheelside.gold.setShininess(150);
-        textures.wheelside.gold.loadTexture("tex/wheelside-gold.png");
-
-        textures.wheelside.white.setAmbient(0.5, 0.5, 0.5, 1);
-        textures.wheelside.white.setDiffuse(0.7, 0.7, 0.7, 1);
-        textures.wheelside.white.setShininess(150);
-        textures.wheelside.white.loadTexture("tex/wheelside-white.png");
-
-        textures.wheeltread.gta.setAmbient(0.5, 0.5, 0.5, 1);
-        textures.wheeltread.gta.setDiffuse(0.7, 0.7, 0.7, 1);
-        textures.wheeltread.gta.setShininess(150);
-        textures.wheeltread.gta.loadTexture("tex/wheeltread-gta.png");
 
         textures.terrain.hills.setAmbient(0.5, 0.5, 0.5, 1);
         textures.terrain.hills.setDiffuse(0.7, 0.7, 0.7, 1);
@@ -130,21 +121,20 @@ class MyScene extends CGFscene
         textures.car.white.setShininess(150);
         textures.car.white.loadTexture("tex/white.png");
 
-        textures.car.hoodsilver.setAmbient(0.2, 0.2, 0.2, 1);
-        textures.car.hoodsilver.setDiffuse(0.7, 0.7, 0.7, 1);
-        textures.car.hoodsilver.setSpecular(0.9, 0.9, 0.9, 1);
-        textures.car.hoodsilver.setShininess(150);
-        textures.car.hoodsilver.loadTexture("tex/hoodsilver.png");
-
-        textures.car.headlight.setAmbient(0.5, 0.5, 0.5, 1);
-        textures.car.headlight.setDiffuse(0.7, 0.7, 0.7, 1);
-        textures.car.headlight.setShininess(150);
-        textures.car.headlight.loadTexture("tex/headlight.png");
+        textures.car.frontlight.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.car.frontlight.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.car.frontlight.setShininess(150);
+        textures.car.frontlight.loadTexture("tex/frontlight.png");
 
         textures.car.backlight.setAmbient(0.5, 0.5, 0.5, 1);
         textures.car.backlight.setDiffuse(0.7, 0.7, 0.7, 1);
         textures.car.backlight.setShininess(150);
         textures.car.backlight.loadTexture("tex/backlight.png");
+
+        textures.car.base.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.car.base.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.car.base.setShininess(150);
+        textures.car.base.loadTexture("tex/base.png");
 
         textures.other.table.setAmbient(0.5, 0.5, 0.5, 1);
         textures.other.table.setDiffuse(0.7, 0.7, 0.7, 1);
@@ -175,6 +165,59 @@ class MyScene extends CGFscene
         textures.other.metaldirty.setDiffuse(0.7, 0.7, 0.7, 1);
         textures.other.metaldirty.setShininess(150);
         textures.other.metaldirty.loadTexture("tex/metal-dirty.png");
+
+        textures.hood.silver.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.hood.silver.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.hood.silver.setShininess(150);
+        textures.hood.silver.loadTexture("tex/hoodsilver.png");
+
+        textures.hood.police.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.hood.police.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.hood.police.setShininess(150);
+        textures.hood.police.loadTexture("tex/hoodpolice.png");
+
+        textures.hood.red.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.hood.red.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.hood.red.setShininess(150);
+        textures.hood.red.loadTexture("tex/hoodred.png");
+
+        textures.hood.wood = textures.other.floor;
+
+        textures.side.silver.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.side.silver.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.side.silver.setShininess(150);
+        textures.side.silver.loadTexture("tex/sidesilver.png");
+
+        textures.side.police.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.side.police.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.side.police.setShininess(150);
+        textures.side.police.loadTexture("tex/sidepolice.png");
+
+        textures.side.red.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.side.red.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.side.red.setShininess(150);
+        textures.side.red.loadTexture("tex/sidered.png");
+
+        textures.side.wood = textures.other.floor;
+
+        textures.wheeltread.gta.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.wheeltread.gta.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.wheeltread.gta.setShininess(150);
+        textures.wheeltread.gta.loadTexture("tex/wheeltread-gta.png");
+
+        textures.wheeltread.table = textures.other.table;
+
+        textures.wheelside.gold.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.wheelside.gold.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.wheelside.gold.setShininess(150);
+        textures.wheelside.gold.loadTexture("tex/wheelside-gold.png");
+
+        textures.wheelside.white.setAmbient(0.5, 0.5, 0.5, 1);
+        textures.wheelside.white.setDiffuse(0.7, 0.7, 0.7, 1);
+        textures.wheelside.white.setShininess(150);
+        textures.wheelside.white.loadTexture("tex/wheelside-white.png");
+
+        textures.wheelside.table = textures.other.table;
 
         this.textures = textures;
     };
@@ -218,8 +261,15 @@ class MyScene extends CGFscene
                 "Roll constant": this.car.cons.roll,
                 "Car mass": this.car.cons.mass,
             },
+            crane: {
+                "Max α": this.crane.cons.maxα,
+                "Phi φ": this.crane.cons.phi,
+                "Theta θ": this.crane.cons.theta,
+                "Rotation speed": this.crane.cons.speed,
+                "Acceptable": this.crane.cons.acceptable,
+            },
             "Show axis": true,
-            "Car Texture": "wood",
+            "Car Texture": "silver",
             "Terrain Texture": "river",
         };
 
@@ -249,20 +299,36 @@ class MyScene extends CGFscene
         physGroup.open();
 
         physGroup.add(this.control.physics, "Engine forward", 0, this.car.cons.engForward * 10)
-            .onFinishChange(value => { this.car.cons.engForward = value; });
+            .onChange(value => { this.car.cons.engForward = value; });
         physGroup.add(this.control.physics, "Engine backward", 0, this.car.cons.engBackward * 10)
-            .onFinishChange(value => { this.car.cons.engBackward = value; });
+            .onChange(value => { this.car.cons.engBackward = value; });
         physGroup.add(this.control.physics, "Break constant", 0, this.car.cons.break * 10)
-            .onFinishChange(value => { this.car.cons.break = value; });
+            .onChange(value => { this.car.cons.break = value; });
         physGroup.add(this.control.physics, "Drag constant", 0, this.car.cons.drag * 10)
-            .onFinishChange(value => { this.car.cons.drag = value; });
+            .onChange(value => { this.car.cons.drag = value; });
         physGroup.add(this.control.physics, "Roll constant", 0, this.car.cons.roll * 10)
-            .onFinishChange(value => { this.car.cons.roll = value; });
+            .onChange(value => { this.car.cons.roll = value; });
         physGroup.add(this.control.physics, "Car mass", 0, this.car.cons.mass * 10)
-            .onFinishChange(value => { this.car.cons.mass = value; });
+            .onChange(value => { this.car.cons.mass = value; });
+
+        let craneGroup = datgui.addFolder("Crane");
+        craneGroup.open();
+
+        const PI = Math.PI;
+        craneGroup.add(this.control.crane, "Max α", 0.25 * PI, 1.75 * PI)
+            .onChange(value => { this.crane.cons.maxα = value; });
+        craneGroup.add(this.control.crane, "Phi φ", 0, 0.25 * PI)
+            .onChange(value => { this.crane.cons.phi = value; });
+        craneGroup.add(this.control.crane, "Theta θ", 0, 0.5 * PI)
+            .onChange(value => { this.crane.cons.theta = value; });
+        craneGroup.add(this.control.crane, "Rotation speed", 0, 0.5 * PI)
+            .onChange(value => { this.crane.cons.speed = value; });
+        craneGroup.add(this.control.crane, "Acceptable", 0, 10)
+            .onChange(value => { this.crane.cons.acceptable = value; });
 
         datgui.add(this.control, "Show axis");
-        datgui.add(this.control, "Car Texture", ["red", "blue", "green", "wood"]);
+        datgui.add(this.control, "Car Texture", ["silver", "police", "wood", "red"])
+            .onChange(value => { this.car.bindTextureSet(value); });
         datgui.add(this.control, "Terrain Texture", ["hills", "river"])
             .onChange(value => { this.terrain = this[value]; });
     };
@@ -355,7 +421,11 @@ class MyScene extends CGFscene
 
         this.terrain.display();
 
+        this.translate(-5, 0, 0);
+
         this.crane.display();
+
+        this.car.display();
 
         this.popMatrix();
         this.popTexture();
@@ -442,17 +512,17 @@ let riverAltimetry = [
     [ 0.1, 0.3, 0.4, 2.7, 3.5, 2.0, 0.6, 0.2, 0.0, 0.0, 0.0, 0.0, 0.2, 0.2, 0.0, 0.1, 0.2, 0.7, 1.3, 1.8, 1.8 ],
     [ 0.1, 0.8, 2.6, 3.0, 2.8, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 1.5, 2.0, 2.5 ],
     [ 0.1, 0.2, 1.8, 2.4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.2, 0.6, 3.1, 3.7, 3.8 ],
-    [ 0.1, 0.3, 0.7, 1.1, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 3.0, 4.7, 4.8, 4.9 ],
-    [ 0.0, 0.1, 0.2, 0.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 3.5, 5.3, 5.2, 5.1 ],
+    [ 0.1, 0.3, 0.7, 1.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 3.0, 4.7, 4.8, 4.9 ],
+    [ 0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 3.5, 5.3, 5.2, 5.1 ],
     [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.2, 0.7, 4.4, 5.4, 5.6, 5.3 ],
-    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 2.5, 5.0, 5.3, 5.5, 5.4 ],
-    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.4, 3.0, 5.0, 5.2, 5.4, 5.4 ],
-    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.3, 0.5, 2.5, 5.1, 5.3, 5.2 ],
-    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.2, 2.5, 4.0, 2.0, 4.7, 5.1, 5.1 ],
-    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.2, 3.6, 4.0, 1.0, 3.8, 4.6, 4.8 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 2.5, 5.0, 5.3, 5.5, 5.4 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.4, 3.0, 5.0, 5.2, 5.4, 5.4 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.3, 0.5, 2.5, 5.1, 5.3, 5.2 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.5, 4.0, 2.0, 4.7, 5.1, 5.1 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3.6, 4.0, 1.0, 3.8, 4.6, 4.8 ],
     [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.3, 3.3, 0.6, 1.1, 4.0, 4.5 ],
-    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.1, 0.1, 0.2, 0.7, 2.0, 0.0, 0.0, 0.0, 0.0, 0.3, 3.8, 4.3 ],
-    [ 0.0, 0.0, 0.0, 0.1, 0.1, 0.1, 0.0, 0.0, 0.4, 0.4, 0.5, 0.7, 3.5, 3.6, 3.5, 3.3, 2.0, 0.0, 0.3, 3.6, 4.3 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.2, 0.7, 2.0, 0.0, 0.0, 0.0, 0.0, 0.3, 3.8, 4.3 ],
+    [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.4, 0.4, 0.5, 0.7, 3.5, 3.6, 3.5, 3.3, 2.0, 0.0, 0.3, 3.6, 4.3 ],
     [ 0.0, 0.1, 0.2, 0.3, 0.3, 0.3, 0.1, 0.1, 3.4, 3.7, 3.8, 3.4, 3.9, 4.1, 4.0, 3.8, 0.6, 0.0, 0.4, 3.8, 4.2 ],
     [ 0.1, 0.2, 0.5, 1.8, 1.8, 1.0, 0.5, 0.6, 3.4, 4.1, 4.2, 4.1, 4.2, 4.3, 4.2, 3.8, 0.1, 0.0, 0.9, 3.9, 4.1 ],
     [ 0.1, 0.3, 1.9, 2.1, 2.0, 2.0, 0.4, 0.5, 1.0, 3.7, 3.9, 4.3, 4.5, 4.7, 4.4, 0.3, 0.0, 0.0, 3.0, 4.0, 4.1 ],

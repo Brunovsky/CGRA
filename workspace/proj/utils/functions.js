@@ -250,3 +250,11 @@ let sampleBezier = protoBezierSurface(
         {X:  1, Y: -1, Z:  0}
     ]
 );
+
+function hypocycloid(a, b, t) {
+    let cos = Math.cos, sin = Math.sin;
+    return {
+        X: (a - b) * cos(t) - b * cos((a - b) * t / b),
+        Z: (a - b) * sin(t) + b * sin((a - b) * t / b),
+    };
+}

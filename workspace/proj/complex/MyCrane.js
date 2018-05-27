@@ -13,14 +13,14 @@ let defaultCraneDescriptor = {
     },
     jib: {
         radius: 0.45,
-        height: 15.0,
+        height: 16.0,
         slices: CYLINDER_DEFAULT_SLICES,
         stacks: CYLINDER_DEFAULT_STACKS,
         coords: [0, 1, 0, 20],
     },
     arm: {
         radius: 0.30,
-        height: 7.5,
+        height: 7.0,
         slices: CYLINDER_DEFAULT_SLICES,
         stacks: CYLINDER_DEFAULT_STACKS,
         coords: [0, 1, 0, 10],
@@ -94,6 +94,8 @@ class MyCrane extends CGFobject
             this.data.arm.radius,
             this.data.arm.slices,
             SPHERE_DEFAULT_STACKS);
+
+        this.enter = new tPolygon(scene, t => hypocycloid(4, 0.25, t), [0, 2 * Math.PI]);
     };
 
     initData(given)
@@ -113,12 +115,16 @@ class MyCrane extends CGFobject
 
     initVariables()
     {
-        this.phi = Math.PI / 6;
-        this.theta = Math.PI / 4;
+        this.cons = {
+            maxα: Math.PI,
+            phi: Math.PI / 4,
+            theta: 0,
+            speed: 1, // rad/s
+            acceptable: 4
+        };
+
         this.alpha = 0;
         this.cumulative = 0;
-
-        this.speed = 1; // radians per second
 
         this.moving = false;
         this.restoring = false;
@@ -130,7 +136,7 @@ class MyCrane extends CGFobject
 
         let dT = (currTime - this.time) / 1000;
         this.time = currTime;
-        let deltaAngle = this.speed * dT;
+        let deltaAngle = this.cons.speed * dT;
 
         // Step 3: Unrotate PI radians ONLY the crane.
         if (this.restoring) {
@@ -147,49 +153,62 @@ class MyCrane extends CGFobject
             this.alpha += deltaAngle;
             this.cumulative += deltaAngle;
 
-            if (this.alpha >= Math.PI) {
-                this.alpha = Math.PI;
-                this.cumulative -= (this.alpha - Math.PI);
-                this.movable.rotate(this.alpha, deltaAngle);
+            if (this.alpha >= this.cons.maxα) {
+                this.alpha = this.cons.maxα;
+                this.cumulative -= (this.alpha - this.cons.maxα);
+                this.movable.rotate(this.imanPosition(), this.alpha, deltaAngle);
 
                 // Done, release the car
                 this.moving = false;
                 this.restoring = true;
                 this.movable.endRotation();
             } else {
-                this.movable.rotate(this.alpha, deltaAngle);
+                this.movable.rotate(this.imanPosition(), this.alpha, deltaAngle);
             }
         }
 
         // Step 1: Init the movement with key B
         if (this.movable && keys.animate && !this.moving && !this.restoring) {
             this.time = currTime;
-            console.log(currTime, "Hello");
 
-            this.moving = true;
-            this.movable.startRotation(this.imanPosition());
+            let iman = this.imanPosition(), car = this.movable.getPosition();
+            iman.Y = 0, car.Y = 0;
+
+            console.log(iman);
+            console.log(car);
+            console.log(subVectors(iman, car));
+
+            if (norm(subVectors(iman, car)) < this.cons.acceptable) {
+                this.moving = true;
+                this.movable.startRotation();
+            }
         }
     };
 
-    imanPosition()
-    {
-        let cos = Math.cos, sin = Math.sin;
+    imanX() {
+        const cos = Math.cos, sin = Math.sin;
+        let h = this.data.jib.height;
+        let a = this.data.arm.height;
+        return h * sin(this.cons.phi) + a * sin(this.cons.theta);
+    }
+
+    imanY() {
+        const cos = Math.cos, sin = Math.sin;
         let h = this.data.jib.height;
         let a = this.data.arm.height;
         let b = this.data.line.height + this.data.iman.height;
+        return h * cos(this.cons.phi) - a * cos(this.cons.theta) - b;
+    }
 
-        let xIman = {
-            X: h * sin(this.phi) + a * sin(this.theta),
-            Y: h * cos(this.phi) - a * cos(this.theta) - b,
+    imanPosition()
+    {
+        let imanAlongX = {
+            X: this.imanX(),
+            Y: this.imanY(),
             Z: 0
         };
 
-        return unrotateYaxis(this.alpha, xIman);
-    };
-
-    rotateObject()
-    {
-        this.object.rotate(this.alpha);
+        return unrotateYaxis(this.alpha, imanAlongX);
     };
 
     display()
@@ -198,26 +217,35 @@ class MyCrane extends CGFobject
 
         this.scene.pushMatrix();
             this.scene.rotate(-this.alpha, 0, 1, 0);
-            this.scene.rotate(-this.phi, 0, 0, 1);
+            this.scene.rotate(-this.cons.phi, 0, 0, 1);
             this.base.display();
             this.jib.display();
 
             this.scene.translate(0, data.jib.height, 0);
-            this.scene.rotate(this.phi + this.theta, 0, 0, 1);
+            this.scene.rotate(this.cons.phi + this.cons.theta, 0, 0, 1);
             this.joint.display();
 
             this.scene.translate(0, -data.arm.height, 0);
             this.arm.display();
 
-            this.scene.rotate(-this.theta, 0, 0, 1);
+            this.scene.rotate(-this.cons.theta, 0, 0, 1);
             this.scene.translate(0, -data.line.height, 0);
             this.line.display();
 
             this.scene.translate(0, -data.iman.height, 0);
             this.iman.display();
         this.scene.popMatrix();
-        
-        this.movable.display();
+
+        this.scene.pushMatrix();
+            this.scene.translate(this.imanX(), 0.05, 0);
+            this.enter.display();
+        this.scene.popMatrix();
+
+        this.scene.pushMatrix();
+            this.scene.rotate(-this.cons.maxα, 0, 1, 0);
+            this.scene.translate(this.imanX(), 0.05, 0);
+            this.enter.display();
+        this.scene.popMatrix();
     };
 
     bindTexture(baseTexture, jibTexture, jointTexture, armTexture, imanTexture)
@@ -234,12 +262,10 @@ class MyCrane extends CGFobject
     bindObject(movable)
     {
         this.movable = movable;
-        this.cumulative = 0;
     };
 
     unbind()
     {
         this.movable = null;
-        this.cumulative = 0;
     };
 };
