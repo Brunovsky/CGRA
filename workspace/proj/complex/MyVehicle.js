@@ -223,7 +223,9 @@ class MyVehicle extends CGFobject
             if(Math.abs(beta) < betaMax)
                 beta += -2*betaStep;
         } else if ( (!keys.left && !keys.right && beta != 0)
-            || (keys.left && keys.right && beta != 0) ) {
+            || (keys.left && keys.right && beta != 0) 
+            || (!keys.left && !keys.right && beta != 0 && (keys.up || keys.down))
+            || (keys.left && keys.right && beta != 0) && (keys.up || keys.down)) {
             if(beta > 0)
                 beta += -betaStep;
             else
@@ -231,6 +233,7 @@ class MyVehicle extends CGFobject
         } else {
             beta = 0;
         }
+
 
         // Compute each subforce
         let forceForward = scaleVector(cons.engForward, direction);
