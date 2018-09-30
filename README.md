@@ -33,7 +33,7 @@ rPolygon is -not- a polygon, but rather a planar object whose border is parametr
 
 #### proj/complex/MyVehicle.js
 
-Contains the car movement and physics logic for the car movement, mostly in the function update(). Most of the physics parameters can be edited directly through the GUI in real time.
+Contains the movement and physics logic for the car animation, mostly in the function update(). Most of the physics parameters can be edited directly through the GUI in real time.
 
 #### Car design
 
