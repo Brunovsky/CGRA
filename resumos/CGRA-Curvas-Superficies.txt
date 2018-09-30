@@ -1,0 +1,257 @@
+
+
+
+
+$$ Malha Poligonal
+
+Caraterísticas:
+
+* O polígono é definido por uma sequência fechada de arestas.
+* Uma aresta é ligada a um ou dois polígonos (adjacentes).
+
+Os objetos 3D criam-se juntando várias malhas poligonais.
+
+
+$ Representação Explícita:
+
+Cada polígono é representado por uma lista de
+coordenadas dos vértices que o constituem, e uma
+aresta é definida por dois vértices consecutivos.
+
+(x1, y1, z1)
+(x2, y2, z2)
+    ...
+(xn, yn, zn)
+
+para cada polígono do objeto 3D.
+
+---> - Memória O(V^2)
+    Se o degree de um vértice v for N, então é guardado
+    em memória N vezes.
+---> - Não há representação explícita das arestas
+    e vértices partilhados.
+---> - Na representação gráfica a mesma aresta é usada
+    (desenhada) mais do que uma vez.
+
+
+$ Representação por Apontadores para Lista de Vértices
+
+Cada polígono é representado por uma lista de índices
+ou pointers para uma lista de vértices.
+
+Lista de Vértices:
+(x1, y1, z1)
+(x2, y2, z2)
+    ...
+(xn, yn, zn)
+
+de todo o objeto 3D.
+
+---> + Memória O(V + E)
+    Cada vértice é representado uma vez em memória.
+---> + A coordenada de um vértice é facilmente alterada.
+---> - Difícil obter os polígonos que partilham uma aresta.
+---> - As arestas continuam a ser usadas (desenhadas) mais do
+    que uma vez.
+
+
+$ Representação por Apontadores para Lista de Arestas
+
+Cada polígono é representado por uma lista de apontadores
+para uma lista de arestas, na qual cada aresta aparece uma única
+vez. Por sua vezes cada aresta aponta para dois vértices que a
+definem e guarda também quais os polígonos a que pertence.
+
+Um polígono é P = (E1, E2, ..., En)
+Uma aresta é E = (V1, V2, P1, P2, ...)
+Se a aresta pertence apenas a um polígono então P2 é null.
+
+---> + Memória O(E + P)
+---> + O desenho gráfico é facilmente obtido percorrendo
+    a lista de arestas.
+---> + Para o preenchimento dos polígonos trabalha-se com a lista
+    de polígonos.
+---> + Fácil obter os polígonos que partilham uma aresta.
+---> - As arestas são desenhadas uma vez.
+---> - Continua a não ser imediato determinar quais as arestas
+    que incidem sobre o mesmo vértice.
+
+
+$ Solução de Baumgard
+
+* Cada vértice tem um apontador para uma das arestas (random)
+que incide nesse vértice.
+* Cada aresta apresenta um apontador para a próxima aresta
+que incide nesse vértice.
+
+---> + Memória O(V + E)
+Com esta solução é imediato determinar quais as arestas
+que incidem sobre o mesmo vértice.
+
+
+
+$$ Curvas Cúbicas
+
+A representação por malha poligonal é uma aproximação
+de primeira ordem:
+ -> A curva é aproximada por uma sequência de segmentos lineares
+ -> Grande quantidade de dados (vértices) para obter a curva
+ com precisão.
+ -> Difícil manipulação para mudar a forma da curva, i.e. necessário
+ posicionar vários pontos com precisão.
+
+Geralmente utilizam-se polinómios de grau 3 (cúbicas)
+sendo a curva completa formada por um conjunto de curvas cúbicas.
+
+
+
+* Paramétrica: (X, Y, ...) = f(t) = (x(t), y(t), ...)
+
+* Explícita: (X, Y, ...) = (X, y(x), ...)
+
+* Implícita: (X, Y, ...) | f(x,y,...) = 0
+
+
+
+$ Tipos de Continuidade
+
+Duas curvas S1 e S2 dizem-se ...
+
+G0  -->  Se S1 acaba num ponto P e S2 começa no mesmo ponto P.
+C0  -->  "
+
+G1  -->  Se G0 e as tangentes a S1 e S2 em P tiverem o mesmo sentido.
+C1  -->  Se G0 e as tangentes a S1 e S2 em P forem iguais.
+
+Gn  -->  As n primeiras derivadas das curvas em P têm todas o mesmo sentido.
+Cn  -->  As n primeiras derivadas das curvas em P são todas iguais.
+
+
+S1: parametrizada por f(t), a < t < b
+S2: parametrizada por g(t), c < t < d
+
+G0  -->  f(b) = g(c)
+C0  -->  "
+
+G1  -->  G0  e  ||f'(b)|| = ||g'(c)||
+C1  -->  C0  e  f'(b) = g'(c)
+
+Gn  -->  Gn-1  e  ||f'(n)(b)|| = ||g'(n)(c)||
+Cn  -->  Cn-1  e  f'(n)(b) = g'(n)(c).
+
+
+
+$ Curvas de Hermite:
+
+S: (P1, R1, R4, P4)
+
+A curva S é orientada de P1 para P4 e tem derivada
+R1 em P1 e derivada R4 em P4.
+
+
+
+$ Curvas de Bézier:
+
+(P1, P2, P3, P4)
+
+A curva S é orientada de P1 para P4 e tem derivada
+P2-P1 em P1 e P4-P3 em P4.
+
+
+
+$ Curvas Cúbicas Paramétricas
+
+f(t) = (x(t), y(t), z(t))
+    x(t) = Ax t^3  +  Bx t^2  +  Cx t  +  Dx
+    y(t) = Ay t^3  +  By t^2  +  Cy t  +  Dy
+    z(t) = Az t^3  +  Bz t^2  +  Cz t  +  Dz
+
+T = [ t^3   t^2   t   1 ]
+T' = [ 3t^2  2t  1  0 ]
+
+    [ Ax  Ay  Az ]
+C = [ Bx  By  Bz ]
+    [ Cx  Cy  Cz ]
+    [ Dx  Dy  Dz ]
+
+Q(t) = [ x(t)  y(t)  z(t) ] = T.C
+
+C is the matrix of coefficients of f. Its 12 members
+are the variables of the parametrization f.
+
+Now, set C = M.G
+
+If we split this equation per column (of C and M)
+and think of C's elements as constants, it is a
+sistem of four linear equations. If |M| is not 0
+it is solvable for any values in C.
+
+So we can define a special kind of curve for each
+chosen matrix M where |M| is not 0.
+
+M: Matriz de Base
+    Carateriza o tipo de curva (Hermite, Bezier, ...)
+
+    [ m11  m12  m13  m14 ]
+M = [ m21  m22  m23  m24 ]
+    [ m31  m32  m33  m34 ]
+    [ m41  m42  m43  m44 ]
+
+
+G: Vetor Geométrico
+    Carateriza a geometria de uma particular curva
+
+    [ G1 ]
+G = [ G2 ]
+    [ G3 ]
+    [ G4 ]
+
+B = T.M gera as chamadas Blending Functions.
+
+Now consider Z.C = (M^-1).C = G
+
+Splitting this per column yields a system of linear
+equations in the variables of a column of c, i.e. in
+the coefficients in one of x(t), y(t) or z(t).
+
+Since |M| is not 0, neither is |Z| so this is
+certainly solvable.
+
+
+Considering the definitions of Hermite and Bézier curves,
+we get the following Z:
+
+             [  0  0  0  1  ]
+Z(Hermite) = [  1  1  1  1  ]
+             [  0  0  1  0  ]
+             [  3  2  1  0  ]
+
+which implies the base matrix of Hermite is
+
+             [  2 -2  1  1  ]
+M(Hermite) = [ -3  3 -2 -1  ]
+             [  0  0  1  0  ]
+             [  1  0  0  0  ]
+
+
+For Bézier, we make the convention Q'(P1) = 3(P2 - P1)
+and not Q'(P1) = P2 - P1, so the matrix is
+
+            [  0  0  0  1  ]
+Z(Bézier) = [  0  0 1/3 1  ]
+            [  0 1/3 2/3 1 ]
+            [  1  1  1  1  ]
+
+which implies the base matrix of Bézier is
+
+            [ -1  1 -1  1  ]
+M(Bézier) = [  3 -6  3  0  ]
+            [ -3  3  0  0  ]
+            [  1  0  0  0  ]
+
+
+
+For Bézier:
+
+Q(t) = (1-t)^3 P1  +  3t(1-t)^2 P2  +  3t^2(1-t) P3  +  t^3 P4
+

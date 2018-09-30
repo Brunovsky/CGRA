@@ -1,0 +1,21 @@
+/**
+ * Modelação
+ */
+
+$ Operações booleanas (set operations)
+
+Dados volumes A e B, podemos obter a união, interseção e diferença.
+
+
+
+1. Representação por Instanciação de Primitivas
+2. Representação por Varrimento
+3. Representação pela Fronteira (boundary representation)
+4. Representação por Decomposição Espacial
+5. Geometria Sólida Construtiva
+
+
+
+1. Os objetos são definidos e construídos de acordo
+com os parâmetros que os caraterizam, e não se prevê
+a combinação de objetos com operações booleanas.

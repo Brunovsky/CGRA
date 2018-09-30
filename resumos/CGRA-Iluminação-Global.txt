@@ -1,0 +1,228 @@
+/**
+ * Something something
+ */
+
+Objetivo: calcular a cor de cada ponto a partir da iluminação direta
+de uma fonte de luz, mais a soma de todas as reflexões das superfícies próximas.
+
+Nos modelos de iluminação local. a cor de cada ponto é definida somente pela
+intensidade luminosa que chega diretamente das fontes de luz.
+
+A iluminação global respeita:
+
+
+
+$ Equação de Rendering:
+
+I(x,x') = g(x,x') * (e(x,x') + Integral(p(x,x',x'') * I(x',x'') dx''))
+
+I(x,x') = Iluminação de x' sobre x
+g(x,x') = 0, se x e x' não se vêm mutuamente
+          1/d^2, se x e x' se vêm (r: distância entre ambos)
+e(x,x') = Emissão de luz de x' para x
+p(x,x',x'') = Percentagem de iluminação oriunda de x'' e que
+          é refletida em x' na direção de x.
+
+
+
+$ Algoritmos:
+    Ray Tracing
+    Radiosity
+
+
+
+$$ Ray Tracing
+
+Extensão do algoritmo Ray-Casting
+View dependent algorithm (depende da posição do observador)
+
+O plano de visualização é discretizado em pontos de amostragem
+(pixels, ...)
+
+Faz-se passar, por cada ponto de amostragem, um raio luminoso que
+parte do observador em direção ao interior da cena.
+
+O rasto (tracing) de cada raio vai permitir somar as contribuições
+de reflexão entre faces próximas.
+
+I = I_local = k_a.I_a + k_d.I_fonte
+
+A interseção do raio refletido com os restantes objetos é
+registado para obter as contribuições destes na iluminação
+do ponto. A atenuação devido à distância da face pode
+ser considerada. O processo é recursivo.
+
+I = I_local + k_r * I_reflexão
+                    = ...
+
+Se os objetos forem transparents ou semitransparentes é ainda
+necessário considerar os raios transmitidos para o interior do
+objeto (ou exterior).
+
+I = I_local + k_r * I_reflexão + k_t * I_transmitida
+                    = ...              = ...
+
+Para cada pixel constrói-se uma árvore de interseções.
+A cor final do pixel determina-se percorrendo a árvore das folhas
+para a raíz e calculando as contribuições de cada ramo de acordo
+com o modelo de reflexão.
+
+Nos objetos opacos não existe o raio transmitido.
+O ramo da árvore termina quando o raio atinge um objeto não
+refletor ou o ramo atinge uma determinada profundidade pré-estabelecida.
+
+---> + Sombras, reflexões, refrações facilmente incorporadas
+---> + Reflexão especular
+---> - Reflexão difusa
+---> - Custo elevado do cálculo de interseções
+
+Otimização:
+    Diminuição do número de raios a processar.
+        Item Buffers
+            Determinam-se quais as áreas do ecrã onde se situam objetos.
+            Préprocessamento, Z-Buffer
+        Adaptive Tree-Depth Control
+            Não é necessário levar todos os ramos da árvore de shading
+            à sua profundidade máxima: usa a importância de um raio
+            luminoso sobre o pixel a que pertence; esta importância
+            diminui a cada reflexão ou transmissão.
+        Light-Buffers
+            A cada fonte de luz associam-se listas com os objetos que a
+            rodeiam; os shadow fillers, uma vez definida a sua direção,
+            são primariamente testados com os objetos que se encontram
+            na lista respetiva.
+    Diminuição do número de interseções a testar.
+        Volumes Envolventes
+            Antes de efetuar o teste de interseção de um raio com um
+            objeto, tenta-se a sua interseção com um volume simples
+            (vulgarmente uma caixa) envolvente do objeto. Este teste
+            prévio é muito rápido (a caixa tem as faces alinhadas com
+            os três eixos, ou é uma esfera, ...) e exclui imediatamente
+            muitos testes de interseção mais complexos.
+        Organização Hierárquica dos Volumes Envolventes
+            Utilização de volumes envolventes de outros volumes
+            envolventes permite economizar muitos testes de interseção.
+        Divisão Espacial em Grelhas Tridimensionais
+            Cada célula resultante desta divisão conhece os objetos
+            que contém, total ou parcialmente. De acordo com a posição
+            e a direção do raio em questão, só determinadas células
+            são visitadas e, deste modo, só os objetos nelas contidos
+            são testados. Dado que a ordem de progressão nas células é
+            definida pelo sentido do raio, a primeira célula onde se
+            detete interseção termina o processo de visita.
+
+
+
+
+
+$$ Radiosity
+
+View independent algorithm (não depende da posição do observador)
+O algoritmo só calcula efetivamente a iluminação do espaço objeto.
+É complementado por um algoritmo de cálculo de visibilidade para a
+produção da imagem final.
+
+Fases do processamento:
+    Modela as interações de luz entre objetos e fontes de luz,
+    sem considerar a posição do observador.
+    Cria a imagem considerando o observador, efetua cálculo de
+    visibilidade (Z-buffer)
+
+Nos modelos anteriores de iluminação, as fontes de luz foram tratadas
+de forma diferente das superfícies que iluminam. Pelo contrário, os
+métodos de radiosidade consideram que todas as superfícies podem
+produzir (emitir) luz. Assim, as fontes de luz são modeladas como
+superfícies normais, com uma dada área.
+
+
+Necessita das faces discretizadas em patches de forma a garantir que a
+radiosidade se mantém constante na área correspondente a um patch.
+
+A radiosidade (Bi) é definida como a energia expelidade, por unidade
+de tempo e de área, de um patch, sendo composta por duas partes:
+    Bi.Ai = Ei.Ai + pi.SUM(F(ji).Bj.Ai)
+      |       |                     +---> Energia refletida
+      |       +---> Energia emitida (produzida)
+      +---> Energia expelida
+
+Bi - radiosidade, energia expelidade do patch em Watt/m^2
+Ei - emissão de luz (auto-emitida) pelo patch i
+pi - refletividade, percentagem da energia incidente que é refletida.
+F(ji) : fator de forma, percentagem de energia que abandona o patch j
+e atinge o patch i.
+
+Em abientes difusos, existe a seguinte relação de reciprocidade entre
+fatores de forma: Ai.F(i-j) = Aj.F(ji)
+que aplicada na expressão anterior resulta
+
+Bi - Ei = pi.SUM(Bj.F(ij))
+
+Assim, a interação de luz entre patches pode ser representada por um
+sistema de equações lineares:
+
+[ 1-p1.F(11)    -p1.F(12)   ...   -p1.F(1n) ] [B1]   [E1]
+[  -p2.F(21)   1-p2.F(22)   ...   -p2.F(2n) ] [B2]   [E2]
+[    ...          ...       ...     ...     ] [..] = [..]
+[  -pn.F(n1)    -pn.F(n2)   ...   -pn.F(nn) ] [Bn]   [En]
+
+Criação da imagem:
+1.
+Cálculo dos fatores de forma F.
+Resolvendo o sistema de equações, por eliminação Gaussiana,
+obtém-se a radiosidade para cada patch.
+    Complexidade temporal: O(n)
+    Complexidade prática: Elevada
+    Precisa de ser recalculado sempre que a geometria da cena
+    for alterada (mudança de posição de algum objeto).
+
+2.
+Definir a posição do observador.
+    Complexidade: trivial.
+
+3.
+Aplicar um algoritmo de visibilidade
+    Complexidade temporal: O(n)
+
+4.
+Calcular a radiosidade dos vértices de cada polígono.
+
+5.
+Aplicar a interpolação de cor (Gouraud)
+
+
+
+
+
+Um fator de forma F(ij) representa a fração (em percentagem)
+da energia total expelidade pelo patch i que atinge o patch j,
+tomando em consideração a forma, orientação relativa e distância
+entre ambos os patches, bem como os obstáculos que obstruam o caminho.
+
+O fator de forma da área diferencial dA para a área diferencial dAj
+é dada por:
+
+            cos(theta i).cos(theta j) Hij dAj
+dF(di-dj) = ---------------------------------
+                         pi.d^2
+
+O cálculo do fator de forma corresponde a projetar as partes
+de Aj visíveis de dAi num hemisfério centrado em dAi, projetando
+depois esta projeção na base do hemisfério e dividindo pela área
+do hemisfério.
+
+Simplificação de Cohen e Greenberg: método do hemicubo.
+
+A face Aj projeta-se sobre dAi não sobre um semicírculo
+mas sobre um hemicubo composto por várias mini-patches com
+fatores de forma de cálculo trivial.
+
+$ Progressive Refinement Radiosity
+
+Resolução do sistema de equações linear por métodos iterativos.
+Os resultados intermédios são usados imediatamente., e vão
+melhorando com o tempo.
+
+
+
+Ray-Tracing: + reflexão especular
+Radiosity: + reflexão difusa
