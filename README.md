@@ -1,6 +1,7 @@
 # CGRA
 
-Project partner: [Filipe Reis](github.com/FilipePintoReis)
+Project partner:
+[Filipe Reis](https://github.com/FilipePintoReis)
 
 ## proj
 
